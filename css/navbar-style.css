@@ -1,0 +1,133 @@
+/* Contains the whole nav */
+.navbar {
+  border-bottom: 2px solid skyblue;
+  position: sticky;
+}
+
+/* Should display the nav element in one row . */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+/* The navlist should display its li elements in one row and streched to the available space. */
+.navlist {
+  display: flex;
+  list-style: none;
+  flex: 1;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  padding: 0px;
+}
+
+/* Navlink default styling  */
+.navlist  .navlink {
+  color: gray;
+  margin: 0px 10px;
+  white-space: nowrap;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+/* branding should display elements in one row and verticaly centered. */
+ .branding {
+  display: flex;
+  align-items: center;
+}
+
+/* the brand text should not wrap at all.*/
+ .branding > .brand-text {
+  display: block;
+  padding-left: 10px;
+  font-weight: bolder;
+  white-space: nowrap;
+  font-size: 20px;
+}
+
+/* The navlinks which are active should have a bottom border and font of skyblue. */
+.active {
+  font-weight: bold;
+  color: skyblue !important;
+  border-bottom: 2px solid skyblue;
+}
+
+/* The nav toggler should be none by default. And displayed depending on window size.*/
+nav .nav-toggler {
+  display: none;
+  position: relative;
+}
+
+/* the anchor tag with icon positioned over the bottom edge of the nav. */
+nav .nav-toggler > a {
+  padding: 5px;
+  text-decoration: none;
+  margin-top: 10px;
+  background-color: white;
+  font-size: 25px;
+  border-radius: 5px;
+  color: gray;
+  border: 1px solid gray;
+}
+
+/* --- MEDIA QUERY SECTION --- */
+
+ /* Making the conainer to be 100% to make use of the available space. */
+ @media only screen and (max-width: 1100px) {
+  .navbar .container {
+    width: 100%;
+  }
+}
+
+
+/* For Complete navbar */
+/* When the screen width is less than 620 pixels
+  hide the navlist and display the toggle button.
+*/
+@media only screen and (max-width: 680px ) {
+  .branding {
+    margin-bottom: 10px;
+  }
+
+/* Displaying the toggler */
+nav .nav-toggler {
+  display: block;
+}
+
+/* Positioning the arrow to the bottom middle edge of navbar. */
+nav .nav-toggler > a {
+  position: absolute;
+  bottom: -40px;
+  left: -20px;
+}
+
+/* Making the navlist to show navlinks as column. */
+nav .navlist {
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Making the columned navlist visually perfect */
+nav .navlist li {
+  padding: 10px;
+  border-top: 1px solid gray;
+}
+
+/* Making the whole nav to show as column. */
+nav {
+  flex-direction: column;
+}
+
+/* Making the conainer to be 100% to make use of the available space. */
+.navbar .container {
+  width: 100%;
+}
+}
+
+@media only screen and (max-width: 1100px) {
+  .navbar .container {
+    width: 100%;
+  }
+}

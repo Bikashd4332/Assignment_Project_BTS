@@ -1,0 +1,80 @@
+/* The parent container which is a flex and should be displayed in row. */
+.login {
+  height: 500px;
+  padding: 30px;
+  display: flex;
+  justify-content: stretch;
+  border: 1px solid lightgray;
+}
+
+/* This is a child of parent container made for contaning image inside.
+   This is also a flex should and should be displayed in column.
+*/
+.login-user-select-container {
+  width: 50%;
+  display: flex;
+  border-right: 1px solid lightgray;
+}
+
+/* The image shown in the leftside of login form. */
+.login-img {
+  max-width: 95%;
+  height: auto;
+}
+
+/* This is a container made for holding login form inside. 
+   This is a flex and should display in column.*/
+.login-form-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+
+/* The header inside login container. */
+.login-header {
+  padding-bottom: 25px;
+  font-weight: 300;
+  color: lightgray;
+}
+
+/* The brand icon image inside login form. */
+.login-form-container > .brand-icon {
+  width: 50px;
+  height: 50px;
+}
+
+/* A signup message bottom in the login container. */
+.signup-msg {
+  color: lightgray;
+  font-weight: 300;
+  padding-top: 30px;
+}
+
+/* form group is for containing forms. */
+.login-form-container .form-group {
+  width: 70%;  
+}
+
+.submit-btn {
+  padding: 10px 15px;
+  margin: auto;
+}
+
+/* Utilizing the size available inside the body. */
+@media only screen and (max-width: 1150px) {
+    .login-user-select-container {
+      display: none;
+    }
+
+    .login-form-container {
+      width: 100%;
+  }
+
+  .login-form-container .form-group {
+    width: 100%;
+  }
+}
+

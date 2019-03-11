@@ -1,0 +1,143 @@
+/* The signup message heder */
+.signup-header {
+  padding-top: 20px;
+}
+
+/* The h2 header inside signup header. */
+.signup-header > h2 {
+  font-weight: 400;
+  font-size: 30px;
+  color: black;
+}
+
+/* The info paragraph inside signup header */
+.signup-header > p {
+  padding-left: 2px;
+  color: gray;
+}
+
+
+/* The tab-navs which is a list should display its li elements in row. */
+.tab .tab-navs {
+  justify-content: space-between;
+}
+
+/* The li elements of tab-navs also a flex box displaying contents in row. */
+.tab .tab-navs li {
+  width: 50%;
+}
+
+/* tab-info is the information of each tab inside each li of tab-navs. */
+.tab .tab-navs .tab-info  p {
+  padding: 5px;
+  font-size: 15px;
+}
+
+/* The icon inside each tab-navs li. */
+.tab .tab-navs i {
+  font-size: 40px;
+  padding: 10px;  
+}
+
+/* The styling of header message of form. */
+.form-group .form-header {
+  padding: 30px 0px;
+  font-weight: 300;
+}
+
+/* Making the input field width 60% intially.  */
+.form-group .form-control {
+  width: 60% !important;
+}
+
+/* The id of the signup user tab. */
+#signup-window {
+  position: relative;
+  /* display: none; */
+}
+
+/* The id of the project signup tab. */
+#project-window {
+  display: none;
+  /* display: block; */
+}
+
+/* The parent div for previewing selected img. */
+.file-preview {
+  width: 250px;
+  height: 260px;
+  border: 1px solid skyblue;
+}
+
+/* The target img where selected img is shown. */
+.file-preview img {
+  width: 230px;
+  display: block;
+  margin: auto;
+  height: 217px;
+  padding-bottom: 3px;
+}
+
+/* The label inside file-preivew for input:file. */
+.file-preview .file-input-label {
+  text-align: center;
+  color: white;
+  background-color: skyblue;
+  padding: 10px 0px;
+  border-top: 1px solid gray;
+}
+
+.file-preview .file-input-label label {
+  cursor: pointer;
+}
+
+/* This is the container of the file-preview. */
+#profileImageContainer {
+  position: absolute;
+  top: 20%;
+  left: 65%;
+}
+
+/* Making the project description textarea no-resizable. */
+#projectDescriptionTextarea {
+  resize:none;
+}
+
+.submit-btn {
+  padding: 10px;
+  font-size: 15px;
+  margin: auto;
+}
+
+/* Changing the flex direction to column of li elements inside tab-navs */
+/* Making the profileImageContainer come after the signup form. */
+/* Making use of available space. */
+@media only screen and (max-width: 780px) {
+  .tab-navs li {
+    flex-direction: column;
+  }
+
+  .tab-navs  {
+    text-align: center;
+  }
+
+  #profileImageContainer {
+    position: relative;
+    left: 0px;
+  }
+
+  .file-preview {
+    margin: auto;
+  }
+
+  .form-group .form-control {
+    width: 100% !important;
+  }
+}
+
+/* When the container gets 100% width pad signup with some space. */
+@media only screen and (max-width: 600px) {
+  .signup {
+    padding: 30px;
+  }
+}

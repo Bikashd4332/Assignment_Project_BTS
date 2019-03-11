@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand');
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  background-color: #f3f3f3;
+  font-family: 'Quicksand', sans-serif;
+}  
+
+button {
+  background-color: skyblue;
+  color:white;
+  font-family: 'Quicksand', sans-serif;
+  border:none;
+  display: block;
+  cursor: pointer;
+}
+
+input {
+  border: 1px solid lightgray;
+  outline: none;
+  padding: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus {
+  border: 2px solid;
+  border-color: skyblue;
+}
+/* Hide the input:file we dont need it. */
+input[type='file'] {
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+/* Textarea should never be resizable. */
+textarea {
+  resize :none;
+}
+.container {
+  width: 60%;
+  margin: auto;
+}
+
+.container-fluid {
+  margin: 0px;
+  width: 100%;
+  background-color: white;
+}
+
+/* --- MEDIA QUERY SECTION --- */
+/* Make the container 100% width when below 500 pixels */
+@media only screen and (max-width: 500px ) {
+  body  .container {
+    width: 100%;
+  }
+}
+

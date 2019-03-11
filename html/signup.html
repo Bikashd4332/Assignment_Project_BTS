@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <script src="../js/jquery-3.0.0.min.js"></script>
+  <script src="../js/navbar-functionality.js"></script>
+  <script src="../js/signup-functionality.js"></script>
+  
+  <link rel="stylesheet" href="../css/global-style.css">
+  <link rel="stylesheet" href="../css/navbar-style.css">
+  <link rel="stylesheet" href="../css/footer-style.css">
+  <link rel="stylesheet" href="../css/form-styling.css">
+  <link rel="stylesheet" href="../css/tab-style.css">
+  <link rel="stylesheet" href="../css/signup-style.css">
+  
+  <script src="../js/login-functionality.js"></script>
+  <title>Sign up | Bug Tracking System</title>
+</head>
+<body>
+  <div class="navbar">
+    <div class="container-fluid">
+      <div class="container">
+        <nav>
+          <div class="branding">
+            <img class="brand-icon" src="../img/insect.png">
+            <p class="brand-text">Bug Tracking System</p>
+          </div>
+          <ul class="navlist">
+            <li><a href="#" class="navlink"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="#" class="navlink"><i class="fa fa-sign-in"></i> Log In</a></li>
+            <li><a href="#" class="navlink"><i class="fa fa-info-circle"></i> About This Project</a></li>
+          </ul>
+          <div class="nav-toggler">
+            <a href="#" class="fa fa-arrow-up"></a> 
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="container">
+      <div class="signup">
+        <div class="signup-header">
+          <h2>Join Bug Tracking without any cost</h2>
+          <p>Hassle free experiece of making an application bug free.</p>
+        </div>
+        <div class="signup-form-container">
+          <div class="tab">
+            <ul class="tab-navs">
+              <li class="tab-nav-active"><i class="fa fa-user"></i><span class="tab-info"><p>Step 1</p><p>Setting up your account.</p></span></li>
+              <li><i class="fa fa-tasks"></i><span class="tab-info"><p>Step 2</p><p>Setting up your project.</p></span></li>
+            </ul>
+            <div class="tab-windows">
+              <div class="tab-window" id="signup-window">
+                  <div class="form-group">
+                    <h2 class="form-header">Creating your personal account</h2>
+                    <form action="">
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input  type="text" class="form-control" name="firstName" id="firstNameInput">
+                          <div class="label-control label-under">First Name</div>
+                        </div>
+                        <div class="validation-feedback" id="firstNameFeedBack">
+                          <p class="error-empty"></p>
+                          <p class="error-invalid"></p>
+                          <p class="assist-valid">You can enter only alphabets [a-z].</p>
+                        </div>
+                      </div>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input type="text" class="form-control" name="middleName" id="middleNameInput">
+                          <div class="label-control label-under ">Middle Name</div>
+                        </div>
+                          <div class="validation-feedback" id="middleNameFeedback">
+                                <p class="error-empty"></p>
+                                <p class="error-invalid"></p>
+                                <p class="assist-valid">You can leave this if not applicable.</p>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input type="text" class="form-control" name="lastName" id="lastNameInput">
+                          <div class="label-control label-under">Last Name</div>
+                        </div>
+                        <div class="validation-feedback" id="lastNameFeedback">
+                            <p class="error-empty"></p>
+                            <p class="error-invalid"></p>
+                            <p class="assist-valid">You may enter an apostrophe in you surname.</p>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input type="email" class="form-control" name="emailId" id="emailidInput">
+                          <div class="label-control label-under">Email Id</div>
+                        </div>
+                        <div class="validation-feedback" id="emailFeedBack">
+                            <p class="error-empty"></p>
+                            <p class="error-invalid"></p>
+                            <p class="assist-valid">This needs to be unique per user.</p>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input type="password" class="form-control" name="password" id="passwordInput">
+                          <div class="label-control label-under">Password</div>
+                        </div>
+                        <div class="validation-feedback" id="passwordFeedback">
+                            <p class="error-empty"></p>
+                            <p class="error-invalid"></p>
+                            <p class="assist-valid">This should at least have one special charachter and between 8 to 32.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="input-group" id="profileImageContainer">
+                        <div class="file-preview">
+                          <img src="https://cdn.umnbootcamp.com/wp-content/uploads/sites/60/2018/03/placeholder-person.png" alt="Default Person Image" srcset="">
+                          <div class="file-input-label"><label for="profileImage"><i class="fa fa-upload"></i> Upload a file</label></div>
+                        </div>
+                        <input type="file" name="profileImage" id="profileImage">
+                      </div>
+                        <div class="validation-feedback" id="profileImageFeedback">
+                          <p class="error-empty"></p>
+                          <p class="error-invalid"></p>
+                          <p class="assist-valid"></p>
+                        </div>
+                    </form>
+                    <button class="submit-btn">Next step <i class="fa fa-arrow-right"></i></button>  
+                  </div>
+              </div>
+              <div class="tab-window" id="project-window">
+                <div class="form-group">
+                    <h2 class="form-header">Creating your project</h2>
+                    <div class="input-group">
+                      <div class="form-wrapper">
+                          <input type="text" class="form-control" name="projectName" id="projectNameInput">
+                          <div class="label-control label-under">Project Name</div>
+                      </div>
+                      <div class="validation-feedback">
+                          <p class="error-empty"></p>
+                          <p class="error-invalid"></p>
+                          <p class="assist-valid"></p>
+                        </div>
+                    </div>  
+                    <div class="input-group">
+                      <div class="control-label label-under">Project Description</div>
+                      <textarea name="projectDescription" class="form-control" id="projectDescriptionTextarea" cols="30" rows="10"></textarea>
+                    </div>
+                    <button class="submit-btn">Finish Signing up</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+      <div class="container">
+          <div class="footer-wrapper">
+              <div class="branding">
+                  <img class="brand-icon" src="https://img.icons8.com/ultraviolet/40/000000/insect.png">
+                  <p class="brand-text">Bug Tracking System</p>
+                </div>
+                <ul class="navlist">
+                    <li><a href="#" class="navlink"></i> Home</a></li>
+                    <li><a href="#" class="navlink"></i> Log In</a></li>
+                    <li><a href="#" class="navlink"> About This Project</a></li>
+                  </ul>
+            </div>
+            <hr/>
+            <div class="footer-wrapper">
+              <p class="copyright-info">Bug Tracking System <i class="fa fa-copyright"></i></p>
+              <div class="social-links">
+                <a href="#"><i class="fa fa-facebook-square"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-github"></i></a>
+              </div>
+            </div>
+          </div>
+
+</body>
+</html>

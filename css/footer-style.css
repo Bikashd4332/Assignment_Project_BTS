@@ -1,0 +1,55 @@
+/* The default styling of footer */
+  .footer {
+    background-color: skyblue;
+    height: 150px;
+    padding-top: 30px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Styling the hr . */
+  .footer hr {
+    margin: 20px 0px 10px 0px;
+    color: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid ;
+  }
+
+  /* Footer wrapper for displaying the external links in one row. */
+  .footer-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  /* The default styling of social links inside footer-wrapper. */
+  .footer .social-links a {
+    color: rgba(255, 255, 255, 0.9);
+    padding: 5px;
+    font-size: 20px;
+  }
+
+/* Overwriting the style of color of navlinks inside footer. */
+  .footer .navlink {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+
+/* --- MEDIA QUERY SECTION --- */
+
+/* Only for Footer */
+/* When the screen is less than 980 pixels
+   Making the footer align as column. */
+   @media only screen and (max-width: 980px) {
+    .footer-wrapper {
+      flex-direction: column;
+      justify-content: center;
+    }
+  
+    .footer .navlist {
+      margin-top: 5px;
+    }
+  
+    .footer {
+      height: 190px;
+    }
+  }
