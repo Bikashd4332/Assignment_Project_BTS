@@ -75,7 +75,6 @@ nav {
 .grid-box {
   padding: 20px 0px;
   display: grid;
-  height: 500px;
   width: 100%;
   grid-template-areas: 
     "reports-info reports-info reports-info new-report-btn"
@@ -97,6 +96,13 @@ nav {
 
 .report-statistics {
   grid-area: report-statistics;
+  display: flex;
+  border: 1px solid lightskyblue;
+  /* margin-top: 10px; */
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-left: 10px;
+
 }
 
 .reports-info .summary-info-heading {
@@ -165,14 +171,6 @@ nav {
   margin: auto;
 }
 
-.report-statistics{
-  display: flex;
-  border: 1px solid lightskyblue;
-  margin-top: 10px;
-  flex-direction: column;
-  justify-content: space-evenly;
-  margin-left: 10px;
-}
 
 .statistics {
   height: 130px;
@@ -194,4 +192,51 @@ nav {
   .navbar .container {
     width: 100%;
   }
+}
+
+@media only screen and (max-width: 1240px) {
+ #page-body {
+   width:100%;
+   padding-left: 30px;
+   padding-right: 30px;
+ }
+}
+
+@media only screen and (max-width: 800px) {
+  .heading-info > .desc {
+    display: none;
+  }
+  .heading-info > .heading {
+    top: 20px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .grid-box {
+    grid-template-areas: 
+    "new-report-btn new-report-btn new-report-btn new-report-btn"
+      "report-statistics report-statistics report-statistics report-statistics"
+      "reports-info reports-info reports-info reports-info"
+      "reports-info reports-info reports-info reports-info"
+      "reports-info reports-info reports-info reports-info"
+      "reports-info reports-info reports-info reports-info"
+  }
+
+  .report-statistics {
+    margin-left: 0;
+  }
+
+  .new-report-btn {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .reports-info{
+    margin-top: 20px;
+  }
+
+  .report-statistics .statistics  {
+    width: 100%;
+  }
+
 }
