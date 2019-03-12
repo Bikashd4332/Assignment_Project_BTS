@@ -81,8 +81,8 @@ nav {
     "reports-info reports-info reports-info report-statistics"
     "reports-info reports-info reports-info report-statistics"
     "reports-info reports-info reports-info report-statistics"
-    "reports-info reports-info reports-info report-statistics"
-    "reports-info reports-info reports-info report-statistics"
+    "reports-info reports-info reports-info ."
+    "reports-info reports-info reports-info ."
 }
 
 .reports-info {
@@ -92,13 +92,18 @@ nav {
 
 .new-report-btn {
   grid-area: new-report-btn;
+  position: sticky;
+  position: -webkit-sticky;
+  top:15px;
 }
 
 .report-statistics {
   grid-area: report-statistics;
+  position: sticky;
+  position: -webkit-sticky;
+  top:90px;
   display: flex;
   border: 1px solid lightskyblue;
-  /* margin-top: 10px; */
   flex-direction: column;
   justify-content: space-evenly;
   margin-left: 10px;
@@ -188,6 +193,82 @@ nav {
   display: none;
 }
 
+
+.report {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  cursor: pointer;
+  align-items: center ;
+  justify-content: space-evenly;
+} 
+
+.report > .report-info  {
+  flex: 1;
+  padding-left: 10px;
+}
+
+.report > .report-id {
+  color: skyblue;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #dfdfdf;
+  padding: 10px;
+}
+
+
+.report > .report-id > .id {
+  font-size: 20px;
+}
+
+.report .report-name {
+  padding-bottom: 5px;
+  font-weight: bolder;
+}
+
+.report > .report-type-priority {
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+.report  .report-type {
+  margin-bottom: 10px;
+  font-size: 12px;
+  padding-left: 2px;
+  color: whitesmoke;
+  border-radius: 2px ;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.badge {
+  padding-left: 6px;
+  padding: 3px;
+  border-left: 1px solid;
+  display: inline-block;
+}
+.high {
+  background-color: #cc0000;
+}
+.low {
+  background-color: green;
+}
+
+.bug {
+  color: white;
+  background-color: #cc0000;
+}
+
+.report .report-priority {
+  color: whitesmoke;
+  /* width: 116.5px; */
+  padding-left: 2px;
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+
+
 @media only screen and (max-width: 1300px) {
   .navbar .container {
     width: 100%;
@@ -211,7 +292,7 @@ nav {
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 690px) {
   .grid-box {
     grid-template-areas: 
     "new-report-btn new-report-btn new-report-btn new-report-btn"
@@ -229,6 +310,13 @@ nav {
   .new-report-btn {
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  .new-report-btn {
+    position: inherit;
+  }
+  .report-statistics {
+    position: inherit;
   }
 
   .reports-info{
