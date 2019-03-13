@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="../css/global-style.css">
   <link rel="stylesheet" href="../css/navbar-style.css">
+  <link rel="stylesheet" href="../css/logged-in-navbar-style.css">
   <link rel="stylesheet" href="../css/overview-style.css">
   <link rel="stylesheet" href="../css/footer-style.css">
   <script src="../js/jquery-3.0.0.min.js"></script>
@@ -15,6 +16,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Overview | Bug Tracking System</title>
 </head>
+
 <body>
 
   <div class="navbar">
@@ -24,7 +26,8 @@
           <div class="branding">
             <img class="brand-icon" src="../img/insect.png">
             <p class="brand-text">Bug Tracking System</p>
-            <img src="https://cdn.umnbootcamp.com/wp-content/uploads/sites/60/2018/03/placeholder-person.png" alt="Profile Imamge" class="profile-img">
+            <img src="https://cdn.umnbootcamp.com/wp-content/uploads/sites/60/2018/03/placeholder-person.png" alt="Profile Imamge"
+              class="profile-img">
           </div>
           <ul class="navlist">
             <li id="profile-img-li"><a href="#" class="navlink"><img class="profile-img" src="https://cdn.umnbootcamp.com/wp-content/uploads/sites/60/2018/03/placeholder-person.png" /></a></li>
@@ -34,7 +37,7 @@
             <li><a href="#" class="navlink"><i class="fa fa-sign-out"></i> Log out</a></li>
           </ul>
           <div class="nav-toggler">
-            <a href="#" class="fa fa-arrow-up"></a> 
+            <a href="#" class="fa fa-arrow-up"></a>
           </div>
         </nav>
       </div>
@@ -57,12 +60,12 @@
               <p><span class="number-badge">0</span> Closed</p>
             </div>
           </div>
-          
+
           <div class="assigned-to-me">
             <div class="heading-info">
               <i class="fa fa-user"></i>
-                <div class="heading">Assigned To Me</div>
-                <div class="desc">These are the reports that have been assigned to me.</div>
+              <div class="heading">Assigned To Me</div>
+              <div class="desc">These are the reports that have been assigned to me.</div>
             </div>
 
             <div class="report">
@@ -72,170 +75,17 @@
                 <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
               </div>
               <div class="report-type-priority">
-                <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                <p class="report-priority">Report Priority <span class="badge high">high</span></p>
-              </div>
-            </div>
-            
-            <div class="report">
-              <div class="report-id">#<span class="id">2</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 2</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge feature"><i class="fa fa-cog"></i> feature </span></p>
-                  <p class="report-priority">Report Priority <span class="badge low">low</span></p>
-              </div>
-            </div>
+                <div class="badge-wrapper">
+                  <div class="report-type-label">Report type</div>
+                  <div class="badge feature"><i></i>Bug</div>
+                </div>
 
-            <div class="report">
-              <div class="report-id">#<span class="id">3</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 3</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                <p class="report-type">Report Type <span class="badge help"><i class="fa fa-question-circle"></i> help </span></p>
-                <p class="report-priority">Report Priority <span class="badge med">med</span></p>
+                <div class="badge-wrapper">
+                    <div class="report-priority-label">Report priority</div>
+                    <div class="badge med">high</div>
+                </div>
               </div>
             </div>
-            
-            <div class="report">
-              <div class="report-id">#<span class="id">5</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">6</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">7</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">8</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            <div class="report">
-              <div class="report-id">#<span class="id">1</span></div>
-              <div class="report-info">
-                <div class="report-name">Sample Report 1</div>
-                <div class="report-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-              </div>
-              <div class="report-type-priority">
-                  <p class="report-type">Report Type <span class="badge bug"><i class="fa fa-bug"></i> Bug </span></p>
-                  <p class="report-priority">Report Priority <span class="badge high">High</span></p>
-              </div>
-            </div>
-            
-            
-
           </div>
         </div>
 
@@ -263,28 +113,29 @@
   </div>
 
   <div class="footer">
-      <div class="container">
-          <div class="footer-wrapper">
-              <div class="branding">
-                  <img class="brand-icon" src="https://img.icons8.com/ultraviolet/40/000000/insect.png">
-                  <p class="brand-text">Bug Tracking System</p>
-                </div>
-                <ul class="navlist">
-                    <li><a href="#" class="navlink"></i> Home</a></li>
-                    <li><a href="#" class="navlink"></i> Log In</a></li>
-                    <li><a href="#" class="navlink"> About This Project</a></li>
-                  </ul>
-            </div>
-            <hr/>
-            <div class="footer-wrapper">
-              <p class="copyright-info">Bug Tracking System <i class="fa fa-copyright"></i></p>
-              <div class="social-links">
-                <a href="#"><i class="fa fa-facebook-square"></i></a>
-                <a href="#"><i class="fa fa-twitter"></i></a>
-                <a href="#"><i class="fa fa-github"></i></a>
-              </div>
-            </div>
-          </div>
-  
+    <div class="container">
+      <div class="footer-wrapper">
+        <div class="branding">
+          <img class="brand-icon" src="https://img.icons8.com/ultraviolet/40/000000/insect.png">
+          <p class="brand-text">Bug Tracking System</p>
+        </div>
+        <ul class="navlist">
+          <li><a href="#" class="navlink"></i> Home</a></li>
+          <li><a href="#" class="navlink"></i> Log In</a></li>
+          <li><a href="#" class="navlink"> About This Project</a></li>
+        </ul>
+      </div>
+      <hr />
+      <div class="footer-wrapper">
+        <p class="copyright-info">Bug Tracking System <i class="fa fa-copyright"></i></p>
+        <div class="social-links">
+          <a href="#"><i class="fa fa-facebook-square"></i></a>
+          <a href="#"><i class="fa fa-twitter"></i></a>
+          <a href="#"><i class="fa fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+
 </body>
+
 </html>

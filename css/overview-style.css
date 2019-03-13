@@ -1,76 +1,4 @@
-.profile-img {
- width: 40px;
- height: 40px;
- border: 1px solid gray;
- border-radius: 20px;
-}
-
-.number-badge {
-  font-weight: bolder;
-  font-style: normal;
-  font-size: 18px;
-}
-
-nav .branding .profile-img {
-  display: none;
-}
-
-@media only screen and (max-width: 780px ) {
-  
-  #profile-img-li {
-    display: none;
-  }
-  
-  nav .branding .profile-img {
-    display: block;
-  }
-  
-  nav .branding {
-    width: 100%;
-    display:flex;
-    justify-content: space-between;
-  }
-
-  .branding {
-    margin-bottom: 10px;
-  }
-
-/* Displaying the toggler */
-nav .nav-toggler {
-  display: block;
-}
-
-/* Positioning the arrow to the bottom middle edge of navbar. */
-nav .nav-toggler > a {
-  position: absolute;
-  bottom: -40px;
-  left: -20px;
-}
-
-/* Making the navlist to show navlinks as column. */
-nav .navlist {
-  flex-direction: column;
-  align-items: stretch;
-  width: 100%;
-}
-
-/* Making the columned navlist visually perfect */
-nav .navlist li {
-  padding: 10px;
-  border-top: 1px solid gray;
-}
-
-/* Making the whole nav to show as column. */
-nav {
-  flex-direction: column;
-}
-
-/* Making the conainer to be 100% to make use of the available space. */
-.navbar .container {
-  width: 100%;
-  }
-}
-
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
 .grid-box {
   padding: 20px 0px;
@@ -227,52 +155,60 @@ nav {
 }
 
 .report > .report-type-priority {
-  font-size: 12px;
+  font-size: 10px;
   padding-left: 5px;
 }
 
-.report  .report-type {
-  margin-bottom: 10px;
-  font-size: 12px;
-  padding-left: 2px;
-  color: whitesmoke;
-  border-radius: 2px ;
+.report  .badge-wrapper {
+  display:flex;
+  padding-left: 3px;
+  border-radius: 5px; 
+  justify-content: space-around;
+  color: white;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.badge {
-  padding-left: 6px;
-  padding: 3px;
-  border-left: 1px solid;
-  display: inline-block;
+.report-type-priority > .badge-wrapper:first-child{
+  margin-bottom: 10px;
 }
+
+.report .badge-wrapper > .report-type-label, .report-priority-label {
+  padding: 3px;
+}
+
+.badge {
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
 .high {
   background-color: #cc0000;
+}
+.med {
+  background-color: darkgoldenrod;
 }
 .low {
   background-color: green;
 }
 
 .bug {
-  color: white;
   background-color: #cc0000;
 }
 
-.report .report-priority {
-  color: whitesmoke;
-  /* width: 116.5px; */
-  padding-left: 2px;
-  border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0.7);
+.feature  {
+  background-color: green;
 }
 
+.feature > i::after {
+  font-style: normal;
+  content: "\f013";
+  font-family: 'FontAwesome';
+}
 
-
-
-@media only screen and (max-width: 1300px) {
-  .navbar .container {
-    width: 100%;
-  }
+.bug > i::after {
+  font-style: normal;
+  content: "\f188";
+  font-family: 'FontAwesome';
 }
 
 @media only screen and (max-width: 1240px) {
@@ -327,4 +263,17 @@ nav {
     width: 100%;
   }
 
+}
+
+@media only screen and (max-width: 400px ) {
+  .badge-wrapper > .report-type-label, .report-priority-label{
+    display: none;
+    }
+    
+  .badge-wrapper .badge{
+    flex: 1;
+  }
+  .report-info > .report-desc {
+    display: none;
+  }
 }

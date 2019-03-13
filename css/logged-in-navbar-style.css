@@ -1,0 +1,76 @@
+/* This file inherits some properties from navbar-style.css */
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border: 1px solid gray;
+    border-radius: 20px;
+   }
+   
+   
+   .number-badge {
+     font-weight: bolder;
+     font-style: normal;
+     font-size: 18px;
+   }
+   
+   nav .branding .profile-img {
+     display: none;
+   }
+   
+   @media only screen and (max-width: 780px ) {
+     
+     #profile-img-li {
+       display: none;
+     }
+     
+     nav .branding .profile-img {
+       display: block;
+     }
+     
+     nav .branding {
+       width: 100%;
+       display:flex;
+       justify-content: space-between;
+     }
+   
+     .branding {
+       margin-bottom: 10px;
+     }
+   
+   /* Displaying the toggler */
+   nav .nav-toggler {
+     display: block;
+   }
+   
+   /* Positioning the arrow to the bottom middle edge of navbar. */
+   nav .nav-toggler > a {
+     position: absolute;
+     bottom: -40px;
+     left: -20px;
+   }
+   
+   /* Making the navlist to show navlinks as column. */
+   nav .navlist {
+     flex-direction: column;
+     align-items: center;
+     width: 100%;
+   }
+   
+   /* Making the columned navlist visually perfect */
+   nav .navlist li {
+     padding: 10px;
+     border-top: 1px solid gray;
+   }
+   
+   /* Making the whole nav to show as column. */
+   nav {
+     flex-direction: column;
+   }
+   
+   /* Making the conainer to be 100% to make use of the available space. */
+   .navbar .container {
+     width: 100%;
+     }
+   }
+   
