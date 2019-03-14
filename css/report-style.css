@@ -1,0 +1,83 @@
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+#page-body {
+    padding: 20px;
+}
+
+.report-title {
+    font-size: 30px;
+}
+.report-title > .report-id {
+    color: lightgray;
+}
+
+.report > .report-title {
+    color: skyblue;    
+}
+
+.report-info-status {
+    display: flex;
+    margin-top: 5px;
+}
+
+.report-info-status > .report-status {
+    padding: 5px;
+    font-size: 10px;
+    color: white;
+    border-radius: 3px;
+}
+
+.open {
+    background-color: rgba(0, 180, 0, 1);
+}
+
+.badge {
+    padding-top: 3px;
+    margin-left: 5px;
+    color: white;
+    font-size: 11px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 3px;
+}
+.badge > .badge-label {
+    padding: 5px 0px 5px 5px;
+    border-radius: 3px;
+}
+
+.badge > .badge-value {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    padding: 3px 5px 6px 3px; 
+}
+.med {
+    background-color: goldenrod
+}
+
+.bug {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
+.bug::after {
+    content: ' \f188';
+    font-family: 'FontAwesome';
+}
+
+.watch-btn {
+    margin-left: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.extended-info {
+    font-size: 14px;
+    padding-top: 5px;
+    color: lightgray;
+  }
+  .extended-info > .user-name {
+      color: skyblue;
+      cursor: pointer;
+  }
+  .extended-info > .date-info {
+      color: skyblue;
+  }
