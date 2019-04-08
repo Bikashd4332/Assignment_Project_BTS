@@ -78,9 +78,7 @@
                         <span class="badge-label">report status</span>
                         <span class="badge-value "></span>
                     </div>
-                    <button class="watch-btn">
-                        <i class="fa fa-eye"></i> Watch
-                    </button>
+                    <button class="watch-btn" id="toggleWatch"></button>
                     <div class="status-action">
                     </div>
                 </div>

@@ -7,6 +7,7 @@
 	--->
 <cfcomponent displayname="ReportComponent" accessors="true" output="false" persistent="false">
 
+
 	<cffunction access="remote" output="false" returnformat="JSON" returntype="struct" name="UploadAttachment" displayname="UploadAttachment" hint="This function uploads report attachments and stores into a directory." >
 		<cfargument required="true" type="any" name="uploadedFile" hint="This argument contains the path of the uploaded file."/>
 		<cfargument required="true" type="string" name="clientFileInfo" hint="This argument contains extra info of the client file.">
@@ -19,22 +20,20 @@
 		</cfif>
 		<cfset uploadedRenamedFilePath = "#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#arguments.clientFileInfo#">
 		<cffile action="move" source="#uploadedFile#" destination="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#">
-		
 		<cfif IsFileAlreadyExist(arguments.clientFileInfo, arguments.uploadedDirectory)>
 			<cfset renamedFile = "#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#ListFirst(arguments.clientFileInfo, '.')&Replace(TimeFormat(now(),'hh:mm:ss'),':','','ALL')&'.'&ListLast(arguments.clientFileInfo, '.')#">
-			<cffile action="rename" 
-			source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
-			destination="#renamedFile#" 
-			>
+			<cffile action="rename"
+				source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
+				destination="#renamedFile#"
+				>
 			<cfreturn { "uploadDirectory" : #variables.uploadDirectoryName#, "renamedFileName": "#renamedFile#" } />
 		<cfelse>
 			<cffile action="rename"
-			source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#" 
-			destination="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#arguments.clientFileInfo#"
-			>
+				source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
+				destination="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#arguments.clientFileInfo#"
+				>
 			<cfreturn { "uploadDirectory" : #variables.uploadDirectoryName# } />
 		</cfif>
-	
 	</cffunction>
 
 
@@ -194,7 +193,7 @@
 				</cfquery>
 				<cfset commentId =  addComment("deleted file #GetFileFromPath(AttachMent)#",ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
-				</cfif>
+			</cfif>
 		</cfloop>
 	</cffunction>
 
@@ -236,6 +235,7 @@
 		<cfargument requried="true" name="reportId" type="numeric" hint="It contains the report id to which the comment will be added.">
 		<cfargument required="false" default="0" name="isActivity" type="numeric" hint="Wheather the comment will be an activity or a simple content.">
 		<cfset utilComponent = CreateObject('component', 'UtilComponent')>
+		<cfset dashBoardComponent = CreateObject('component', 'DashboardComponent')>
 		<cfquery result="resultAddComment">
 			INSERT INTO [REPORT_COMMENTS] ( [ReportID], [Comment], [PersonID], [isActivity])
 			VALUES (
@@ -246,8 +246,10 @@
 			)
 		</cfquery>
 		<cfif arguments.isActivity EQ 1>
+			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>
+			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)>
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		</cfif>
 		<cfreturn resultAddComment['IDENTITYCOL']  />
@@ -436,7 +438,6 @@
 			<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
 			<cfset wsPublish('report-status-update', { "commentId": "#commentId#" })>
 			<cfreturn '{ "commentId": #commentId# }'>
-			
 		</cfif>
 	</cffunction>
 
@@ -559,17 +560,96 @@
 		</cfif>
 	</cffunction>
 
-		<cffunction access="remote" returnformat="JSON" returntype="boolean" name="IsFileAlreadyExist" >
+
+	<cffunction access="remote" returnformat="JSON" returntype="boolean" name="IsFileAlreadyExist" >
 		<cfargument required="true" type="string" name="fileName" >
-		<cfargument required="true" name="reportId" type="any"> 
-		
+		<cfargument required="true" name="reportId" type="any">
 		<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/#arguments.reportId#')#" name="queryDirectoryList" >
 		<cfloop query="queryDirectoryList">
 			<cfif arguments.fileName EQ Name>
 				<cfreturn true>
 			</cfif>
 		</cfloop>
-	<cfreturn false>
+		<cfreturn false>
 	</cffunction>
+
+
+	<cffunction access="remote" output="false" name="NotifyAllWatchers" displayname="NotifyAllWatchers">
+		<cfargument required="true" name="message" type="string">
+		<cfargument required="true" name="reportId" type="numeric">
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
+		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
+		<cfquery name="queryGetAllWatcher">
+			SELECT [EmailID]
+			FROM [WATCHER] RW
+			INNER JOIN
+			[PERSON] P
+			ON P.[PersonID] = RW.[PersonID]
+			WHERE
+			[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+			AND
+			[PersonID] <> <cfqueryparam cfsqltype="cf_sql_integer" value="#loggedInPersonId#">
+		</cfquery>
+		<cfloop query="queryGetAllWatcher">
+			<cfset sendEmailTo(EmailID, "#arguments.message#")>
+		</cfloop>
+	</cffunction>
+
+
+	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="CheckIfWatching" displayname="CheckIfWatching">
+		<cfargument required="true" name="reportId" type="numeric">
+
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
+		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
+
+		<cfquery name="queryCheckIfAlredyWatching">
+			SELECT [PersonID]
+			FROM [WATCHER]
+			WHERE
+			[PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#loggedInPersonId#">
+			AND [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+		</cfquery>
+		<cfif queryCheckIfAlredyWatching.RecordCount EQ 0>
+			<cfreturn false>
+		<cfelse>
+			<cfreturn true>
+		</cfif>
+	</cffunction>
+
+
+	<cffunction access="remote" output="false" returnformat="JSON"  name="ToggleWatcher" displayname="AddToWatcher">
+		<cfargument required="true" name="reportId" type="numeric">
+
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
+		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
+		<cfif NOT CheckIfWatching(arguments.reportId) EQ 'true'>
+			<cfquery name="queryAddToWatcher">
+				INSERT INTO [WATCHER] ([PersonID], [ReportID]) VALUES
+				(
+					<cfqueryparam cfsqltype="cf_sql_numeric" value="#loggedInPersonId#">,
+					<cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.reportId#">
+				)
+			</cfquery>
+			<cfreturn true>
+		<cfelse>
+			<cfquery name="queryDeleteWatcher">
+				DELETE FROM [WATCHER]
+				WHERE [PersonID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#loggedInPersonId#">
+				AND [ReportID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.reportId#">
+			</cfquery>
+			<cfreturn false>
+		</cfif>
+	</cffunction>
+
+
+	<cffunction access="remote" output="false" name="sendEmailTo" returnformat="JSON" returntype="boolean" >
+		<cfargument required="true" type="string" name="emailId" >
+		<cfargument required="true" name="messgae" type="string">
+		<cfmail from="trackingticket@gmail.com" to="#arguments.emailId#" subject="Greetings" >
+				#arguments.message#
+		</cfmail>
+		<cfreturn true>
+	</cffunction>
+
 
 </cfcomponent>

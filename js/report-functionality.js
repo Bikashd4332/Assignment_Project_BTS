@@ -54,6 +54,34 @@ $(document).ready(function () {
     });
   });
 
+  $.ajax({
+    url: '../CFCs/ReportComponent.cfc?method=CheckIfWatching',
+    data: {
+      reportId: reportId
+    }
+  }).done(function (response) {
+    if (response === "true") {
+      $('#toggleWatch').addClass('stop-watching').text('Stop Watching');
+    } else {
+      $('#toggleWatch').addClass('start-watching').text('Watch');
+    }
+  });
+
+  $('#toggleWatch').on('click', function (event) {
+    $.ajax({
+      url: '../CFCs/ReportComponent.cfc?method=ToggleWatcher',
+      data: {
+        reportId: reportId
+      }
+    }).done(function (response) {
+      if (response === "true") {
+        $(event.target).removeClass('start-watching').addClass('stop-watching').text('Stop Watching');
+      } else {
+        $(event.target).removeClass('stop-watching').addClass('start-watching').text('Watch');
+      }
+    });
+  });
+
   // Hide the previously shown autocomplete on blur input.
   $('.auto-complete .form-control').on('blur', function () {
     setTimeout(() => {
