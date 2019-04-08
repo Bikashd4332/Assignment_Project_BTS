@@ -9,6 +9,7 @@
 body {
   box-sizing: border-box;
   margin: 0px;
+  overflow-x:hidden;
   padding: 0px;
   background-color: #f3f3f3;
   font-family: 'Quicksand', sans-serif;
@@ -34,6 +35,16 @@ input:focus {
   border: 2px solid;
   border-color: skyblue;
 }
+select:focus {
+  border: 2px solid ;
+  border-color: skyblue;
+}
+
+textarea:focus {
+  border: 2px solid;
+  border-color: skyblue;
+}
+
 /* Hide the input:file we dont need it. */
 input[type='file'] {
   width: 0.1px;
@@ -47,6 +58,7 @@ input[type='file'] {
 /* Textarea should never be resizable. */
 textarea {
   resize :none;
+  font: 'Arial';
 }
 .container {
   width: 60%;

@@ -28,7 +28,7 @@
   width: 50%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
 }
 
@@ -63,6 +63,12 @@
   margin: auto;
 }
 
+/* The login error msg to display which should be by default hidden. */
+#login-error-msg {
+  display: none;
+  color: red;
+}
+
 /* Utilizing the size available inside the body. */
 @media only screen and (max-width: 1150px) {
     .login-user-select-container {
@@ -77,4 +83,3 @@
     width: 100%;
   }
 }
-

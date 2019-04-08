@@ -1,18 +1,19 @@
-@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url('../css/font-awesome.min.css');
 
-#page-body {
-    padding: 20px;
+#pageBody {
+    padding: 50px;
 }
 
 .report-title {
     font-size: 30px;
 }
-.report-title > .report-id {
+
+.report-title>.report-id {
     color: lightgray;
 }
 
-.report > .report-title {
-    color: skyblue;    
+.report>.report-title {
+    color: skyblue;
 }
 
 .report-info-status {
@@ -20,7 +21,7 @@
     margin-top: 5px;
 }
 
-.report-info-status > .report-status {
+.report-status {
     padding: 5px;
     font-size: 10px;
     color: white;
@@ -32,33 +33,70 @@
 }
 
 .badge {
-    padding-top: 3px;
     margin-left: 5px;
+    display: flex;
     color: white;
+    justify-content: space-between;
+    align-items: center;
     font-size: 11px;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 3px;
 }
-.badge > .badge-label {
-    padding: 5px 0px 5px 5px;
+
+.badge>.badge-label {
+    padding: 5px;
     border-radius: 3px;
 }
 
-.badge > .badge-value {
+.badge>.badge-value {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
-    padding: 3px 5px 6px 3px; 
+    padding: 5px;
 }
+
 .med {
-    background-color: goldenrod
+    background-color: goldenrod;
 }
 
 .bug {
     background-color: rgba(255, 0, 0, 0.7);
 }
 
-.bug::after {
-    content: ' \f188';
+.high {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
+.low {
+    background-color: rgba(0, 180, 0, 1);
+}
+
+.in-progress {
+    background-color: rgba(154, 74, 185, 0.74);
+}
+
+.in-review {
+    background-color: rgba(209, 153, 50, 0.925);
+}
+
+.done {
+    background-color: rgba(12, 233, 104, 0.856);
+}
+
+.reopen {
+    background-color: rgba(0, 180, 0, 1);
+}
+
+.fixed {
+    background-color: rgb(177, 28, 28);
+}
+
+.open::before {
+    content: '\f02d';
+    font-family: 'FontAwesome';
+}
+
+.bug::before {
+    content: '\f188';
     font-family: 'FontAwesome';
 }
 
@@ -73,11 +111,567 @@
     font-size: 14px;
     padding-top: 5px;
     color: lightgray;
-  }
-  .extended-info > .user-name {
-      color: skyblue;
-      cursor: pointer;
-  }
-  .extended-info > .date-info {
-      color: skyblue;
-  }
+}
+
+.user-name {
+    color: skyblue;
+    cursor: pointer;
+}
+
+.extended-info>.date-info {
+    color: skyblue;
+}
+
+.report-description {
+    margin: 20px;
+    position: relative;
+    padding: 20px 30px 20px 30px;
+    border-top: 1px dotted lightskyblue;
+}
+
+.report-description::after {
+    content: 'Description';
+    position: absolute;
+    padding: 5px;
+    top: 0px;
+    color: skyblue;
+    margin-top: -17px;
+    left: 0px;
+    background-color: white;
+}
+
+.attachments {
+    display: flex;
+    position: relative;
+    border-top: 1px dotted lightskyblue;
+}
+
+.attachments::after {
+    content: 'Attachments';
+    position: absolute;
+    padding: 5px;
+    top: 0px;
+    color: skyblue;
+    margin-top: -17px;
+    left: 0px;
+    background-color: white;
+}
+
+.attachment {
+    width: 110px;
+    text-align: center;
+    color: skyblue;
+}
+
+.attachment>i {
+    font-size: 60px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: -1;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.tooltip-on-hover {
+    position: relative;
+}
+
+.triangle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #404040;
+    transform: rotate(45deg);
+    z-index: 1;
+    top: 15px;
+    left: 52%;
+    display: none;
+}
+
+.tooltip-on-hover:hover .triangle {
+    display: block;
+}
+
+.tooltip-on-hover:hover::after {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    padding: 5px;
+    white-space: pre-line;
+    background-color: #404040;
+    border-radius: 5px;
+    color: white;
+    z-index: 1;
+    content: attr(data-full-name);
+}
+
+.attachment .file-name {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+.file-action {
+    display: flex;
+    justify-content: center;
+}
+
+.file-action>a {
+    text-decoration: none;
+    margin: 1px 5px;
+}
+
+.file-delete-btn {
+    display: block;
+    color: rgba(255, 0, 0, 0.7) !important;
+}
+
+.file-download-btn {
+    color: rgba(0, 180, 0, 1) !important;
+}
+
+.upload-btn {
+    width: 60px;
+    height: 60px;
+    background-color: whitesmoke;
+    color: skyblue;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.upload-btn i {
+    font-size: 40px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.background-popup {
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    z-index: 10;
+    display: none;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal {
+    height: auto;
+    width: 35%;
+    margin-top: 15%;
+}
+
+#deleteConfirmationModal .submit-btn {
+    background: rgba(255, 0, 0, 0.7);
+}
+
+#chooseAssigneeModal {
+    margin-top: 10%;
+}
+
+.busy {
+    background-color: #f3f3f3;
+    color: black;
+    cursor: not-allowed !important;
+}
+
+#chooseAssigneeModal .submit-btn {
+    background-color: rgba(0, 180, 0, 1)
+}
+
+#chooseAssigneeModal .input-group {
+    margin: 10px 0px;
+}
+
+/* This the suggestion container which contains a list of names. */
+.auto-complete .auto-complete-container {
+    background-color: white;
+    display: none;
+    position: absolute;
+    top: 40px;
+    z-index: 1;
+    width: 100%;
+    border: 1px solid lightskyblue;
+    color: lightskyblue;
+}
+
+/* The styling for the containing unorderd list. */
+.auto-complete-container ul.auto-complete-list {
+    list-style: none;
+    text-decoration: none;
+    border: 1px solid lightskyblue;
+}
+
+/* The styling for list items for suggestion container. */
+.auto-complete-container li.auto-complete-item {
+    padding: 10px;
+    font-weight: bolder;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    color: skyblue;
+    border-bottom: 1px solid lightskyblue;
+}
+
+/* This style is for the selection among suggestion items. */
+.preferred-item {
+    background-color: #a9dbfa;
+    color: #fff !important;
+}
+
+.file-section {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    padding: 20px 30px 20px 30px;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.file-upload {
+    margin-top: 50px;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0px;
+}
+
+.file-upload>.progress-container {
+    width: 50%;
+}
+
+.tab-navs {
+    list-style: none;
+    color: skyblue;
+    display: flex;
+    align-items: baseline;
+    border-bottom: 1px dotted lightskyblue;
+}
+
+.tab-navs>.tab-nav {
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Brining the selected nav a little down. */
+.selected {
+    border-top: 2px solid lightskyblue;
+    border-left: 1px solid lightskyblue;
+    border-right: 1px solid skyblue;
+    border-bottom: 1px solid white;
+    background-color: white;
+    top: 1px;
+    position: relative;
+}
+
+.tab-window {
+    width: 100%;
+    padding: 30px 0px;
+}
+
+.comment-poster-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.profile-image-container {
+    width: 60px;
+    padding: 0px 10px;
+    height: 60px;
+}
+
+.comment-editor-container {
+    padding: 0px 10px;
+    width: 100%;
+}
+
+.comment-editor-container>.comment-submit-btn {
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 5px 0px;
+    color: white;
+    float: right;
+    background-color: lightskyblue
+}
+
+.comment-editor-header {
+    padding: 10px;
+    background-color: lightskyblue;
+    position: relative;
+    color: white;
+}
+
+.comment-editor-header::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 13px;
+    left: -8px;
+    transform: rotate(45deg);
+    background-color: lightskyblue;
+}
+
+#commentTextArea {
+    width: 100%;
+    border: 1px solid lightblue;
+    height: 100px;
+    padding: 10px;
+}
+
+
+.history {
+    margin-top: 30px;
+    width: 100%;
+    padding: 25px 0px;
+    display: flex;
+    position: relative;
+    border-top: 1px solid #f3f3f3;
+    border-bottom: 1px solid #f3f3f3;
+    flex-flow: column;
+}
+
+#activityWindow {
+    display: none;
+}
+
+#activityWindow .history::after {
+    content: '';
+    height: 100%;
+    width: 2px;
+    position: absolute;
+    left: 85px;
+    z-index: 1;
+    background-color: #f3f3f3;
+    top: 0px;
+    bottom: 0px;
+}
+
+.comment {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+}
+
+.comment-body::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 13px;
+    left: -8px;
+    transform: rotate(45deg);
+    background-color: #f3f3f3;
+}
+
+.comment-body {
+    width: 100%;
+    border: 1px solid #f3f3f3;
+    position: relative;
+    z-index: 2;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.comment-body .profile-img {
+    display: none;
+}
+
+.comment {
+    margin: 15px 0px;
+}
+
+.comment-body .comment-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f3f3f3;
+}
+
+.comment-body p.text {
+    padding: 10px;
+    background-color: white;
+}
+
+.wrapper {
+    display: flex;
+    margin-left: 10px;
+    flex-direction: column;
+}
+
+.wrapper .comment-date {
+    display: none;
+}
+
+.comment-date {
+    color: skyblue;
+}
+
+
+.activity {
+    font-size: 12px;
+    margin: 10px 72px;
+    background: white;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}
+
+.activity .profile-image-container {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    z-index: 2;
+}
+
+.activity .profile-image-container>.profile-img {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+}
+
+.activity .text {
+    display: inline;
+}
+
+.tab {
+    position: relative;
+    padding-top: 20px;
+    border-top: 1px dotted lightskyblue;
+}
+
+.tab::after {
+    content: 'Activites';
+    padding: 3px 5px;
+    top: -15px;
+    color: skyblue;
+    background-color: white;
+    left: 0px;
+    position: absolute;
+}
+
+.status-action {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: row;
+}
+
+.status-action button {
+    margin-left: 5px;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+
+
+.cancel-btn {
+    width: 30px;
+    height: 30px;
+    color: white;
+    outline:none;
+    background-color: rgba(180, 0, 0,0.7);
+    border-radius: 15px;
+    margin-left: 15px;
+    box-shadow: darkred 1px 2px 7px 1px;
+}
+
+
+
+@media only screen and (max-width: 1100px) {
+    #pageBody {
+        width: 100%;
+    }
+
+    .modal {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 440px) {
+
+    .report-description {
+        padding: 20px 0px 20px 0px;
+    }
+
+    .comment-poster-container .profile-image-container {
+        display: none;
+    }
+
+    .comment-editor-header::after {
+        display: none;
+    }
+
+    .comment {
+        flex-direction: column;
+    }
+
+    .comment-header::after {
+        top: -9px;
+        left: 13px;
+    }
+
+}
+
+@media only screen and (max-width: 645px) {
+    .modal {
+        width: 90%;
+    }
+
+    #pageBody {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .comment>.profile-image-container {
+        display: none;
+    }
+
+    .comment-body::after {
+        display: none;
+    }
+
+    .comment-body .profile-img {
+        display: block;
+    }
+
+    .user-info>.user-name {
+        padding-left: 5px;
+    }
+
+    .comment-header {
+        align-items: center;
+    }
+
+    .comment-body .comment-date {
+        display: none
+    }
+
+    .wrapper>.comment-date {
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .report-info-status {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .status-action button {
+        margin: 5px 5px;
+    }
+
+    .badge {
+        margin: 5px 5px;
+    }
+}

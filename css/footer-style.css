@@ -50,6 +50,13 @@
     }
   
     .footer {
-      height: 190px;
+      height: 210px;
     }
   }
+
+  @media only screen and (max-width: 375px){
+    .footer .navlink{
+      font-size: 14px;
+    }
+  }
+  

@@ -33,6 +33,11 @@ nav {
   text-decoration: none;
 }
 
+/* A hover efect for navlinks */
+nav .navlink:hover{
+  color: skyblue;
+}
+
 /* branding should display elements in one row and verticaly centered. */
  .branding {
   display: flex;

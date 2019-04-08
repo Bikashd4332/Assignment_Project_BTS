@@ -1,10 +1,11 @@
-@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url('../css/font-awesome.min.css');
 
+/* This is the grid container for containing elements. */
 .grid-box {
   padding: 20px 0px;
   display: grid;
   width: 100%;
-  grid-template-areas: 
+  grid-template-areas:
     "reports-info reports-info reports-info new-report-btn"
     "reports-info reports-info reports-info report-statistics"
     "reports-info reports-info reports-info report-statistics"
@@ -13,31 +14,33 @@
     "reports-info reports-info reports-info ."
 }
 
+/* Reports info for displaying all the reports inside. */
 .reports-info {
   grid-area: reports-info;
   border: 1px solid lightskyblue;
 }
 
+/* A button for creating new report. */
 .new-report-btn {
   grid-area: new-report-btn;
   position: sticky;
-  position: -webkit-sticky;
-  top:15px;
+  top: 0px;
 }
 
+/* This element for showing the statistics of reports. */
 .report-statistics {
   grid-area: report-statistics;
   position: sticky;
-  position: -webkit-sticky;
-  top:90px;
+  top: 63px;
   display: flex;
   border: 1px solid lightskyblue;
   flex-direction: column;
-  justify-content: space-evenly;
+  align-items: center;
   margin-left: 10px;
 
 }
 
+/* This is for displaying a summury of reports quantity. */
 .reports-info .summary-info-heading {
   display: flex;
   color: white;
@@ -47,19 +50,24 @@
   background: lightskyblue;
   opacity: 0.6;
 }
+
+/* this styling is for elements inside summary heading.  */
 .info {
   padding: 5px 15px;
 }
 
+/* Number badge should display a little bigger than the text. */
 .info .number-badge {
   font-size: 20px;
 }
 
-.info > p {
+/* Text inside info should display a little smaller than badge. */
+.info>p {
   font-size: 14px;
   font-weight: 600;
 }
 
+/* This is the styling for heading of a section inside report-info */
 .heading-info {
   padding: 10px;
   margin: 10px;
@@ -68,27 +76,31 @@
   margin: 10px auto;
   background-color: #dbf0fd;
   position: relative;
-} 
+}
 
 
+/* This is the icon for the heading info. */
 .heading-info i {
   font-size: 30px;
   padding: 5px;
 }
 
+/* This for the heading inside heading info. */
 .heading-info .heading {
   position: absolute;
-  top:9px;
+  top: 9px;
   font-weight: bold;
   left: 50px;
 }
 
+/* A little description of the heading info. */
 .heading-info .desc {
   position: absolute;
   bottom: 9px;
   left: 50px;
 }
 
+/* Styling for the button which is used to create report. */
 .new-report-btn {
   padding: 10px;
   margin-left: 10px;
@@ -96,6 +108,7 @@
   background-color: #dbf0fd;
 }
 
+/* This is the actual button inside the parent of new-report-btn. */
 .new-report-btn .report-btn {
   padding: 10px 20px;
   width: 90%;
@@ -104,39 +117,50 @@
   margin: auto;
 }
 
-
+/* The statistics is for showing pi chart of reports.
+  This is the parent div and has fixed height.
+  */
 .statistics {
   height: 130px;
 }
 
-.statistics > div {
+/* The elements contain the pi chart. It should be fixed height.*/
+.statistics>div {
   height: 110px;
+  width: 220px;
 }
 
-.statistics > p {
+/* The title of each of the pi charts. */
+.statistics>p {
   text-align: center;
 }
 
+/* This is for hiding canvas js logo. */
 .canvasjs-chart-credit {
   display: none;
 }
 
-
+/* .canvasjs-chart-canvas {
+  width: 225px !important;
+} */
+/* The default styling of reports. */
 .report {
   padding: 10px;
   border-bottom: 1px solid lightgray;
   display: flex;
   cursor: pointer;
-  align-items: center ;
+  align-items: center;
   justify-content: space-evenly;
-} 
+}
 
-.report > .report-info  {
+/*This element stays in the middle and should be strected complete. */
+.report>.report-info {
   flex: 1;
   padding-left: 10px;
 }
 
-.report > .report-id {
+/* This is the report id for each of the report. */
+.report>.report-id {
   color: skyblue;
   font-size: 12px;
   font-weight: bold;
@@ -144,49 +168,54 @@
   padding: 10px;
 }
 
-
-.report > .report-id > .id {
+/* The id inside of the parent. */
+.report>.report-id>.id {
   font-size: 20px;
 }
 
+/* Report name styling for each report. */
 .report .report-name {
   padding-bottom: 5px;
   font-weight: bolder;
 }
 
-.report > .report-type-priority {
-  font-size: 10px;
-  padding-left: 5px;
-}
-
-.report  .badge-wrapper {
-  display:flex;
-  padding-left: 3px;
-  border-radius: 5px; 
-  justify-content: space-around;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.report-type-priority > .badge-wrapper:first-child{
+/* This styling is for putting some space between childred the report-type-priority */
+.report-type-priority>.badge:first-child {
   margin-bottom: 10px;
 }
 
-.report .badge-wrapper > .report-type-label, .report-priority-label {
-  padding: 3px;
+/* A badge consisting with a label and value which is used for showring report type and priority. */
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  font-size: 11px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
 }
 
-.badge {
+/* This is the default styling for reportlabel. */
+.badge>.badge-label {
   padding: 3px 5px;
-  border-radius: 5px;
+  border-radius: 3px;
+}
+
+/* This is the default styling for badge value. */
+.badge>.badge-value {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  padding: 3px 5px;
 }
 
 .high {
   background-color: #cc0000;
 }
+
 .med {
   background-color: darkgoldenrod;
 }
+
 .low {
   background-color: green;
 }
@@ -195,43 +224,199 @@
   background-color: #cc0000;
 }
 
-.feature  {
+.feature {
   background-color: green;
 }
 
-.feature > i::after {
+.feature>i::after {
   font-style: normal;
   content: "\f013";
   font-family: 'FontAwesome';
 }
 
-.bug > i::after {
+.bug>i::after {
   font-style: normal;
   content: "\f188";
   font-family: 'FontAwesome';
 }
 
-@media only screen and (max-width: 1240px) {
- #page-body {
-   width:100%;
-   padding-left: 30px;
-   padding-right: 30px;
- }
+/* The style of the welcome message. */
+.welcome-header {
+  padding: 30px 0px 0px 0px;
 }
 
+/* making the profile image clickable. */
+.profile-img {
+  cursor: pointer;
+}
+
+/* Highlighting the user's name.  */
+#usrName {
+  color: skyblue;
+}
+
+/* Making some of the input-field side to side. */
+.flex-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Fixing the width of those input groups. */
+.flex-wrapper>.input-group {
+  width: 48%;
+}
+
+/* Making the report description's width to full. */
+.modal textarea {
+  width: 100%;
+}
+
+/* This is used to make the background dark in-case of modal appearance. */
+.background-popup {
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  display: none;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* The default styling for a drag-drop-box */
+.drag-drop-box-container {
+  color: black;
+  transition: background-color 0.1s ease-in;
+  width: 100%;
+  margin-bottom: 20px;
+  height: 200px;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  padding: 10px;
+  border: 2px dashed lightskyblue;
+}
+
+/* The icon for upload. */
+.drag-drop-box-container i {
+  font-size: 50px;
+  opacity: 0.7;
+  color: lightskyblue;
+  background-color: transparent;
+  width: 100%;
+  text-align: center;
+}
+
+/* The upload message container. */
+.drag-drop-box-container .upload-info {
+  padding-top: 20px;
+  background-color: transparent;
+  text-align: center;
+}
+
+/* The label for input:file */
+.drag-drop-box-container label {
+  color: skyblue;
+  background-color: transparent;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Default style for a cancel button. */
+.cancel-btn {
+  background-color: lightcoral;
+}
+
+/* This the suggestion container which contains a list of names. */
+.auto-complete .auto-complete-container {
+  background-color: white;
+  display: none;
+  position: absolute;
+  top: 40px;
+  z-index: 1;
+  width: 100%;
+  border: 1px solid lightskyblue;
+  color: lightskyblue;
+}
+
+/* The styling for the containing unorderd list. */
+.auto-complete-container ul.auto-complete-list {
+  list-style: none;
+  text-decoration: none;
+  border: 1px solid lightskyblue;
+}
+
+/* The styling for list items for suggestion container. */
+.auto-complete-container li.auto-complete-item {
+  padding: 10px;
+  font-weight: bolder;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  color: skyblue;
+  border-bottom: 1px solid lightskyblue;
+}
+
+/* This is a wrapper for the progress bar which should be default to display none. */
+#uploading {
+  display: none;
+}
+
+/* The success message shows up after a successfull upload. */
+.success-drop-msg {
+  display: none;
+}
+
+/* This is a class to find if the drag n drop box busy. */
+.busy {
+  cursor: no-drop;
+}
+
+/* Setting the width of  childredn of drag and drop box.*/
+.drag-drop-box-container .drag-drop-info {
+  width: 90%;
+}
+
+/* This styleing is for an empty msg when there is no reports available in the dashboard. */
+.report-section .empty-msg {
+  text-align: center;
+  color: #b7e2fc;
+  padding: 25px 0px;
+}
+
+/* This style is for the selection among suggestion items. */
+.preferred-item {
+  background-color: #a9dbfa;
+  color: #fff !important;
+}
+
+/*      MEDIA QUERY SECTION     */
+
+/* Increase the width of the page. */
+@media only screen and (max-width: 1240px) {
+  #page-body {
+    width: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+/* Hiding the description of reports in low resolution. */
 @media only screen and (max-width: 800px) {
-  .heading-info > .desc {
+  .heading-info>.desc {
     display: none;
   }
-  .heading-info > .heading {
+
+  .heading-info>.heading {
     top: 20px;
   }
 }
 
+/* Re-arranging the dashboard fot better visuals in low resolutions.*/
 @media only screen and (max-width: 690px) {
   .grid-box {
-    grid-template-areas: 
-    "new-report-btn new-report-btn new-report-btn new-report-btn"
+    grid-template-areas:
+      "new-report-btn new-report-btn new-report-btn new-report-btn"
       "report-statistics report-statistics report-statistics report-statistics"
       "reports-info reports-info reports-info reports-info"
       "reports-info reports-info reports-info reports-info"
@@ -251,29 +436,57 @@
   .new-report-btn {
     position: inherit;
   }
+
   .report-statistics {
     position: inherit;
   }
 
-  .reports-info{
+  .reports-info {
     margin-top: 20px;
   }
 
-  .report-statistics .statistics  {
+  .report-statistics .statistics {
+    width: 100%;
+  }
+
+  .report-statistics .statistics>div {
     width: 100%;
   }
 
 }
 
-@media only screen and (max-width: 400px ) {
-  .badge-wrapper > .report-type-label, .report-priority-label{
+/* Hiding badge labels in low resolutions. */
+@media only screen and (max-width: 480px) {
+  .badge>.badge-label {
     display: none;
-    }
-    
-  .badge-wrapper .badge{
-    flex: 1;
   }
-  .report-info > .report-desc {
-    display: none;
+
+  .badge>.badge-value {
+    width: 100%;
+    border-radius: 3px;
   }
 }
+
+/* Making the side by side input's width to full for making them take the whole row. */
+@media only screen and (max-width: 600px) {
+  .flex-wrapper {
+    flex-direction: column;
+  }
+
+  .flex-wrapper>.input-group {
+    width: 100%;
+  }
+}
+
+/* When the display width falls down below 390px make suggestion list text felx column */
+@media only screen and (max-width: 390px){
+  .auto-complete-container li.auto-complete-item {
+    flex-direction: column;
+  }
+}
+
+/* @media only screen and (max-width: 375px){
+  .footer .navlink{
+    font-size: 14px;
+  }
+} */

@@ -1,0 +1,44 @@
+/* This is the default styling for the container of the progress bar. */
+.progress-container {
+    width: 100%;
+    background-color: #87ceeb7a;
+    border: 3px solid #398dc1;
+    border-radius: 25px;
+    padding: 3px;
+    box-shadow: 0px 0px 20px #398dc1;
+  }
+  /* The the default styling for the bar which fills in the width of the parent. */
+  .bar {
+    width: 0%;
+    transition: width 0.3s ease-in-out;
+    height: 20px;
+    position:relative;
+    border-radius: 25px;
+    background-color: #398dc1;
+  }
+  /* This is for the percentage info which should appear on the top of the progrees bar. */
+  .bar .percentage-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: white;
+    font-size: 13px;
+    margin-top: -45px;
+    text-align: center;
+    padding: 6px 8px;
+    border-radius: 5px;
+    background-color: #398dc1;
+  }
+  
+  /* This is for a diamond which points below to the progress bar. */
+  .percentage-info::after {
+    content: '';
+    z-index: 1;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    bottom:-5px;
+    left: 38%;
+    background-color: #398dc1;
+    transform: rotate(45deg);
+  }

@@ -1,0 +1,61 @@
+/* This is the default styling of modal. */
+.modal {
+    display: none;
+    width: 55%;
+    height: 90%;
+    overflow-y: scroll;
+    overflow-x: inherit;
+    transform: translateY(5%);
+    margin: auto;
+    background-color: white;
+}
+
+/* This is styling of header for the modal where the title and a close button are shown */
+.modal-header {
+    padding: 20px;
+    color: skyblue;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid lightskyblue;
+}
+
+/* This is the default styling for modal close button. */
+.modal-header>.modal-close-btn {
+    color: lightcoral;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+    margin-top: 10px;
+    padding: 15px;
+    border-top: 1px solid skyblue;
+    justify-content: center;
+}
+
+/* This is the default styling of modal-actions. */
+.modal-actions>button {
+    padding: 10px 10px;
+    margin: 5px 10px;
+    font-size: 13px;
+}
+
+/* This makes some space in the sorrounding. */
+.modal-body {
+    padding: 20px;
+}
+
+/* MEDIA QUERY SECTION. */
+
+@media only screen and (max-width: 1240px) {
+    .modal {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .modal {
+        width: 85%;
+    }
+}

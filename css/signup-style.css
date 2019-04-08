@@ -109,6 +109,12 @@
   margin: auto;
 }
 
+#signup-error-msg {
+  display: none;
+  color: red;
+  padding: 10px 0px;
+}
+
 /* Changing the flex direction to column of li elements inside tab-navs */
 /* Making the profileImageContainer come after the signup form. */
 /* Making use of available space. */

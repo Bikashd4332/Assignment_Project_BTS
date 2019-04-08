@@ -1,0 +1,44 @@
+.spinner-container {
+    display: none;
+    width: 100%;
+    background-color: #f3f3f3;
+    height: 120px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .lds-ring {
+    position: relative;
+  }
+  
+  .lds-ring::after {
+    content: 'Fetching...';
+    font-family: 'Quicksand';
+    position: absolute;
+    bottom: -25px;
+    left: -10px;
+  }
+  .lds-ring > div {
+    width: 50px;
+    height: 50px;
+    border: 10px solid;
+    border-radius: 100%;
+    border-top-color: skyblue;
+    border-left-color: white;
+    border-right-color: white;
+    border-bottom-color: white;
+    animation: myanim 2s infinite linear;
+  }
+  
+  @keyframes myanim {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
