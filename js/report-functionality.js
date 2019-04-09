@@ -813,7 +813,7 @@ function chooseAssigneeModal() {
       $chooseAssigneeModal.fadeIn('fast');
     });
 
-    $chooseAssigneeModal.find('.submit-btn').on('click', function () {
+    $chooseAssigneeModal.find('.submit-btn').on('click', function (event) {
       checkValidityAssignee($assigneeInput);
       if (!$assigneeInput.parents('div.input-group').hasClass('invalid')) {
         resolve(true);
@@ -821,7 +821,16 @@ function chooseAssigneeModal() {
           $('.background-popup').fadeOut('fast');
         });
         $assigneeInput.val('');
+      } else {
+        resolve(false);
       }
+      
+      /**
+       * 😆 Since everytime I execute the function the handler gets attached each time. 
+       *  So for that reason it keeps executig. 
+       */
+
+      $(event.target).off(); 
     });
 
     $chooseAssigneeModal.find('.cancel-btn').on('click', function (event) {

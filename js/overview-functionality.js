@@ -225,7 +225,8 @@ $(document).ready(function () {
 
   //To show autocomplete suggestion list.
   $('.auto-complete .form-control').on('input', function (event) {
-    getAssigneeNames().then(function () {
+    getAssigneeNames().then(function (responseInJson) {
+      assigneeNames = responseInJson;
       showSuggestion(event);
     });
   });
