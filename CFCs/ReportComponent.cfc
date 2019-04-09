@@ -246,10 +246,11 @@
 			)
 		</cfquery>
 		<cfif arguments.isActivity EQ 1>
-			<!--- 			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)> --->
+
+			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>--->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>
-			<!--- 			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)> --->
+			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)>--->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		</cfif>
 		<cfreturn resultAddComment['IDENTITYCOL']  />
@@ -407,7 +408,7 @@
 			<cfquery name="queryStopIsWorking">
 				UPDATE [REPORT_INFO] SET [isWorking] = 0;
 			</cfquery>
-			<cfset wsPublish('report-workingString-update',"Report working string changed.")>
+			<cfset wsPublish('report-status-update',"Report working string changed.")>
 		</cfif>
 	</cffunction>
 
