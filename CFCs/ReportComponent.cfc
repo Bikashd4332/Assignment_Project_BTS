@@ -246,10 +246,10 @@
 			)
 		</cfquery>
 		<cfif arguments.isActivity EQ 1>
-			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>
+			<!--- 			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)> --->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>
-			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)>
+			<!--- 			<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)> --->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		</cfif>
 		<cfreturn resultAddComment['IDENTITYCOL']  />
@@ -598,10 +598,8 @@
 
 	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="CheckIfWatching" displayname="CheckIfWatching">
 		<cfargument required="true" name="reportId" type="numeric">
-
 		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
-
 		<cfquery name="queryCheckIfAlredyWatching">
 			SELECT [PersonID]
 			FROM [WATCHER]
@@ -619,7 +617,6 @@
 
 	<cffunction access="remote" output="false" returnformat="JSON"  name="ToggleWatcher" displayname="AddToWatcher">
 		<cfargument required="true" name="reportId" type="numeric">
-
 		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
 		<cfif NOT CheckIfWatching(arguments.reportId) EQ 'true'>

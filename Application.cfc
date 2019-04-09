@@ -29,7 +29,7 @@
 
 	<cffunction name="OnRequest" returntype="void" displayname="OnRequest" hint="Called when ever a requested." access="public" output="true">
 		<cfargument name="targetPage" displayName="targetPage" type="string" hint="The target page which will be opened" required="true" />
-		<cfset validPagesForLoggedInUsers = ["overview.cfm", "report.cfm"]>
+		<cfset validPagesForLoggedInUsers = ["overview.cfm", "report.cfm", "users.cfm"]>
 		<cfset validPagesForNonLoggedInUsers = ["home.cfm", "login.cfm", "signup.cfm", "index.cfm"]>
 		<cfif session.userEmail NEQ ''>
 			<cfif ArrayContains(variables.validPagesForLoggedInUsers, getFileFromPath('#targetPage#'))>

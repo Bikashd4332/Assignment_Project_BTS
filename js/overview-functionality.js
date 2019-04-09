@@ -225,7 +225,8 @@ $(document).ready(function () {
 
   //To show autocomplete suggestion list.
   $('.auto-complete .form-control').on('input', function (event) {
-    getAssigneeNames().then(function () {
+    getAssigneeNames().then(function (responseInJson) {
+      assigneeNames = responseInJson;
       showSuggestion(event);
     });
   });
@@ -360,8 +361,13 @@ $(document).ready(function () {
   });
 
   // Run whenever user clicks on any of the reports.The report will be opened in another page with all the details.
-  $('.reports-info').on('click', 'div.report', function (event) {
-    const reportId = $(event.target).parents('div.report').find('div.report-id > span').text();
+  $('#assignedToMe').on('click', 'div.report', function (event) {
+    let reportId;
+    if ($(event.target).hasClass('report')) {
+      reportId = $(event.target).find('div.report-id > span').text();
+    } else {
+      reportId = $(event.target).parents('div.report').find('div.report-id > span').text();
+    }
     window.location = 'report.cfm?id=' + reportId;
   });
 }); // End of document ready.

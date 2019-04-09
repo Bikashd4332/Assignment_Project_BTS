@@ -39,7 +39,10 @@ $(document).ready(function () {
 
   //To show autocomplete suggestion list.
   $('.auto-complete .form-control').on('input', function (event) {
-    showSuggestion(event);
+    getAssigneeNames().then(function (responseInJson) {
+      assigneeNames = responseInJson;
+      showSuggestion(event);
+    });
   });
 
   $('.log-out-btn').on('click', function () {
@@ -264,9 +267,6 @@ $(document).ready(function () {
         }
       }).done(function (response) {
         const responseInJson = JSON.parse(response);
-        // if (responseInJson.hasOwnProperty('commentId')) {
-        //   fetchActivityComment(responseInJson.commentId);
-        // }
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -298,7 +298,6 @@ $(document).ready(function () {
                 $(event.target).parent('div.status-action').children().removeClass('busy');
                 updateReportStatus();
               });
-              // fetchActivityComment(responseInJson.commentId);
               updateAssigneeInfo();
             });
           } else {
@@ -325,7 +324,6 @@ $(document).ready(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
         });
-        // fetchActivityComment(responseInJson.commentId);
         updateAssigneeInfo();
       });
     }
@@ -347,7 +345,6 @@ $(document).ready(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
         });
-        // fetchActivityComment(responseInJson);
         updateAssigneeInfo();
       });
     }
@@ -369,7 +366,6 @@ $(document).ready(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
         });
-        // fetchActivityComment(responseInJson.commentId);
         updateAssigneeInfo();
       });
     }
@@ -386,13 +382,13 @@ $(document).ready(function () {
     $inputGroup.find('.form-control').val($(this).find('.suggestion-name').text());
   });
 
-  $('.cancel-btn').on('click', function () {
+  $('.file-cancel-btn').on('click', function () {
     fileUploadXHR.forEach(function (ajaxObject) {
       ajaxObject.abort();
     });
+    $('.progress-container').find('.bar').css('width', '0px');
     finishedUploading(true);
   });
-
 });
 
 /**

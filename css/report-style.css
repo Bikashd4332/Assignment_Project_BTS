@@ -459,7 +459,7 @@
     position: absolute;
     left: 85px;
     z-index: 1;
-    background-color: #f3f3f3;
+    border-left: 2px dotted lightblue;
     top: 0px;
     bottom: 0px;
 }
@@ -587,7 +587,7 @@
 
 
 
-.cancel-btn {
+.file-cancel-btn {
     width: 30px;
     height: 30px;
     color: white;

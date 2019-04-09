@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="cancel-btn"><i class="fa fa-times"></i></button>
+                        <button class="file-cancel-btn"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <div class="tab">
