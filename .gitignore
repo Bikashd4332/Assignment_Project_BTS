@@ -1,0 +1,4 @@
+aspnet_client/**
+assets/**
+*.xml
+.project

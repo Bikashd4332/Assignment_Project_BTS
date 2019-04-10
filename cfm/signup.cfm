@@ -48,7 +48,7 @@
     <div class="container">
       <div class="signup">
         <div class="signup-header">
-          <h2>Join Bug Tracking without any cost</h2>
+          <h2>Join Ticket Tracking without any cost</h2>
           <p>Hassle free experiece of making an application bug free.</p>
         </div>
         <div class="signup-form-container">

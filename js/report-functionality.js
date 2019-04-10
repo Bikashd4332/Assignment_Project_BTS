@@ -71,18 +71,22 @@ $(document).ready(function () {
   });
 
   $('#toggleWatch').on('click', function (event) {
-    $.ajax({
-      url: '../CFCs/ReportComponent.cfc?method=ToggleWatcher',
-      data: {
-        reportId: reportId
-      }
-    }).done(function (response) {
-      if (response === "true") {
-        $(event.target).removeClass('start-watching').addClass('stop-watching').text('Stop Watching');
-      } else {
-        $(event.target).removeClass('stop-watching').addClass('start-watching').text('Watch');
-      }
-    });
+    if (!$(this).hasClass('busy')) {
+      $(this).addClass('busy');
+      $.ajax({
+        url: '../CFCs/ReportComponent.cfc?method=ToggleWatcher',
+        data: {
+          reportId: reportId
+        }
+      }).done(function (response) {
+        if (response === "true") {
+          $(event.target).removeClass('start-watching').addClass('stop-watching').text('Stop Watching');
+        } else {
+          $(event.target).removeClass('stop-watching').addClass('start-watching').text('Watch');
+        }
+        $(event.target).removeClass('busy');
+      });
+    }
   });
 
   // Hide the previously shown autocomplete on blur input.
@@ -820,13 +824,13 @@ function chooseAssigneeModal() {
       } else {
         resolve(false);
       }
-      
+
       /**
        * 😆 Since everytime I execute the function the handler gets attached each time. 
        *  So for that reason it keeps executig. 
        */
 
-      $(event.target).off(); 
+      $(event.target).off();
     });
 
     $chooseAssigneeModal.find('.cancel-btn').on('click', function (event) {

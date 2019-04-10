@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Home | Bug Tracking System</title>
+  <title>Home | Ticket Tracking System</title>
   <meta name="theme-color" content="#87ceeb">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -29,7 +29,7 @@
         <nav>
           <div class="branding">
             <img class="brand-icon" src="img/insect.png">
-            <p class="brand-text">Bug Tracking System</p>
+            <p class="brand-text">Ticket Tracking System</p>
           </div>
           <ul class="navlist">
             <li><a href="index.cfm" class="active navlink"><i class="fa fa-home"></i> Home</a></li>
@@ -48,7 +48,7 @@
     <div class="header-section">
       <div class="container">
         <div class="header-wrapper">
-          <div class="header">No more faulty application with the help of Bug Tracking.</div>
+          <div class="header">No more faulty application with the help of Ticket Tracking.</div>
           <div class="description">Now track all the bugs in an application and make it bug free.</div>
           <button id="CTAButton" class="signup-btn">Sign Up</button>
         </div>
@@ -59,7 +59,7 @@
             <div class="footer-wrapper">
                 <div class="branding">
                     <img class="brand-icon" src="img/insect.png">
-                    <p class="brand-text">Bug Tracking System</p>
+                    <p class="brand-text">Ticket Tracking System</p>
                   </div>
                   <ul class="navlist">
                       <li><a href="index.cfm" class="navlink"></i> Home</a></li>
@@ -69,7 +69,7 @@
               </div>
               <hr/>
               <div class="footer-wrapper">
-                <p class="copyright-info"><i class="fa fa-copyright"></i> Bug Tracking System</p>
+                <p class="copyright-info"><i class="fa fa-copyright"></i> Ticket Tracking System</p>
                 <div class="social-links">
                   <a href="#"><i class="fa fa-facebook-square"></i></a>
                   <a href="#"><i class="fa fa-twitter"></i></a>
