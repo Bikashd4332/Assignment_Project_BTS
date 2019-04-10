@@ -214,12 +214,15 @@
     left: 0;
     top: 20px;
     padding: 5px;
-    white-space: pre-line;
+    white-space: pre-wrap;
     background-color: #404040;
     border-radius: 5px;
     color: white;
     z-index: 1;
     content: attr(data-full-name);
+    width: 100%;
+    overflow: auto;
+    overflow-wrap: break-word;
 }
 
 .attachment .file-name {
