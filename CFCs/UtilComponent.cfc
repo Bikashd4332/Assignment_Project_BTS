@@ -124,6 +124,7 @@
 		</cfloop>
 	</cffunction>
 
+
 	<cffunction  name="RelativeDate" returnType="string" access="public" output="false">
 		<cfargument name="theDate" type="date">
 		<cfset var x        = "" />
@@ -153,8 +154,27 @@
 		</cfloop>
 		<cfreturn result />
 	</cffunction>
-	
-		
+
+
+	<cffunction access="remote" output="false" name="GetProjectIdOf" displayname="GetLoggedInUserProjectID">
+		<cfargument required="false" type="numeric" name="personId">
+		<cfif isDefined('arguments.personId')>
+			<cfquery name="queryGetProjectId">
+				SELECT [ProjectID]
+				FROM [PERSON]
+				WHERE [PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.personId#">
+			</cfquery>
+		<cfelse>
+			<cfquery name="queryGetProjectId">
+				SELECT [ProjectID]
+				FROM [PERSON]
+				WHERE [PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#GetLoggedInPersonId()#">
+			</cfquery>
+		</cfif>
+		<cfloop query="queryGetProjectId">
+			<cfreturn ProjectID>
+		</cfloop>
+	</cffunction>
 
 
 </cfcomponent>

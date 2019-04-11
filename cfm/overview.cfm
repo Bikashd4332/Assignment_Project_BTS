@@ -75,34 +75,21 @@
               <p><span class="number-badge">0</span> Closed</p>
             </div>
           </div>
-          
-
           <div id="assignedToMe" class="report-section">
             <div class="heading-info">
               <i class="fa fa-user"></i>
               <div class="heading">Assigned To Me</div>
               <div class="desc">These are the reports that have been assigned to me.</div>
             </div>
-
-
           </div>
-
-
           <div class="report-section" id="watchedByMe">
             <div class="heading-info">
               <i class="fa fa-eye"></i>
               <div class="heading">Watching Reports</div>
               <div class="desc">These are the reports that I am intrested in.</div>
             </div>
-
-
           </div>
-
         </div>
-
-
-
-
         <div class="new-report-btn">
           <button class="report-btn"><i class="fa fa-plus"></i> New Report</button>
         </div>
@@ -216,8 +203,8 @@
               </div>
               <div class="input-group">
                 <div class="form-wrapper">
-                  <textarea required minlength="50" class="form-control" name="reportDescription" id="reportDescriptionTextarea"
-                    cols="30" rows="10" maxlength="255"></textarea>
+                  <textarea required minlength="50" class="form-control" name="reportDescription"
+                    id="reportDescriptionTextarea" cols="30" rows="10" maxlength="255"></textarea>
                   <div class="label-control label-over">Report description</div>
                 </div>
                 <div class="validation-feedback" id="reportDescriptionFeedback">
