@@ -1,0 +1,28 @@
+#pageBody {
+    padding: 30px;
+}
+
+.header-wrapper{
+    padding-bottom: 20px;
+}
+
+.header-wrapper > .header-info {
+    font-size: 18px;
+}
+
+.data-table > thead {
+    background-color: skyblue;
+    color: whitesmoke;  
+}
+
+.data-table th:first-child {
+    border-radius: 5px 0px 0px 0px;
+}
+
+.data-table th:last-child {
+    border-radius: 0px 5px 0px 0px;
+}
+
+.data-table tbody {
+    border-top: 1px solid skyblue;
+}
