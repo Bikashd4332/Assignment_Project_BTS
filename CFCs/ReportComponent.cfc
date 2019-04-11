@@ -92,7 +92,10 @@
 	<cffunction access="remote" output="false" returnType="array" returnFormat="JSON" name="GetAssigneeNames" displayName="GetAssigneeNames" hint="This function gets all the names of person who are working under the project.">
 		<cfset assigneeNames = ArrayNew(1)>
 		<cfquery name="queryGetProjectId">
-				SELECT   [PersonID], [EmailID], CONCAT([FirstName], ' ', [LastName]) AS NAME FROM [PERSON] WHERE [ProjectID] = (SELECT [ProjectID] FROM [PERSON] where [EmailID] = <cfqueryparam cfsqltype="cf_sql_varchar" value="#session.userEmail#">)
+				SELECT  [PersonID], [EmailID], CONCAT([FirstName], ' ', [LastName]) AS NAME
+				FROM [PERSON]
+				WHERE
+				[ProjectID] = ( SELECT [ProjectID] FROM [PERSON] WHERE [EmailID] = <cfqueryparam cfsqltype="cf_sql_varchar" value="#session.userEmail#">)
 		</cfquery>
 		<cfloop query="queryGetProjectId">
 			<cfset ArrayAppend(variables.assigneeNames,{ 'id': '#PersonID#', 'name': '#NAME#', 'email': '#EmailID#' })>
@@ -186,7 +189,7 @@
 		</cfquery>
 		<cfloop query="queryGetAttachmentFilePath">
 			<cfif '#Uploader#' EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
-				<cffile action="delete" file="#Attachment#">
+				<cffile action="delete" file="#queryGetAttachmentFilePath['Attachment']#">
 				<cfquery>
 					DELETE FROM [REPORT_ATTACHMENTS]
 					WHERE [AttachmentId] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
@@ -246,7 +249,6 @@
 			)
 		</cfquery>
 		<cfif arguments.isActivity EQ 1>
-
 			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>--->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>

@@ -53,7 +53,6 @@
     </div>
   </div>
 
-
   <div class="container-fluid">
     <div class="container" id="pageBody">
 
@@ -68,7 +67,9 @@
           <th>Avatar</th>
           <th>FullName</th>
           <th>EmailID</th>
-          <th>Contact Number</th>
+          <th>Contact</th>
+          <th>Title</th>
+          <th>Since</th>
         </thead>
         <tbody>
 
