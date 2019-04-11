@@ -5,12 +5,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="../css/global-style.css">
   <link rel="stylesheet" href="../css/form-styling.css">
   <link rel="stylesheet" href="../css/font-awesome.min.css">
   <link rel="stylesheet" href="../css/navbar-style.css">
   <link rel="stylesheet" href="../css/logged-in-navbar-style.css">
   <link rel="stylesheet" href="../css/footer-style.css">
+  <link rel="stylesheet" href="../css/jquery.dataTables.css">
+  <link rel="stylesheet" href="../css/responsive.dataTables.css">
+  <link rel="stylesheet" href="../css/users-style.css">
+
+  <script src="../js/jquery-3.0.0.min.js"></script>
+  <script src="../js/navbar-functionality.js"></script>
+  <script src="../js/jquery.dataTables.js"></script>
+  <script src="../js/dataTables.responsive.js"></script>
+  <script src="../js/users-functionality.js"></script>
+
+
   <title>Users | Ticket Tracking System</title>
 </head>
 
@@ -42,9 +54,26 @@
   </div>
 
 
-  <div class="fluid-container">
-    <div class="container">
-      
+  <div class="container-fluid">
+    <div class="container" id="pageBody">
+
+      <div class="header-wrapper">
+        <h1 class="header">Users List</h1>
+        <div class="header-info">This is a list of users currently in your project.</div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <th>#</th>
+          <th>Avatar</th>
+          <th>FullName</th>
+          <th>EmailID</th>
+          <th>Contact Number</th>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
     </div>
   </div>
 
