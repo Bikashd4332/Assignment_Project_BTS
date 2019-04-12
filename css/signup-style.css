@@ -5,7 +5,7 @@
 
 /* The h2 header inside signup header. */
 .signup-header > h2 {
-  font-weight: 400;
+  font-weight: 40 0;
   font-size: 30px;
   color: black;
 }
@@ -114,7 +114,6 @@
   color: red;
   padding: 10px 0px;
 }
-
 /* Changing the flex direction to column of li elements inside tab-navs */
 /* Making the profileImageContainer come after the signup form. */
 /* Making use of available space. */

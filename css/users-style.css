@@ -39,6 +39,85 @@ div#DataTables_Table_0_length {
     margin-top: 10px;
 }
 
+div#DataTables_Table_1_filter {
+    margin: 15px;
+}
+
+div#DataTables_Table_1_length {
+    margin-top: 10px;
+}
+
+.tab-navs {
+    display:flex;
+    justify-content: space-between;
+}
+.tab-navs li {
+    width: 50%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.tab-navs li > i {
+    font-size: 30px;
+}
+
+.tab-navs .tab-info {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.tab-window {
+    padding-top: 10px;
+}
+
+#inviteUserWindow {
+    display: none;
+}
+
+#inviteUserWindow .header-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+#inviteUserWindow .header-wrapper .action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+#inviteUserWindow .header-wrapper .action-buttons button {
+    margin-left: 10px;
+    padding: 5px 10px;
+}
+
+.background-popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: #00000099;
+}
+
+.modal {
+    width: 45% !important;
+    height: auto !important;
+    transform: translateY(20%) !important;
+}
+
+.modal-body > h3 {
+    margin-bottom: 10px;
+}
+
+.form-control-checkbox {
+    -webkit-appearance: none;
+    width: 2px;
+    padding: 5px !important;
+    height: 2px;
+    color: #f3f3f3;
+}
 
 @media only screen and (max-width: 1100px) and (min-width: 680px) {
     #pageBody {

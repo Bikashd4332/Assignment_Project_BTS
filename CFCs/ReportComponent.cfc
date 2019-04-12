@@ -178,7 +178,6 @@
 		<cfcontent  type="application/octet-stream" file="#ExpandPath(arguments.path)#">
 	</cffunction>
 
-
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON"  name="DeleteAttachment" displayname="DeleteAttachment">
 		<cfargument required="true"  name="attachmentId" displayname="attachmentId">
 		<cfset utilComponentInstance = createObject('component', 'UtilComponent')>
@@ -187,8 +186,9 @@
 			FROM [REPORT_ATTACHMENTS]
 			WHERE [AttachmentID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 		</cfquery>
-		<cfloop query="queryGetAttachmentFilePath">
-			<cfif '#Uploader#' EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
+		<cfdump var = "#queryGetAttachmentFilePath#">
+		<cfabort>
+			<cfif "#queryGetAttachmentFilePath['Uploader']#" EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
 				<cffile action="delete" file="#queryGetAttachmentFilePath['Attachment']#">
 				<cfquery>
 					DELETE FROM [REPORT_ATTACHMENTS]
@@ -197,7 +197,6 @@
 				<cfset commentId =  addComment("deleted file #GetFileFromPath(AttachMent)#",ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
 			</cfif>
-		</cfloop>
 	</cffunction>
 
 
