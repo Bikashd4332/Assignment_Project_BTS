@@ -1,3 +1,7 @@
+<cfif session.userEmail NEQ "">
+  <cflocation  url="overview.cfm" addtoken = "false">
+</cfif>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

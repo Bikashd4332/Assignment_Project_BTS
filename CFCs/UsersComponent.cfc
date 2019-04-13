@@ -8,6 +8,8 @@
 	--- date:   4/10/19
 	--->
 <cfcomponent name="UsersComponent" displayname="UsersComponent" hint="This component defines all the functions for managing the page itself." accessors="true" output="true" persistent="false">
+
+
 	<cffunction access="remote" output="true" returnformat="JSON" returntype="array" name="fetchUserRecords" displayname="fetchUserRecords" hint="This function helps to fetch the user records for paginating.">
 		<cfset UtilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset loggedInUserProjectId = UtilComponentInstance.GetProjectIdOf()>
@@ -44,5 +46,14 @@
 			<cfset ArrayAppend(userArray, user)>
 		</cfloop>
 		<cfreturn userArray>
+	</cffunction>
+
+
+	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON" name="SendInvitationToEmails" displayname="SendInvitationToEmails">
+		<cfargument type="array" name="userEmails" required="true">
+		<cfset ReportComponentInstance = CreateObject('component', 'ReportComponent')>
+		<cfloop array = "#userEmails#" item="userEmail">
+			<cfset ReportComponentInstance.SendEmailTo('#userEmail#')>
+		</cfloop>
 	</cffunction>
 </cfcomponent>

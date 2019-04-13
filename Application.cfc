@@ -14,12 +14,6 @@
 	<cfset this.datasource = "MySqlServerSource">
 	<cfset this.wschannels = [{name="report-file-upload"}, {name="report-file-delete"}, {name="report-status-update"}, {name="report-comment-post"}]>
 
-	<cffunction name="OnRequestStart" returntype="boolean" displayname="OnRequestStart" access="public" >
-		<cfargument name="targetPage" required="true">
-		<cfreturn true />
-	</cffunction>
-
-
 	<cffunction name="OnSessionStart" displayname="OnSessionStart" access="public" hint="Sets the required session values">
 		<cfif not isDefined('session.userEmail')>
 			<cfset session.userEmail = ''>
@@ -27,28 +21,23 @@
 	</cffunction>
 
 
+	<cffunction name="OnRequestStart" returntype="boolean" displayname="OnRequestStart" access="public" >
+		<cfargument name="targetPage" required="true">
+		<!--- Cleaning the key value of the url for calling remote function with arrays --->
+		<cfloop collection="#url#" item="LOCAL.key">
+			<cfif find("[]", LOCAL.key)>
+				<cfset LOCAL.cleanKey = replace(LOCAL.key, "[]", "", "one") >
+				<cfset url[LOCAL.cleanKey] = ListToArray(url[LOCAL.key]) >
+				<cfset StructDelete(url, "LOCAL.key")>
+			</cfif>
+		</cfloop>
+		<cfreturn true />
+	</cffunction>
+
+
 	<cffunction name="OnRequest" returntype="void" displayname="OnRequest" hint="Called when ever a requested." access="public" output="true">
 		<cfargument name="targetPage" displayName="targetPage" type="string" hint="The target page which will be opened" required="true" />
-		<cfset validPagesForLoggedInUsers = ["overview.cfm", "report.cfm", "users.cfm"]>
-		<cfset validPagesForNonLoggedInUsers = ["home.cfm", "login.cfm", "signup.cfm", "index.cfm"]>
-		<cfif session.userEmail NEQ ''>
-			<cfif ArrayContains(variables.validPagesForLoggedInUsers, getFileFromPath('#targetPage#'))>
-				<cfinclude template="#arguments.targetPage#" >
-			<cfelse>
-				<cfif  GetFileFromPath('#arguments.targetPage#') EQ 'index.cfm'>
-					<cflocation url="cfm/overview.cfm" addToken="false">
-				<cfelse>
-					<cflocation url="overview.cfm" addToken="false">
-				</cfif>
-			</cfif>
-		<cfelse>
-			<cfif ArrayContains(variables.validPagesForNonLoggedInUsers, getFileFromPath('#targetPage#'))>
-				<cfinclude template="#targetPage#">
-			<cfelse>
-				<cflocation url="login.cfm" addtoken="false">
-			</cfif>
-		</cfif>
-		<cfreturn />
+		<cfinclude template="#arguments.targetPage#">
 	</cffunction>
 
 

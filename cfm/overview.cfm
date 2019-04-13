@@ -1,3 +1,7 @@
+<cfif session.userEmail EQ "">
+  <cflocation  url="login.cfm" addtoken="false">
+</cfif>
+
 <!DOCTYPE html>
 <html lang="en">
 

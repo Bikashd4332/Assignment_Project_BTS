@@ -1,3 +1,6 @@
+<cfif session.userEmail EQ "">
+  <cflocation url="login.cfm" addtoken="false">
+</cfif>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -182,7 +185,6 @@
 
 
           <table class="data-table">
-
           </table>
 
         </div>
@@ -190,6 +192,7 @@
       </div>
     </div>
   </div>
+
   <div class="footer">
     <div class="container">
       <div class="footer-wrapper">
