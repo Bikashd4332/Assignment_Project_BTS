@@ -20,27 +20,19 @@ button {
   color:white;
   font-family: 'Quicksand', sans-serif;
   border:none;
+  border-radius: 3px;
   display: block;
   cursor: pointer;
 }
 
-input {
+.form-control {
   border: 1px solid lightgray;
   outline: none;
   padding: 10px;
   transition: all 0.2s ease-in-out;
 }
 
-input:focus {
-  border: 2px solid;
-  border-color: skyblue;
-}
-select:focus {
-  border: 2px solid ;
-  border-color: skyblue;
-}
-
-textarea:focus {
+.form-control:focus {
   border: 2px solid;
   border-color: skyblue;
 }
