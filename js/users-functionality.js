@@ -66,7 +66,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.invite-btn').on('click', function(event){
+    $('.invite-btn').on('click', function (event) {
         event.preventDefault();
         $('.background-popup').fadeIn('fast', function () {
             $('#inviteModal').fadeIn('fast');
@@ -87,6 +87,67 @@ $(document).ready(function () {
         });
     });
 
+    $('#userEmailInput').on('blur', function (event) {
+        const $inputGroup = $(this).parents('div.input-group');
+        const $errorInvalid = $inputGroup.find('.error-invalid').hide();
+        const $errorEmpty = $inputGroup.find('.error-empty').hide();
+
+        if (event.target.validity.valid) {
+            $.ajax({
+                url: '../CFCs/UtilComponent.cfc',
+                data: {
+                    method: 'IsEmailValid',
+                    emailId: `${event.target.value}`
+                }
+            }).done(function (response) {
+                const responseInJson = JSON.parse(response);
+                if (!responseInJson.valid) {
+                    $inputGroup.addClass('invalid');
+                    $errorInvalid.text('This Email is already registered.').show();
+                } else {
+                    $inputGroup.removeClass('invalid');
+                }
+            });
+        } else if (event.target.validity.patternMismatch) {
+            $inputGroup.addClass('invalid');
+            $errorInvalid.text('This is not a valid email address.').show();
+        } else if (event.target.validity.valueMissing) {
+            $inputGroup.addClass('invalid');
+            $errorEmpty.show();
+        }
+    });
+
+    $("#userTitleCheckBox").on('change', function () {
+        if ($(this).prop('checked')) {
+            $('#personTitleSelect').prop('disabled', false);
+        } else {
+            $('#personTitleSelect').prop('disabled', true);
+        }
+    });
+
+    $('#inviteModal .submit-btn').on('click', function (event) {
+        event.preventDefault();
+        const isEmailValid = !$('#userEmailInput').parents('div.input-group').hasClass('invalid');
+        const dataToSend = {
+            method: 'InviteUser'
+        };
+
+        if ($('#userTitleCheckBox').prop('checked')) {
+            dataToSend['titleId'] = $('#personTitleSelect').val();
+        }
+
+        if (isEmailValid) {
+            dataToSend['userEmailList'] = [$('#userEmailInput').val()];
+            $.ajax({
+                url: '../CFCs/UsersComponent.cfc',
+                data: dataToSend
+            }).done(function () {
+                $('#inviteModal').fadeOut('fast', function () {
+                    $('.background-popup').fadeOut('fast');
+                })
+            });
+        }
+    });
 });
 
 function processBase64Data(data, type, row, meta) {

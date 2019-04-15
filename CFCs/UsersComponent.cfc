@@ -7,10 +7,10 @@
 	--- author: mindfire
 	--- date:   4/10/19
 	--->
-	
-<cfcomponent name="UsersComponent" displayname="UsersComponent" hint="This component defines all the functions for managing the page itself." accessors="true" output="true" persistent="false">
+<cfcomponent name="UsersComponent" displayname="UsersComponent" hint="This component defines all the functions for managing the page itself." accessors="true" output="false" persistent="false">
 
 	<cfset this.reportComponentInstance = CreateObject("component",'ReportComponent')>
+
 	<cffunction access="remote" output="true" returnformat="JSON" returntype="array" name="fetchUserRecords" displayname="fetchUserRecords" hint="This function helps to fetch the user records for paginating.">
 		<cfset UtilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset loggedInUserProjectId = UtilComponentInstance.GetProjectIdOf()>
@@ -49,12 +49,26 @@
 	</cffunction>
 
 
-
-	<cffunction access="remote" output="false" name="AddMultipleUser" >
-		<cfargument required="true" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
-		
+	<cffunction access="remote" output="false" name="InviteUser" displayname="InviteUser" >
+		<cfargument required="true" type="any" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
+		<cfargument required="false" default="" type="string" name="titleId" hint="This contains the title id of the user decided by admin.">
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
+		<cfset reportComponentInstance = CreateObject('component', 'ReportComponent')>
+		<cfset projectId = utilComponentInstance.GetProjectIdOf()>
+		<cfloop array="#arguments.userEmailList#" item="userEmail">
+			<cfset uuidForUser = createUUID()>
+			<cfquery name="queryInviteUser">
+				INSERT INTO [INVITE_PERSON] ([EmailID], [UUID], [TitleID], [ProjectID])
+				VALUES (
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#userEmail#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#uuidForUser#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" null="true" value="#arguments.titleId#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" value="#projectId#">
+				)
+			</cfquery>
+			<cfset reportComponentInstance.SendEmailTo(userEmail, "http://[server-name]/setup_account.cfm?uuid=#uuidForUser#")>
+		</cfloop>
 	</cffunction>
-	
-	
->>>>>>> 31a68b4b65053d64ebf68d5c6f9c30b5cb3d2e7d
+
+
 </cfcomponent>

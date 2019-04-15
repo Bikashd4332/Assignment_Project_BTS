@@ -176,5 +176,15 @@
 		</cfloop>
 	</cffunction>
 
+	<cffunction access="remote" output="false" returntype="string" returnformat="JSON" name="GetNameOfProject" displayname="GetNameOfProject">
+		<cfargument required="true" name="projectId" type="numeric">
+		<cfquery name="queryGetProjectName" >
+			SELECT [Name]
+			FROM [PROJECT]
+			WHERE [ProjectID] = <cfqueryparam value="#arguments.projectId#" cfsqltype="cf_sql_integer">
+		</cfquery>
+		<cfreturn queryGetProjectName['Name'][1]>
+	</cffunction>
+
 
 </cfcomponent>

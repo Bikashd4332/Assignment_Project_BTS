@@ -643,7 +643,7 @@
 
 	<cffunction access="remote" output="false" name="sendEmailTo" returnformat="JSON" returntype="boolean" >
 		<cfargument required="true" type="string" name="emailId" >
-		<cfargument required="true" name="messgae" type="string">
+		<cfargument required="true" name="message" type="string">
 		<cfmail from="trackingticket@gmail.com" to="#arguments.emailId#" subject="Greetings" >
 				#arguments.message#
 		</cfmail>

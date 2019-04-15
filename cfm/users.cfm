@@ -143,36 +143,37 @@
               <div class="modal-body">
                 <h3>Adding a single user.</h2>
                   <div class="form-group">
-                    <div class="input-group">
-                      <div class="form-wrapper">
-                        <input type="text" name="userEmail" class="form-control" id="userEmailInput" required
-                          pattern="[a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3})">
-                        <div class="label-control label-under">User Email</div>
+                    <form>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <input type="text" name="userEmail" class="form-control" id="userEmailInput" required
+                            pattern="[a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3})">
+                          <div class="label-control label-under">User Email</div>
+                        </div>
+                        <div class="validation-feedback" id="fail">
+                          <p class="error-empty">User email is required.</p>
+                          <p class="error-invalid"></p>
+                          <p class="assist-valid">The user must not be an already registered user.</p>
+                        </div>
                       </div>
-                      <div class="validation-feedback" id="fail">
-                        <p class="error-empty">User email is required.</p>
-                        <p class="error-invalid"></p>
-                        <p class="assist-valid">The user must not be an already registered user.</p>
+                      <div class="input-group">
+                        <input type="checkbox" class="form-control-checkbox" id="userTitleCheckBox">
+                        <label for="userTitleCheckBox">Let me decide the title of the user</label>
                       </div>
-                    </div>
-                    <div class="input-group">
-                      <input type="checkbox" class="form-control-checkbox" id="userTitleCheckBox">
-                      <label for="userTitleCheckBox">Let me decide the title of the user</label>
-                    </div>
-                    <div class="input-group">
-                      <div class="form-wrapper">
-                        <select class="form-control" name="reportPriority" id="reportPrioritySelect" disabled>
-                          <option value="1">Developer</option>
-                          <option value="2">Reviewer</option>
-                          <option selected value="3">Tester</option>
-                        </select>
-                        <div class="label-control label-over">Select Title</div>
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <select class="form-control" name="personTitle" id="personTitleSelect" disabled>
+                            <option value="1">Developer</option>
+                            <option value="2">Reviewer</option>
+                            <option selected value="3">Tester</option>
+                          </select>
+                          <div class="label-control label-over">Select Title</div>
+                        </div>
+                        <div class="validation-feedback" id="reportPriorityFeedback">
+                          <p class="assist-valid">This specifies how important it is.</p>
+                        </div>
                       </div>
-                      <div class="validation-feedback" id="reportPriorityFeedback">
-                        <p class="assist-valid">This specifies how important it is.</p>
-                      </div>
-                    </div>
-
+                    </form>
                   </div>
               </div>
               <div class="modal-actions">
