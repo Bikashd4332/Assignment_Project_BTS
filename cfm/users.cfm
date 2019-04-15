@@ -121,7 +121,7 @@
                           rows="5"></textarea>
                         <div class="label-control label-over">Email Lists</div>
                       </div>
-                      <div class="validation-feedback" id="reportDescriptionFeedback">
+                      <div class="validation-feedback" id="emailListFeedback">
                         <p class="error-empty">Email lists should at least have 2 emails.</p>
                         <p class="error-invalid">Please double check the email list.</p>
                         <p class="assist-valid">Please enter email list with ';' separated.</p>
@@ -149,7 +149,7 @@
                           pattern="[a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3})">
                         <div class="label-control label-under">User Email</div>
                       </div>
-                      <div class="validation-feedback" id="reportDescriptionFeedback">
+                      <div class="validation-feedback" id="fail">
                         <p class="error-empty">User email is required.</p>
                         <p class="error-invalid"></p>
                         <p class="assist-valid">The user must not be an already registered user.</p>
@@ -161,12 +161,12 @@
                     </div>
                     <div class="input-group">
                       <div class="form-wrapper">
-                        <select class="form-control" name="reportPriority" id="reportPrioritySelect">
-                          <option value="">Developer</option>
-                          <option value="">Reviewer</option>
-                          <option selected value="">Tester</option>
+                        <select class="form-control" name="reportPriority" id="reportPrioritySelect" disabled>
+                          <option value="1">Developer</option>
+                          <option value="2">Reviewer</option>
+                          <option selected value="3">Tester</option>
                         </select>
-                        <div class="label-control label-over">Select Report Priority</div>
+                        <div class="label-control label-over">Select Title</div>
                       </div>
                       <div class="validation-feedback" id="reportPriorityFeedback">
                         <p class="assist-valid">This specifies how important it is.</p>

@@ -108,15 +108,44 @@ div#DataTables_Table_1_length {
 }
 
 .modal-body > h3 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.form-control-checkbox + label {
+    font-size: 14px;
 }
 
 .form-control-checkbox {
     -webkit-appearance: none;
-    width: 2px;
-    padding: 5px !important;
-    height: 2px;
-    color: #f3f3f3;
+    position: relative;
+    width: 15px;
+    background: #f3f3f3;
+    height: 15px;
+    vertical-align: middle;
+}
+
+.form-control-checkbox:checked::after{
+    content: '\f00c' ;
+    font-family: 'FontAwesome';
+    position: absolute;
+    left: 15%;
+    top: 10%;
+    text-decoration: solid;
+    font-size: 10px;
+    color: white;
+}
+
+.form-control-checkbox:checked{
+    background-color: skyblue;
+}
+
+.cancel-btn {
+    background-color: lightcoral
+}
+
+.active {
+    border-radius: 2px solid skyblue !important;
+
 }
 
 @media only screen and (max-width: 1100px) and (min-width: 680px) {
