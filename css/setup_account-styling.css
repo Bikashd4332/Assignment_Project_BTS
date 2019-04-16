@@ -12,6 +12,7 @@
 }
 
 .project-info {
+  text-align: center;
   margin-top: 15px;
 }
 
@@ -41,17 +42,18 @@
 
 /* The parent div for previewing selected img. */
 .file-preview {
-  width: 250px;
-  height: 260px;
+  width: auto;
+  height: auto;
+  margin: auto;
   border: 1px solid skyblue;
 }
 
 /* The target img where selected img is shown. */
 .file-preview img {
-  width: 230px;
+  max-width: 50%;
+  height: auto;
   display: block;
   margin: auto;
-  height: 217px;
   padding-bottom: 3px;
 }
 
@@ -70,7 +72,101 @@
 
 /* This is the container of the file-preview. */
 #profileImageContainer {
-  position: absolute;
-  top: 20%;
-  left: 65%;
+  position: inherit !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+.submit-btn {
+  padding: 10px 10px;
+}
+
+#errorPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+}
+
+.branding .text {
+  margin-left: 10px;
+  border-left: 1px solid lightskyblue;
+  padding: 5px 10px;
+  color: skyblue;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+#errorPage .error-msg {
+  padding-top: 10px; 
+  text-align: center;
+  font-size: 18px;
+  color: lightcoral;
+}
+
+.title-info {
+  padding: 10px;
+  text-align: center;
+}
+
+@media only screen and (max-with: 400px) {
+
+  .file-preview {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  
+  /* The target img where selected img is shown. */
+  .file-preview img {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  
+}
+
+@media only screen and (max-width: 1000px) and (min-width: 500px) {
+  .container {
+    width: 60%;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .container {
+    width: 80% !important;
+    padding: 5px !important;
+  }
+  .signup {
+    padding: 10px !important;
+  }
+}
+
+@media only screen and (max-width: 1060px) and (min-width: 600px) {
+  .branding{
+    width: 60%;
+  }
+
+  .branding .text{
+    font-size: 30px;
+  }
+}
+
+@media only screen and (max-width: 600px){
+  .branding{
+    width: 90%;
+  }
+
+  .branding .text{
+    font-size: 25px;
+  }
+  
 }

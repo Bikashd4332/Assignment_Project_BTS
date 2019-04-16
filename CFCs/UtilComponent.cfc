@@ -156,7 +156,7 @@
 	</cffunction>
 
 
-	<cffunction access="remote" output="false" name="GetProjectIdOf" displayname="GetLoggedInUserProjectID">
+	<cffunction  access="remote" output="false" name="GetProjectIdOf" displayname="GetLoggedInUserProjectID">
 		<cfargument required="false" type="numeric" name="personId">
 		<cfif isDefined('arguments.personId')>
 			<cfquery name="queryGetProjectId">
@@ -186,5 +186,116 @@
 		<cfreturn queryGetProjectName['Name'][1]>
 	</cffunction>
 
+	<cffunction access="public" output="false" returnformat="JSON" returntype="boolean" name="ValidateUUID">
+		<cfargument type="uuid"	required="true" name="userUUID" hint="This is the uuid to check if valid.">
+
+		<cfquery name="querySearchUUID" maxrows="1">
+			SELECT [DateInvited] 
+			FROM [INVITE_PERSON] 
+			WHERE [UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfif querySearchUUID.RecordCount EQ 1>
+			<cfif dateDiff('h', querySearchUUID.DateInvited, now()) LT 24>
+				<cfreturn true>
+			<cfelse>
+				<cfreturn false>
+			</cfif>
+		<cfelse>
+			<cfreturn false>
+		</cfif>
+	</cffunction>
+
+	<cffunction access="public" output="false" returnformat="JSON" returntype="struct" name="GetTitleInfo" displayname="GetTitleInfo">
+		<cfargument type="uuid" required="true" name="userUUID" hint="The unique uuid of user.">
+
+		<cfquery name="queryTitleInfo">
+			SELECT IP.[TitleID], T.[Name]
+			FROM [INVITE_PERSON] IP 
+			INNER JOIN [PERSON_TITLE] T 
+			ON T.[TitleID] = IP.[titleID]
+			WHERE [UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+		<cfif queryTitleInfo.RecordCount EQ 1 AND queryTitleInfo.TitleID NEQ ''>
+			<cfreturn { isTitleGiven: true, titleId: queryTitleInfo.TitleID, titleName: "#queryTitleInfo.Name#" }>
+		</cfif>
+		<cfreturn {isTitleGiven: false}>
+	</cffunction>
+	
+	<cffunction access="public" output="false" returnformat="JSON" returntype="struct" name="GetProjectInfoFromUUID" displayName="GetProjectIdFromUUID">
+		<cfargument required="true" type="uuid" name="userUUID">
+		<cfquery name="queryGetProjectInfo" maxrows="1">
+			SELECT IP.[ProjectID], P.[Name]
+			FROM [INVITE_PERSON] IP
+			INNER JOIN [PROJECT] P
+			ON P.[ProjectID] = IP.[ProjectID]
+			WHERE IP.[UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+		<cfreturn { projectId: queryGetProjectInfo.ProjectID, projectName: queryGetProjectInfo.Name }>
+	</cffunction>
+
+	<cffunction access="remote" output="false" returnformat="JSON" returntype="boolean" name="SignUpMember" displayname="SignUpMember">
+		<cfargument name="firstName" required="true" string="string" hint="The firstname of the registring user.">
+		<cfargument name="middleNme" required="false" type="string" hint="The midle of the registering user.">
+		<cfargument name="lastName" required="true" type="string" hint="The surname of the registering user.">
+		<cfargument name="contactNumber" required="true" type="numeric" hint="The contact number of the registerging user.">
+		<cfargument name="titleId" required="false" default="0" type="numeric" hint="The title of the user who will be signed if not provided will default to '1'.">
+		<cfargument name="password" required="true" type="string" hint="The password of the registering user.">
+		<cfargument name="profileImage" default="" required="false" type="any" displayname="The profile picture of the admin whoever is signing up.">
+		<cfargument name="profileImageName" default="" required="false" type="string" hint="The file name of the profile ">
+		<cfargument name="userUUID" required="true" type="uuid" hint="The token of the member.">
+
+		<cfif arguments.profileImage NEQ ''>
+			<cfset imagePath =  uploadProfileImage('#profileImage#', '#profileImageName#') />
+		</cfif>
+		<cfif arguments.titleId EQ 0>
+			<cfset arguments.titleId = GetTitleInfo(arguments.userUUID).titleId>					
+		</cfif>
+
+		<cfset memberEmail = GetEmailFromUUID(arguments.userUUID)>
+		<cfset projectId = GetProjectInfoFromUUID(arguments.userUUID).projectId>
+
+		<cfquery name="queryAddMember">
+			INSERT INTO [PERSON] (
+				[FirstName], 
+				[MiddleName], 
+				[LastName], 
+				[ContactNumber], 
+				[EmailID], 
+				[ProjectID], 
+				[TitleID], 
+				[Password],
+				[ProfileImage]
+			) VALUES
+				(
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" maxlength="30" value="#arguments.firstName#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="true" maxlength="30" value="#arguments.middleName#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" maxlength="30" value="#arguments.lastName#">,
+					<cfqueryparam cfsqltype="cf_sql_bigint" null="false" value="#arguments.contactNumber#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" maxlength="50" value="#memberEmail#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" null="false" maxlength="50" value="#projectId#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#arguments.titleId#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#hash(arguments.password)#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#variables.imagePath#">
+				)
+		</cfquery>
+
+		<cfset LogUserIn(memberEmail, arguments.password)>
+		<cflocation url="../cfm/overview.cfm" addtoken="false" />
+		<cfreturn true />
+	</cffunction>
+	
+
+	<cffunction access="public" output="false" returnformat="plain" returntype="string" name="GetEmailFromUUID" displayname="GetEmailFromUUID">
+		<cfargument required="true" type="uuid" name="userUUID">
+
+		<cfquery name="queryGetMemberMail" maxrows="1">
+			SELECT [EmailID] FROM [INVITE_PERSON] WHERE [UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfreturn queryGetMemberMail.EmailID>
+		
+	</cffunction> 
+	
 
 </cfcomponent>
