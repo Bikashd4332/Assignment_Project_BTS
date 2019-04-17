@@ -35,6 +35,8 @@ $(document).ready(function () {
         });
     });
 
+    populateInvitationDataTable();
+
     // Loading the profile picture of the logged in person.
     $.ajax({
         type: 'POST',
@@ -144,10 +146,23 @@ $(document).ready(function () {
             }).done(function () {
                 $('#inviteModal').fadeOut('fast', function () {
                     $('.background-popup').fadeOut('fast');
-                })
+                });
             });
         }
     });
+
+    $('#logOutButton').on('click', function () {
+        $.ajax({
+          type: 'POST',
+          url: '../CFCs/UtilComponent.cfc?method=LogUserOut'
+        }).done(function (response) {
+          if (JSON.parse(response) === true) {
+            // Move user to login.cfm
+            window.location = 'login.cfm';
+          }
+        });
+      })
+    
 });
 
 function processBase64Data(data, type, row, meta) {
@@ -162,6 +177,46 @@ function fetchAllUsers() {
         }).done(function (response) {
             const responseInJson = JSON.parse(response);
             resolve(responseInJson);
+        });
+    });
+}
+
+function fetchAllUserInvitation() {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: '../CFCs/UsersComponent.cfc?method=fetchUserInvitationRecords'
+        }).done(function (response) {
+            const responseInJson = JSON.parse(response);
+            resolve(responseInJson);
+        });
+    });
+}
+
+function populateInvitationDataTable() {
+    fetchAllUserInvitation().then(function (responseInJson) {
+        $('.data-table-invite').DataTable({
+            data: responseInJson,
+            responsive: true,
+            columnDefs: [{
+                className: 'nowrap'
+            }],
+            autoWidth: true,
+            columns: [{
+                    title: "EmailID"
+                },
+                {
+                    title: "UUID",
+                },
+                {
+                    title: "Date"
+                },
+                {
+                    title: "Status"
+                },
+                {
+                    title: "Title"
+                }
+            ],
         });
     });
 }

@@ -237,7 +237,7 @@ $(document).ready(function () {
 
   // On clicking the button start working make all the other button busy and disabled until the process completes.
   $('.status-action').on('click', '#startWorkingButton', function (event) {
-    if (!$('#startWorkingButton').hasClass('busy')) {
+    if (!$(this).hasClass('busy')) {
       $(event.target).parent('div.status-action').children().addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=StartWorkingOnReport',
@@ -261,7 +261,7 @@ $(document).ready(function () {
 
   // On clicking on the butotn stop working button disable all the other button and makey it busy until the process completes.
   $('.status-action').on('click', '#stopWorkingButton', function (event) {
-    if (!$('#stopWorkingButton').hasClass('busy')) {
+    if (!$(this).hasClass('busy')) {
       $(event.target).parent('div.status-action').children().addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=StopWorkingOnReport',
@@ -282,7 +282,7 @@ $(document).ready(function () {
 
   // On click of sendToNextStatus show a modal for choosing an assignee for the next state of the report.
   $('.status-action').on('click', '#sendToNextStatusButton', function (event) {
-    if (!$('#sendToNextStatusButton').hasClass('busy')) {
+    if (!$(this).hasClass('busy')) {
       $(event.target).parent('div.status-action').children().addClass('busy');
       getAssigneeNames().then(function (responseInJson) {
         assigneeNames = responseInJson;
@@ -312,9 +312,30 @@ $(document).ready(function () {
     }
   });
 
+  $('.status-action').on('click', '#assignToMeButton', function (event) {
+    if (!$(this).hasClass('busy')) {
+      $(this).addClass('busy');
+      $.ajax({
+        url: '../CFCs/ReportComponent.cfc',
+        data: {
+          method: 'AssignToMe',
+          reportId: reportId
+        }
+      }).done(function (response) {
+        if (JSON.parse(response) === true) {
+          updateActionButton(function () {
+            $(event.target).removeClass('busy');
+            updateReportStatus();
+          });
+          updateAssigneeInfo();
+        }
+      })
+    }
+  });
+
   // On clicking of the button reopen make all the other button busy until the process completes.
   $('.status-action').on('click', '#reopenButton', function (event) {
-    if (!$('#reopenButton').hasClass('busy')) {
+    if (!$(this).hasClass('busy')) {
       $(event.target).parent('div.status-action').children().addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=ReopenReport',
@@ -375,15 +396,48 @@ $(document).ready(function () {
     }
   });
 
+   //To show autocomplete suggestion list.
+   $('.auto-complete .form-control').on('focus', function (event) {
+    getAssigneeNames().then(function (responseInJson) {
+      assigneeNames = responseInJson;
+      showSuggestion(event);
+    });
+  });
+
+  // Change the the preferred item by arrow kyes and enter.
+  $('#asigneeInput').on('keydown', function (event) {
+    event.stopPropagation();
+    switch (event.key) {
+      case 'ArrowDown':
+        if ($('.preferred-item').next().length) {
+          $('.preferred-item').removeClass('preferred-item').next().addClass('preferred-item');
+        }
+        break;
+      case 'ArrowUp':
+        if ($('.preferred-item').prev().length) {
+          $('.preferred-item').removeClass('preferred-item').prev().addClass('preferred-item');
+        }
+        break;
+      case 'Enter':
+        $('.preferred-item').click();
+        break;
+    }
+  });
+
+
   // Hide the previously shown autocomplete on click of autocomplete items.
   $('.auto-complete-list').on('click', '.auto-complete-item', function () {
     const $inputGroup = $(this).parents('div.input-group');
     $(this).addClass('auto-complete-selected');
     if ($inputGroup.hasClass('invalid')) {
       $inputGroup.removeClass('invalid');
-      $inputGroup.find('.error-invalid, .error-empty').css('display', 'none');
+      $inputGroup.find('.error-invalid, .error-empty').hide();
     }
+    
+    $inputGroup.find('.label-control').removeClass('label-under');
+
     $inputGroup.find('.form-control').val($(this).find('.suggestion-name').text());
+  
   });
 
   $('.file-cancel-btn').on('click', function () {
@@ -871,6 +925,9 @@ function showSuggestion(event) {
     });
     makeUnorderedListOf(autoCompleteContainer.find('ul.auto-complete-list'), reducedValues);
     autoCompleteContainer.css('display', 'block');
+  } else {
+    makeUnorderedListOf(autoCompleteContainer.find('ul.auto-complete-list'), assigneeNames);
+    autoCompleteContainer.css('display', 'block');
   }
 }
 
@@ -884,9 +941,9 @@ function makeUnorderedListOf($autoCompleteList, reducedValues) {
     if (index === 0) {
       $('<li class="auto-complete-item preferred-item" data-person-id=' + assigneeObj.id + '> <span class="suggestion-name">' + assigneeObj.name + '</span>' + '<span class="suggestion-email">' + assigneeObj.email + '</span>' + '</li>').appendTo($autoCompleteList);
     } else {
-      $('<li class="auto-complete-item" data-person-id=' + assigneeObj.id + '>' + assigneeObj.name + '</li>').appendTo($autoCompleteList);
+      $('<li class="auto-complete-item" data-person-id=' + assigneeObj.id + '> <span class="suggestion-name">' + assigneeObj.name + '</span>' + '<span class="suggestion-email">' + assigneeObj.email + '</span>' + '</li>').appendTo($autoCompleteList);
     }
-  });
+  });;
 }
 
 /**

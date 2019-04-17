@@ -190,20 +190,16 @@
 		<cfargument type="uuid"	required="true" name="userUUID" hint="This is the uuid to check if valid.">
 
 		<cfquery name="querySearchUUID" maxrows="1">
-			SELECT [DateInvited] 
+			SELECT [DateInvited], [IsValid] 
 			FROM [INVITE_PERSON] 
 			WHERE [UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
 		<cfif querySearchUUID.RecordCount EQ 1>
-			<cfif dateDiff('h', querySearchUUID.DateInvited, now()) LT 24>
-				<cfreturn true>
-			<cfelse>
-				<cfreturn false>
-			</cfif>
-		<cfelse>
-			<cfreturn false>
+			<cfreturn (dateDiff('h', querySearchUUID.DateInvited, now()) LT 24) AND (querySearchUUID.IsValid EQ 1)>
 		</cfif>
+		<cfreturn false/>
+
 	</cffunction>
 
 	<cffunction access="public" output="false" returnformat="JSON" returntype="struct" name="GetTitleInfo" displayname="GetTitleInfo">
@@ -280,8 +276,13 @@
 				)
 		</cfquery>
 
+		<cfquery name="query">
+			UPDATE [INVITE_PERSON] 
+			SET [IsValid] = 0 
+			WHERE [UUID] = <cfqueryparam value="#arguments.userUUID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
 		<cfset LogUserIn(memberEmail, arguments.password)>
-		<cflocation url="../cfm/overview.cfm" addtoken="false" />
 		<cfreturn true />
 	</cffunction>
 	
@@ -297,5 +298,15 @@
 		
 	</cffunction> 
 	
+	<cffunction access="remote" output="false" returnformat="plain" returntype="boolean" name="IsLoggedInPersonAnAdmin" displayname="IsAnAdmin">
+		<cfquery name="queryGetLoggedInfo" maxrows="1">
+			SELECT PT.[Name] 
+			FROM [PERSON_TITLE] PT 
+			INNER JOIN [PERSON] P 
+			ON PT.[TitleID] = P.[TitleID] 
+			WHERE [EmailID] = <cfqueryparam value="#session.userEmail#" cfsqltype="cf_sql_varchar"> 
+		</cfquery>
+		<cfreturn queryGetLoggedInfo.Name EQ 'ADMIN' />
+	</cffunction>
 
 </cfcomponent>

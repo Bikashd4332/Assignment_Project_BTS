@@ -231,10 +231,18 @@ $(document).ready(function () {
     });
   });
 
+  //To show autocomplete suggestion list.
+  $('.auto-complete .form-control').on('focus', function (event) {
+    getAssigneeNames().then(function (responseInJson) {
+      assigneeNames = responseInJson;
+      showSuggestion(event);
+    });
+  });
+
   // Hide the previously shown autocomplete on blur input.
   $('.auto-complete .form-control').on('blur', function () {
     setTimeout(() => {
-      $(this).parent('div.form-wrapper').find('div.auto-complete-container').css('display', 'none');
+      $(this).parent('div.form-wrapper').find('div.auto-complete-container').hide();
     }, 100);
   });
 
@@ -244,9 +252,13 @@ $(document).ready(function () {
     $(this).addClass('auto-complete-selected');
     if ($inputGroup.hasClass('invalid')) {
       $inputGroup.removeClass('invalid');
-      $inputGroup.find('.error-invalid, .error-empty').css('display', 'none');
+      $inputGroup.find('.error-invalid, .error-empty').hide();
     }
+    
+    $inputGroup.find('.label-control').removeClass('label-under');
+
     $inputGroup.find('.form-control').val($(this).find('.suggestion-name').text());
+  
   });
 
   // Asynchronously load report types.
@@ -453,6 +465,9 @@ function showSuggestion(event) {
     });
     makeUnorderedListOf(autoCompleteContainer.find('ul.auto-complete-list'), reducedValues);
     autoCompleteContainer.css('display', 'block');
+  } else {
+    makeUnorderedListOf(autoCompleteContainer.find('ul.auto-complete-list'), assigneeNames);
+    autoCompleteContainer.css('display', 'block');
   }
 }
 
@@ -466,7 +481,7 @@ function makeUnorderedListOf($autoCompleteList, reducedValues) {
     if (index === 0) {
       $('<li class="auto-complete-item preferred-item" data-person-id=' + assigneeObj.id + '> <span class="suggestion-name">' + assigneeObj.name + '</span>' + '<span class="suggestion-email">' + assigneeObj.email + '</span>' + '</li>').appendTo($autoCompleteList);
     } else {
-      $('<li class="auto-complete-item" data-person-id=' + assigneeObj.id + '>' + assigneeObj.name + '</li>').appendTo($autoCompleteList);
+      $('<li class="auto-complete-item" data-person-id=' + assigneeObj.id + '> <span class="suggestion-name">' + assigneeObj.name + '</span>' + '<span class="suggestion-email">' + assigneeObj.email + '</span>' + '</li>').appendTo($autoCompleteList);
     }
   });
 }

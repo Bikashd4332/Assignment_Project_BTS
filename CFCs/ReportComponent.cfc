@@ -186,15 +186,13 @@
 			FROM [REPORT_ATTACHMENTS]
 			WHERE [AttachmentID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 		</cfquery>
-		<cfdump var = "#queryGetAttachmentFilePath#">
-		<cfabort>
-			<cfif "#queryGetAttachmentFilePath['Uploader']#" EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
-				<cffile action="delete" file="#queryGetAttachmentFilePath['Attachment']#">
+			<cfif "#queryGetAttachmentFilePath.Uploader#" EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
+				<cffile action="delete" file="#queryGetAttachmentFilePath.Attachment#">
 				<cfquery>
 					DELETE FROM [REPORT_ATTACHMENTS]
 					WHERE [AttachmentId] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 				</cfquery>
-				<cfset commentId =  addComment("deleted file #GetFileFromPath(AttachMent)#",ReportID, 1 )>
+				<cfset commentId =  addComment("deleted file #GetFileFromPath(queryGetAttachmentFilePath.AttachMent)#",queryGetAttachmentFilePath.ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
 			</cfif>
 	</cffunction>
@@ -481,11 +479,12 @@
 	</cffunction>
 
 
-	<cffunction access="remote"  output="false" name="ChangeAssignee" displayname="ChangeAssignee"  hint="This function changes the assignee of the report.">
+	<cffunction access="remote"  output="false" name="ChangeAssignee"  displayname="ChangeAssignee"  hint="This function changes the assignee of the report.">
 		<cfargument required="true" name="reportId" type="numeric" hint="Contains the report whose assignee will be changed." >
 		<cfargument required="true" name="personId" type="numeric" hint="This contains the personId whom it will be assigned." >
 		<cfquery name="queryChangeAssignee">
-			UPDATE [REPORT_INFO] SET [Assignee] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.personId#">
+			UPDATE [REPORT_INFO] SET [Assignee] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.personId#"> 
+			WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_numeric" />
 		</cfquery>
 	</cffunction>
 
@@ -650,5 +649,14 @@
 		<cfreturn true>
 	</cffunction>
 
+	<cffunction access="remote" output="false" name="AssignToMe" returnformat="JSON" returntype="boolean" hint="This function changes the assignee of any report to the current logged in person.">
+		<cfargument required="true" type="numeric" name="reportId">
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') />
+		<cfset dashBoardComponentInstance = CreateObject('component', 'DashBoardComponent') />
+		<cfset ChangeAssignee(arguments.reportId, utilComponentInstance.GetLoggedInPersonID()) />
+		<cfset commentId = AddComment("Assigne has been changed to #dashBoardComponentInstance.GetUserName()['userName']#", arguments.reportId, 1)>
+		<cfset wsPublish('report-status-update', { "commentId": "#commentId#" }) >
+		<cfreturn true />
+	</cffunction>
 
 </cfcomponent>

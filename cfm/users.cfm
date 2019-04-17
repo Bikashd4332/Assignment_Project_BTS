@@ -1,6 +1,14 @@
 <cfif session.userEmail EQ "">
   <cflocation url="login.cfm" addtoken="false">
 </cfif>
+
+<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
+<cfif NOT isAdmin>
+    <cfoutput>
+      <h1>Error 404 Not Found !</h1>
+    </cfoutput>
+    <cfabort/>
+</cfif>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,9 +54,9 @@
           <ul class="navlist">
             <li id="profile-img-li"><a href="#" class="navlink"><img class="profile-img"
                   src="../img/placeholder-person.png" /></a></li>
-            <li><a href="overview.cfm" class="navlink active"><i class="fa fa-dashboard"></i> Overview</a></li>
+            <li><a href="overview.cfm" class="navlink"><i class="fa fa-dashboard"></i> Overview</a></li>
             <li><a href="reports.cfm" class="navlink"><i class="number-badge">0</i> Reports</a></li>
-            <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
+            <li><a href="users.cfm" class="navlink active"><i class="fa fa-user"></i> Users</a></li>
             <li><a href="#" id="logOutButton" class="navlink"><i class="fa fa-sign-out"></i> Log out</a></li>
           </ul>
           <div class="nav-toggler">
@@ -185,7 +193,7 @@
           </div>
 
 
-          <table class="data-table">
+          <table class="data-table-invite">
           </table>
 
         </div>

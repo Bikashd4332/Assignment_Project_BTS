@@ -70,5 +70,33 @@
 		</cfloop>
 	</cffunction>
 
+	
+	<cffunction access="remote" output="false" returnformat="JSON" returntype="array" name="FetchUserInvitationRecords" displayname="FetchUserInvitationRecords">
+		<cfset arrayOfInvitations = ArrayNew(1)>
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') >
+		<cfquery name="queryGetInvitations">
+				SELECT [EmailID], 
+		   [UUID], 
+		   [DateInvited], 
+		   CASE [isValid] WHEN  0 THEN 'Not Valid' ELSE 'Valid' END AS [ValidityStatus],
+		   PT.[Name]
+			FROM [INVITE_PERSON] IP
+			INNER JOIN [PERSON_TITLE] PT
+			ON PT.[TitleID] = IP.[TitleID]
+			WHERE IP.[ProjectID] = <cfqueryparam value="#utilComponentInstance.GetProjectIdOf()#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfloop query="queryGetinvitations">
+			<cfset invitationRecord = ArrayNew(1)>
+			<cfset ArrayAppend(invitationRecord, EmailID)>
+			<cfset ArrayAppend(invitationRecord, UUID)>
+			<cfset ArrayAppend(invitationRecord, DateInvited)>
+			<cfset ArrayAppend(invitationRecord, ValidityStatus)>
+			<cfset ArrayAppend(invitationRecord, Name)>
+			<cfset ArrayAppend(arrayOfInvitations, invitationRecord)>
+		</cfloop>
+		<cfreturn arrayOfInvitations />
+	</cffunction>
+
 
 </cfcomponent>

@@ -10,20 +10,20 @@
     font-size: 18px;
 }
 
-.data-table {
+.data-table, .data-table-invite {
     width: 100%;
 }
 
-.data-table > thead {
+.data-table > thead, .data-table-invite > thead {
     background-color: skyblue;
     color: whitesmoke;  
 }
 
-.data-table th:first-child {
+.data-table th:first-child, .data-table-invite th:first-child {
     border-radius: 5px 0px 0px 0px;
 }
 
-.datat-table th:last-child{
+.datat-table th:last-child, .data-table-invite th:last-child{
     border-radius: 0px 5px 0px 0px;
 }
 
@@ -159,5 +159,11 @@ div#DataTables_Table_1_length {
     #pageBody {
         width: 100%;
         padding: 15px 5px;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .tab .tab-navs li {
+        flex-direction: column;
     }
 }
