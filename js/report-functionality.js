@@ -790,10 +790,11 @@ function generateCommentUI(comment) {
  * @returns {jquery} - A jquery object containing all the html structure.
  */
 function generateActivityUI(activity) {
-  return $(`<div class="activity">
+  return $(`<div class="activity" data-date-commented="${activity.date}">
   <div class="profile-image-container">
     <img class="profile-img" src="data:image/${activity.ext};base64, ${activity.profileImage}">
   </div>
+  <div class="angle"></div>
   <div class="text">
       <span class="user-name">${activity.userName}</span>
       ${activity.comment}

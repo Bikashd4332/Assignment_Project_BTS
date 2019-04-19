@@ -92,7 +92,7 @@ $(document).ready(function () {
     $('.modal-close-btn, .cancel-btn').on('click', function (event) {
         event.preventDefault();
         const $modal = $(this).parents('.modal');
-        
+
         $modal.fadeOut('fast', function () {
             $('.background-popup').fadeOut('fast');
         });
@@ -179,6 +179,12 @@ $(document).ready(function () {
         }
     });
 
+    $('#emailListTextArea').on('input', function () {
+        const $inputGroup = $(this).parents('.input-group');
+        $inputGroup.removeClass('invalid');
+        $inputGroup.find('.error-invalid, .error-exist, .error-empty').hide();
+    });
+
     $("#bulkInviteModal .submit-btn").on('click', function (event) {
         event.preventDefault();
         const $emailListTextArea = $('#emailListTextArea');
@@ -198,13 +204,27 @@ $(document).ready(function () {
                 if (responseInJson.length !== 0) {
                     $emailListTextArea.parents('.input-group').addClass('invalid');
                     let errorString = "";
-                    responseInJson.forEach(function(existingEmail){
-                        errorString+=`${existingEmail} is already exists.<br/>`;
+                    responseInJson.forEach(function (existingEmail) {
+                        errorString += `${existingEmail} is already exists.<br/>`;
                     });
                     $errorExist.html(errorString);
                     $errorExist.show();
                 } else {
-                    console.log("post");
+                    $.ajax({
+                        url: '../CFCs/UsersComponent.cfc',
+                        data: {
+                            method: 'InviteUser',
+                            userEmailList: emailList
+                        }
+                    }).done(function (response) {
+                        if (JSON.parse(response) === true) {
+                            $('#bulkInviteModal').fadeOut('fast', function () {
+                                $('.background-popup').fadeOut('fast');
+                            });
+                            invitationDataTable.destroy();
+                            populateInvitationDataTable();
+                        }
+                    });
                 }
             });
         }
