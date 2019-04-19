@@ -162,6 +162,4 @@
 			<cfreturn 0>
 		</cfif>
 	</cffunction>
-
-
 </cfcomponent>

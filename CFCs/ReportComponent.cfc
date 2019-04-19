@@ -658,5 +658,18 @@
 		<cfset wsPublish('report-status-update', { "commentId": "#commentId#" }) >
 		<cfreturn true />
 	</cffunction>
+	
+	<cffunction access="public" output="false" returnformat="plain" returntype="boolean" name="IsReportValidForUser" displayname="IsReportValidForUser">
+		<cfargument required="true" type="numeric" name="reportId" hint="This is the reportId to check if its related to the project in the with the logged in user iw workint on.">
+		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') />
+		<cfquery name="queryGetProjectIdOfReport" maxrows="1">
+			SELECT P.[ProjectID] 
+			FROM [REPORT_INFO] RI
+			INNER JOIN [PERSON] P
+			ON RI.[PersonID] = P.[PersonID]
+			WHERE RI.[ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
+		</cfquery>
+		<cfreturn queryGetProjectIdOfReport.ProjectID EQ utilComponentInstance.GetProjectIdOf()>
+	</cffunction>
 
 </cfcomponent>

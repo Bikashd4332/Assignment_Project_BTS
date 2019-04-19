@@ -50,7 +50,7 @@
 
 
 	<cffunction access="remote" output="false" name="InviteUser" displayname="InviteUser" >
-		<cfargument required="true" type="any" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
+		<cfargument required="true" type="array" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
 		<cfargument required="false" default="" type="string" name="titleId" hint="This contains the title id of the user decided by admin.">
 		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset reportComponentInstance = CreateObject('component', 'ReportComponent')>

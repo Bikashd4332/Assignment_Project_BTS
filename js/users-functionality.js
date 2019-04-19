@@ -1,7 +1,10 @@
+let userDataTable;
+let invitationDataTable;
+
 $(document).ready(function () {
 
     fetchAllUsers().then(function (responseInJson) {
-        $('.data-table').DataTable({
+        userDataTable = $('.data-table').DataTable({
             data: responseInJson,
             responsive: true,
             columnDefs: [{
@@ -35,8 +38,6 @@ $(document).ready(function () {
         });
     });
 
-    populateInvitationDataTable();
-
     // Loading the profile picture of the logged in person.
     $.ajax({
         type: 'POST',
@@ -57,6 +58,12 @@ $(document).ready(function () {
         const $inviteUserWindow = $(this).parents('.tab').find('#inviteUserWindow');
         $userListWindow.fadeOut('fast', function () {
             $inviteUserWindow.fadeIn('fast');
+            if (invitationDataTable === undefined) {
+                populateInvitationDataTable();
+            } else {
+                invitationDataTable.destroy();
+                populateInvitationDataTable();
+            }
         });
     });
 
@@ -84,9 +91,14 @@ $(document).ready(function () {
 
     $('.modal-close-btn, .cancel-btn').on('click', function (event) {
         event.preventDefault();
-        $(this).parents('.modal').fadeOut('fast', function () {
+        const $modal = $(this).parents('.modal');
+        
+        $modal.fadeOut('fast', function () {
             $('.background-popup').fadeOut('fast');
         });
+        $modal.find('#emailListTextArea').val('');
+        $modal.find('.input-group').removeClass('invalid');
+        $modal.find('.error-invalid, .error-empty').hide();
     });
 
     $('#userEmailInput').on('blur', function (event) {
@@ -151,18 +163,65 @@ $(document).ready(function () {
         }
     });
 
+    $('#emailListTextArea').on('blur', function (event) {
+        const eneterdEmailListString = $(this).val();
+        const $inputGroup = $(this).parents('.input-group');
+
+        $inputGroup.find('.error-empty, .error-invalid').hide();
+
+        if (!validateEmailList(eneterdEmailListString)) {
+            $inputGroup.addClass('invalid');
+            if (eneterdEmailListString === '') {
+                $inputGroup.find('.error-empty').show();
+            } else {
+                $inputGroup.find('.error-invalid').show();
+            }
+        }
+    });
+
+    $("#bulkInviteModal .submit-btn").on('click', function (event) {
+        event.preventDefault();
+        const $emailListTextArea = $('#emailListTextArea');
+        const $errorExist = $emailListTextArea.parents('.input-group').find('.error-exist').hide();
+        if (!$emailListTextArea.parents('.input-group').hasClass('invalid')) {
+            $(this).addClass('busy');
+            $emailListTextArea.prop('disable', true);
+            const emailList = $emailListTextArea.val().split(';');
+            $.ajax({
+                url: '../CFCs/UtilComponent.cfc',
+                data: {
+                    method: 'IsMultipleEmailValid',
+                    userEmailList: emailList
+                }
+            }).done(function (response) {
+                const responseInJson = JSON.parse(response);
+                if (responseInJson.length !== 0) {
+                    $emailListTextArea.parents('.input-group').addClass('invalid');
+                    let errorString = "";
+                    responseInJson.forEach(function(existingEmail){
+                        errorString+=`${existingEmail} is already exists.<br/>`;
+                    });
+                    $errorExist.html(errorString);
+                    $errorExist.show();
+                } else {
+                    console.log("post");
+                }
+            });
+        }
+    });
+
     $('#logOutButton').on('click', function () {
         $.ajax({
-          type: 'POST',
-          url: '../CFCs/UtilComponent.cfc?method=LogUserOut'
+            type: 'POST',
+            url: '../CFCs/UtilComponent.cfc?method=LogUserOut'
         }).done(function (response) {
-          if (JSON.parse(response) === true) {
-            // Move user to login.cfm
-            window.location = 'login.cfm';
-          }
+            if (JSON.parse(response) === true) {
+                // Move user to login.cfm
+                window.location = 'login.cfm';
+            }
         });
-      })
-    
+    })
+
 });
 
 function processBase64Data(data, type, row, meta) {
@@ -194,9 +253,11 @@ function fetchAllUserInvitation() {
 
 function populateInvitationDataTable() {
     fetchAllUserInvitation().then(function (responseInJson) {
-        $('.data-table-invite').DataTable({
+        invitationDataTable = $('.data-table-invite').DataTable({
             data: responseInJson,
             responsive: true,
+            paging: true,
+            searching: true,
             columnDefs: [{
                 className: 'nowrap'
             }],
@@ -219,4 +280,9 @@ function populateInvitationDataTable() {
             ],
         });
     });
+}
+
+function validateEmailList(emailListString) {
+    const emailListPattern = /^([a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3});?\b)+$/;
+    return emailListString !== '' ? emailListPattern.test(emailListString) : false;
 }

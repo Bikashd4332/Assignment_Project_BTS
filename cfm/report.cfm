@@ -2,7 +2,15 @@
     <cflocation  url="login.cfm" addtoken="false">
 </cfif>
 
+<cfinvoke component="Assignment_Project_BTS.CFCs.ReportComponent" method="IsReportValidForUser" argumentcollection="#{reportId: url.Id}#" returnvariable="isValid" />
 <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
+<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
+
+<cfif NOT isValid>
+    <h1>Error 404 not found!</h1>
+    <cfabort>
+</cfif>
+
 <cfwebsocket name="cfWebSocketObj" onMessage="onMessageHandler" onOpen="onOpenHandler" />
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +58,9 @@
                             <li><a href="overview.cfm" class="navlink"><i class="fa fa-dashboard"></i>
                                     Overview</a>
                             </li>
-                            <li><a href="reports.cfm" class="navlink"><i class="number-badge">0</i> Reports</a></li>
+                            <cfoutput>
+                                <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i> Reports</a></li>
+                            </cfoutput>
                             
                             <cfif isAdmin>
                                 <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
@@ -214,7 +224,9 @@
                     <ul class="navlist">
                         <li><a href="overview.cfm" class="navlink">Overview</a></li>
                         <li><a href="reports.cfm" class="navlink">Reports</a></li>
-                        <li><a href="users.cfm" class="navlink">Users</a></li>
+                        <cfif isAdmin>
+                            <li><a href="users.cfm" class="navlink">Users</a></li>
+                        </cfif>
                         <li><a href="#" class="navlink log-out-btn">Log out</a></li>
                     </ul>
                 </div>

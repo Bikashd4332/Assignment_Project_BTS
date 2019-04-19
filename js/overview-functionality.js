@@ -750,7 +750,7 @@ function getAllReportsWatchedByMe() {
 
 /**
  * @desc This helps populating the reports with the help of functions for retrieving reports.
- * @param {jquery} $parentReport - This is parent container where to put all the dynamcally generated reports.
+  * @param {jquery} $parentReport - This is parent container where to put all the dynamcally generated reports.
  * @param {Promise} dataPromise - This is the promise of fetching reports.
  */
 function populateReports($parentReport, dataPromise) {

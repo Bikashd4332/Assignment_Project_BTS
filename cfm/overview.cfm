@@ -3,6 +3,7 @@
 </cfif>
 
 <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
+<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
 
 <!DOCTYPE html>
 <html lang="en">
@@ -47,8 +48,9 @@
             <li id="profile-img-li"><a href="#" class="navlink"><img class="profile-img"
                   src="../img/placeholder-person.png" /></a></li>
             <li><a href="overview.cfm" class="navlink active"><i class="fa fa-dashboard"></i> Overview</a></li>
-
-            <li><a href="reports.cfm" class="navlink"><i class="number-badge">0</i> Reports</a></li>
+            <cfoutput>
+              <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i> Reports</a></li>
+            </cfoutput>
             <cfif isAdmin>
               <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
             </cfif>
@@ -132,7 +134,9 @@
         </div>
         <ul class="navlist">
           <li><a href="overview.cfm" class="navlink"></i>Overview</a></li>
-          <li><a href="users.cfm" class="navlink"></i> Users</a></li>
+          <cfif isAdmin>
+            <li><a href="users.cfm" class="navlink">Users</a></li>
+          </cfif>
           <li><a href="reports.cfm" class="navlink"> Reports</a></li>
           <li><a href="#" class="navlink"> About Project</a></li>
         </ul>

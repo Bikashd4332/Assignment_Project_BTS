@@ -3,6 +3,7 @@
 </cfif>
 
 <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
+<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
 <cfif NOT isAdmin>
     <cfoutput>
       <h1>Error 404 Not Found !</h1>
@@ -55,7 +56,9 @@
             <li id="profile-img-li"><a href="#" class="navlink"><img class="profile-img"
                   src="../img/placeholder-person.png" /></a></li>
             <li><a href="overview.cfm" class="navlink"><i class="fa fa-dashboard"></i> Overview</a></li>
-            <li><a href="reports.cfm" class="navlink"><i class="number-badge">0</i> Reports</a></li>
+            <cfoutput>
+              <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i> Reports</a></li>
+            </cfoutput>
             <li><a href="users.cfm" class="navlink active"><i class="fa fa-user"></i> Users</a></li>
             <li><a href="#" id="logOutButton" class="navlink"><i class="fa fa-sign-out"></i> Log out</a></li>
           </ul>
@@ -126,12 +129,13 @@
                     <div class="input-group">
                       <div class="form-wrapper">
                         <textarea required class="form-control" name="emailLists" id="emailListTextArea" cols="15"
-                          rows="5"></textarea>
+                           rows="5"></textarea>
                         <div class="label-control label-over">Email Lists</div>
                       </div>
                       <div class="validation-feedback" id="emailListFeedback">
-                        <p class="error-empty">Email lists should at least have 2 emails.</p>
-                        <p class="error-invalid">Please double check the email list.</p>
+                        <p class="error-empty">Email lists should at least have one email.</p>
+                        <p class="error-invalid">Please double check the email list. It's invalid.</p>
+                        <p class="error-exist"></p>
                         <p class="assist-valid">Please enter email list with ';' separated.</p>
                       </div>
                     </div>

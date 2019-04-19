@@ -309,4 +309,44 @@
 		<cfreturn queryGetLoggedInfo.Name EQ 'ADMIN' />
 	</cffunction>
 
+	<cffunction access="public" output="false" returntype="numeric" returnformat="plain" name="GetTotalNumberOfReports" displayname="GetTotalNumberOfReports">
+		<cfset utilComponentInstance = CreateObject("component",'UtilComponent')>
+		<cfquery name="queryGetTotalNumberOfReports" maxrows="1">
+				SELECT COUNT([ReportID]) AS TotalReports 
+				FROM [REPORT_INFO] RI
+				INNER JOIN [PERSON] P
+				ON P.[PersonID] = RI.[PersonID]
+				WHERE P.[ProjectID] = <cfqueryparam value="#utilComponentInstance.GetProjectIdOf()#" cfsqltype="cf_sql_numeric">
+		</cfquery>
+	<cfreturn queryGetTotalNumberOfReports.TotalReports>
+</cffunction>
+
+
+<cffunction access="remote" output="false" returnFormat="JSON" returntype="array" name="IsMultipleEmailValid" displayname="IsMultipleEmailValid" description="This function checks if there's any other account related to any of the email in the array." hint="This function checks if there's any other account related to the email" >
+	<cfargument name="userEmailList" displayName="emailId" type="any" hint="This is the email id of which to test to validity." required="true" />
+	<cfset arguments.userEmailList=RemoveDuplicates(arguments.userEmailList)>
+	<cfset availableEmails = []>
+	<cfloop array="#arguments.userEmailList#" item="userEmail">
+		<cfquery name="resultSet" maxrows="1">
+			SELECT COUNT(*) AS AVAILABLE FROM [Person] WHERE [EmailId] = <cfqueryparam value="#userEmail#" cfsqltype="cf_sql_varchar" maxlength="50" null="false">
+		</cfquery>
+		<cfset returnValue = StructNew()>		
+		<cfif resultSet.AVAILABLE GTE 1>
+			<cfset ArrayAppend(availableEmails, userEmail)>
+		</cfif>
+	</cfloop>
+	<cfreturn availableEmails />
+</cffunction>
+
+<cffunction access="private" output="false" returntype="array" name="RemoveDuplicates" hint="This function eliminates any duplicate values inside an array.">
+	<cfargument type="array" required="true" name="myArray" />
+	<cfset arrayList =[]>
+	<cfloop list="#arrayToList(arguments.myArray)#" item="userEmail">
+		<cfif NOT ArrayFindNoCase(arrayList, userEmail)>
+			<cfset ArrayAppend(arrayList, userEmail)>
+		</cfif>
+	</cfloop>
+	<cfreturn arrayList>
+</cffunction>
+
 </cfcomponent>
