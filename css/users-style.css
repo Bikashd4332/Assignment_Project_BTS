@@ -124,6 +124,10 @@ div#DataTables_Table_1_length {
     vertical-align: middle;
 }
 
+.validation-feedback .error-exist {
+    color: red;
+}
+
 .form-control-checkbox:checked::after{
     content: '\f00c' ;
     font-family: 'FontAwesome';

@@ -1,5 +1,5 @@
 <cfif session.userEmail NEQ ''>
-  <cflocation url="overview.cfm">
+  <cflocation url="overview.cfm" addtoken="false">
 </cfif>
 
 <!DOCTYPE html>
@@ -19,7 +19,7 @@
 
   <script src="../js/jquery-3.0.0.min.js"></script>
   <script src="../js/form-functionality.js"></script>
-  <script src="../setup_account-functionality.js"></script>
+  <script src="../js/setup_account-functionality.js"></script>
 
   <title>User Setup | Ticket Tracking System</title>
 
@@ -171,8 +171,8 @@
                   <cfoutput>
                     <div class="input-group">
                         <div class="form-wrapper">
-                          <select class="form-control" name="userTitle" id="userTitleSelect">
-                            <option value="2">Developer</option>
+                          <select class="form-control" name="titleId" id="userTitleSelect">
+                            <option value="2" selected>Developer</option>
                           </select>
                           <div class="label-control label-over">Title</div>
                         </div>

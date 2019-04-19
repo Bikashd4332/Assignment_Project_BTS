@@ -244,6 +244,7 @@
 		<cfif arguments.profileImage NEQ ''>
 			<cfset imagePath =  uploadProfileImage('#profileImage#', '#profileImageName#') />
 		</cfif>
+		
 		<cfif arguments.titleId EQ 0>
 			<cfset arguments.titleId = GetTitleInfo(arguments.userUUID).titleId>					
 		</cfif>

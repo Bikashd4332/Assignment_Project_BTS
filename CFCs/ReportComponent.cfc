@@ -284,7 +284,7 @@
 		</cfif>
 		<cfloop query="queryGetCommentsForReport">
 			<cfset profileImage = DeserializeJSON(dashboardComponent.GetProfileImage(40, 40, PersonID))>
-			<cfset ArrayAppend(response, '{ "userName":"#FirstName#", "id":"#CommentID#", "personId": "#PersonID#", "profileImage":"#profileImage["base64ProfileImage"]#", "comment": "#Comment#", "date":"#utilComponent.RelativeDate(DateCommented)#", "extension": "#profileImage["extension"]#", "isActivity": "#isActivity#" }')>
+			<cfset ArrayAppend(response, '{ "userName":"#FirstName#", "id":"#CommentID#", "personId": "#PersonID#", "profileImage":"#profileImage["base64ProfileImage"]#", "comment": "#Comment#", "date":"#DateCommented#", "extension": "#profileImage["extension"]#", "isActivity": "#isActivity#" }')>
 		</cfloop>
 		<cfreturn response />
 	</cffunction>

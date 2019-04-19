@@ -49,7 +49,7 @@
 	</cffunction>
 
 
-	<cffunction access="remote" output="false" name="InviteUser" displayname="InviteUser" >
+	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="InviteUser" displayname="InviteUser" >
 		<cfargument required="true" type="array" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
 		<cfargument required="false" default="" type="string" name="titleId" hint="This contains the title id of the user decided by admin.">
 		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
@@ -68,6 +68,7 @@
 			</cfquery>
 			<cfset reportComponentInstance.SendEmailTo(userEmail, "http://[server-name]/setup_account.cfm?uuid=#uuidForUser#")>
 		</cfloop>
+		<cfreturn true />
 	</cffunction>
 
 	
@@ -75,13 +76,13 @@
 		<cfset arrayOfInvitations = ArrayNew(1)>
 		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') >
 		<cfquery name="queryGetInvitations">
-				SELECT [EmailID], 
+			 SELECT [EmailID], 
 		   [UUID], 
 		   [DateInvited], 
 		   CASE [isValid] WHEN  0 THEN 'Not Valid' ELSE 'Valid' END AS [ValidityStatus],
-		   PT.[Name]
+		   CASE WHEN IP.[TitleID] IS NULL THEN 'Unassigned' ELSE PT.[Name] END AS [Name]
 			FROM [INVITE_PERSON] IP
-			INNER JOIN [PERSON_TITLE] PT
+			LEFT JOIN [PERSON_TITLE] PT
 			ON PT.[TitleID] = IP.[TitleID]
 			WHERE IP.[ProjectID] = <cfqueryparam value="#utilComponentInstance.GetProjectIdOf()#" cfsqltype="cf_sql_integer">
 		</cfquery>
