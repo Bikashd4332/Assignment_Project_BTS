@@ -148,17 +148,31 @@ div#DataTables_Table_1_length {
 
 }
 
+.error-exist{
+    color: red;
+}
+
 @media only screen and (max-width: 1100px) and (min-width: 680px) {
     #pageBody {
-        width: 80%;
-        padding: 15px;
+        width: 80% !important;
+        padding: 15px !important;
+    }
+}
+
+@media only screen and (max-width: 800px){
+    #inviteUserWindow .header-wrapper {
+        flex-direction: column;
+    }
+
+    #inviteUserWindow .header-wrapper .action-buttons {
+        margin-top: 10px;
     }
 }
 
 @media only sceen and (max-width: 680px){
     #pageBody {
         width: 100%;
-        padding: 15px 5px;
+        padding: 15px;
     }
 }
 

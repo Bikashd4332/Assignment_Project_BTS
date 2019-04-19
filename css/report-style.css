@@ -62,6 +62,10 @@
     background-color: rgba(255, 0, 0, 0.7);
 }
 
+.enhancement{
+    background-color: rgba(0, 180, 0, 1);
+}
+
 .high {
     background-color: rgba(255, 0, 0, 0.7);
 }
@@ -97,6 +101,11 @@
 
 .bug::before {
     content: '\f188';
+    font-family: 'FontAwesome';
+}
+
+.enhancement::before {
+    content: '\f062';
     font-family: 'FontAwesome';
 }
 

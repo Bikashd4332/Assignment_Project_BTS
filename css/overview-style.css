@@ -220,6 +220,10 @@
   background-color: green;
 }
 
+.enhancement{
+  background-color: rgba(0, 180, 0, 0.6);
+}
+
 .bug {
   background-color: #cc0000;
 }
@@ -237,6 +241,12 @@
 .bug>i::after {
   font-style: normal;
   content: "\f188";
+  font-family: 'FontAwesome';
+}
+
+.enhancement> i::after {
+  content: '\f062';
+  font-style: normal;
   font-family: 'FontAwesome';
 }
 
