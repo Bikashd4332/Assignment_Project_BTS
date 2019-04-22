@@ -5,6 +5,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    box-shadow: inset 0px 0px 20px 4px rgba(0, 0, 0, 0.5);
   }
   
   /* This is a flex boxed container for holding header-section contents. */

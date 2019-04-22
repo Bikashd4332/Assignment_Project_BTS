@@ -8,7 +8,7 @@
 <cfcomponent displayname="ReportComponent" accessors="true" output="false" persistent="false">
 
 
-	<cffunction access="remote" output="false" returnformat="JSON" returntype="struct" name="UploadAttachment" displayname="UploadAttachment" hint="This function uploads report attachments and stores into a directory." >
+	<cffunction access="remote" output= "false" returnformat="JSON" returntype="struct" name="UploadAttachment" displayname="UploadAttachment" hint="This function uploads report attachments and stores into a directory." >
 		<cfargument required="true" type="any" name="uploadedFile" hint="This argument contains the path of the uploaded file."/>
 		<cfargument required="true" type="string" name="clientFileInfo" hint="This argument contains extra info of the client file.">
 		<cfargument required="true"  type="string" name="uploadedDirectory" hint="This arguments will only have values when any files have been uploaded before.">
@@ -351,7 +351,9 @@
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON" name="IsWorkingAssignee" displayname="IsWorkingAssignee" hint="This function finds if any assignee is currently working on the report.">
 		<cfargument required="true" name="reportId">
 		<cfquery name="queryGetIsWorkingAssignee">
-			SELECT [isWorking] FROM [REPORT_INFO] WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+			SELECT [isWorking] 
+			FROM [REPORT_INFO] 
+			WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
 		<cfloop query="queryGetIsWorkingAssignee">
 			<cfif isWorking EQ 1>
@@ -368,14 +370,19 @@
 		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
 		<cfif reportStatus['status'] EQ 'OPEN' OR reportStatus['status'] EQ 'REOPEN'>
 			<cfquery name="queryChangeOpenToInProgress">
-				UPDATE [REPORT_INFO] SET [isWorking] = 1, [StatusID] = 2 WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">;
+				UPDATE [REPORT_INFO] 
+				SET [isWorking] = 1, 
+				[StatusID] = 2 
+				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">;
 			</cfquery>
 			<cfset commentId =  AddComment('changed the status from OPEN to IN PROGRESS', arguments.reportId, 1)>
 			<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
 			<cfreturn '{ "commentId": #commentId# }'>
 		<cfelse>
 			<cfquery name="querySetIsWorking">
-				UPDATE [REPORT_INFO] SET [isWorking] = 1 WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer"  value="#arguments.reportId#">;
+				UPDATE [REPORT_INFO] 
+				SET [isWorking] = 1 
+				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer"  value="#arguments.reportId#">;
 			</cfquery>
 			<cfset wsPublish('report-status-update', "Report working string changed.")>
 		</cfif>
@@ -388,7 +395,10 @@
 		<cfif reportStatus['status'] EQ 'IN PROGRESS'>
 			<cfif hasGoneToDone(reportId)>
 				<cfquery name="queryChangeToReopen">
-					UPDATE [REPORT_INFO] SET [isWorking] = 0, [StatusID] = 6 WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+					UPDATE [REPORT_INFO] 
+					SET [isWorking] = 0, 
+					[StatusID] = 6 
+					WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 				</cfquery>
 				<cfset commentId =  AddComment('chaged the status from IN PROGRESS to REOPEN', arguments.reportId, 1)>
 				<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
@@ -405,7 +415,8 @@
 			</cfif>
 		<cfelse>
 			<cfquery name="queryStopIsWorking">
-				UPDATE [REPORT_INFO] SET [isWorking] = 0 WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">;
+				UPDATE [REPORT_INFO] SET [isWorking] = 0 
+				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">;
 			</cfquery>
 			<cfset wsPublish('report-status-update',"Report working string changed.")>
 		</cfif>
@@ -433,6 +444,7 @@
 				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] + 1#">,
 				[isWorking] = 0,
 				[Assignee] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.assignee#">
+				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 			</cfquery>
 			<cfset commentId = AddComment("changed the status from #reportStatus['status']# to #GetStatusNameOfStatusID(reportStatus['statusId'] + 1)#", arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
@@ -447,7 +459,10 @@
 		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
 		<cfif reportStatus['status'] EQ 'IN REVIEW' OR reportStatus['status'] EQ 'DONE'>
 			<cfquery name="querySendReportToPreviousStatus">
-				UPDATE [REPORT_INFO] SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] - 1#">,  [isWorking] = 1
+				UPDATE [REPORT_INFO] 
+				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] - 1#">,  
+				[isWorking] = 1
+				WHERE [ReporID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 			</cfquery>
 			<cfset commentId =  AddComment('changed the state from #reportStatus["status"]# to #GetStatusNameOfStatusID(reportStatus["statusId"] - 1)#', arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId, GetLastAssignee(arguments.reportId))>

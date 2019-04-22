@@ -55,7 +55,9 @@ $(document).ready(function () {
     url: '../CFCs/DashboardComponent.cfc?method=GetUserName',
     async: true
   }).done(function (response) {
-    const responseInJson = JSON.parse(response);
+  const responseInJson = JSON.parse(response);
+// The admin has a unique functionality of adding different members for different 
+// stages of works for a ticket to be closed successfully and integrated into the maintained software.
     $('#usrName').text(responseInJson.userName.split(' ')[0]);
   });
 
@@ -254,11 +256,11 @@ $(document).ready(function () {
       $inputGroup.removeClass('invalid');
       $inputGroup.find('.error-invalid, .error-empty').hide();
     }
-    
+
     $inputGroup.find('.label-control').removeClass('label-under');
 
     $inputGroup.find('.form-control').val($(this).find('.suggestion-name').text());
-  
+
   });
 
   // Asynchronously load report types.
@@ -750,7 +752,7 @@ function getAllReportsWatchedByMe() {
 
 /**
  * @desc This helps populating the reports with the help of functions for retrieving reports.
-  * @param {jquery} $parentReport - This is parent container where to put all the dynamcally generated reports.
+ * @param {jquery} $parentReport - This is parent container where to put all the dynamcally generated reports.
  * @param {Promise} dataPromise - This is the promise of fetching reports.
  */
 function populateReports($parentReport, dataPromise) {
@@ -766,7 +768,7 @@ function populateReports($parentReport, dataPromise) {
               <div class="report-id">#<span class="id">${reportObjInJson.id}</span></div>
               <div class="report-info">
                 <div class="report-name">${reportObjInJson.title}</div>
-                <div class="report-desc">${reportObjInJson.description.split(' ').slice(0, 10).join(' ')}</div>
+                <div class="report-desc">${reportObjInJson.description.substring(0, 55)}</div>
               </div>
               <div class="report-type-priority">
                 <div class="badge">

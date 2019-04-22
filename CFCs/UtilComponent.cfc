@@ -297,7 +297,7 @@
 
 		<cfreturn queryGetMemberMail.EmailID>
 		
-	</cffunction> 
+	</cffunction>
 	
 	<cffunction access="remote" output="false" returnformat="plain" returntype="boolean" name="IsLoggedInPersonAnAdmin" displayname="IsAnAdmin">
 		<cfquery name="queryGetLoggedInfo" maxrows="1">

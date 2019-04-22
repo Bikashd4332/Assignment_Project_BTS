@@ -149,6 +149,7 @@
 .report-description {
     margin: 20px;
     position: relative;
+    overflow-wrap: break-word;
     padding: 20px 30px 20px 30px;
     border-top: 1px dotted lightskyblue;
 }
@@ -415,12 +416,13 @@
 }
 
 .comment-editor-container>.comment-submit-btn {
-    padding: 10px 20px;
+    padding: 10px 10px;
     text-decoration: none;
     margin: 5px 0px;
     color: white;
     float: right;
-    background-color: lightskyblue
+    background-color: lightskyblue;
+    border-radius: 5px;
 }
 
 .comment-editor-header {
