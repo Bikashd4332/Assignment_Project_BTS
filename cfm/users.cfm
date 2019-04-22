@@ -4,12 +4,7 @@
 
 <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
 <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
-<cfif NOT isAdmin>
-    <cfoutput>
-      <h1>Error 404 Not Found !</h1>
-    </cfoutput>
-    <cfabort/>
-</cfif>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -78,13 +73,21 @@
           <li class="tab-nav-active" id="usersListWindowTab"><i class="fa fa-user"></i><span class="tab-info">
               <p>Users in this project</p>
             </span></li>
-          <li class="tab-nav-active" id="inviteUsersWindowTab"><i class="fa fa-user-plus"></i><span class="tab-info">
+          <cfif isAdmin>
+            <li class="tab-nav-active" id="inviteUsersWindowTab"><i class="fa fa-user-plus"></i><span class="tab-info">
+                <p>Invite Users to the project</p>
+              </span>
+            </li>
+          <cfelse>
+            <li class="tab-nav" id="inviteUsersWindowTab"><i class="fa fa-user-plus"></i><span class="tab-info">
               <p>Invite Users to the project</p>
-            </span></li>
+            </span>
+          </li>  
+          </cfif>  
         </ul>
         <div class="tab-windows">
+          <div class="tab-window" id="userListWindow">
           <form action="" method="" novalidate>
-            <div class="tab-window" id="userListWindow">
               <div class="header-wrapper">
                 <h1 class="header">Users List</h1>
                 <div class="header-info">This is a list of users currently in your project.</div>
@@ -105,103 +108,106 @@
               </table>
             </div>
         </div>
-        <div class="tab-window" id="inviteUserWindow">
-          <div class="header-wrapper">
-            <div class="header-text">
-              <h1 class="header">Invited Users</h1>
-              <div class="header-info">This is a list of users currently has got invitation to join.</div>
-            </div>
-            <div class="action-buttons">
-              <button class="invite-btn">Invite a User</button>
-              <button class="bulk-invite-btn">Bulk Invite</button>
-            </div>
-          </div>
-
-          <div class="background-popup">
-            <div class="modal" id="bulkInviteModal">
-              <div class="modal-header">
-                <h3>Invite Users</h3>
-                <a href="#" class="modal-close-btn"><i class="fa fa-times"></i></a>
+        <cfif  isAdmin>
+          <div class="tab-window" id="inviteUserWindow">
+            <div class="header-wrapper">
+              <div class="header-text">
+                <h1 class="header">Invited Users</h1>
+                <div class="header-info">This is a list of users currently has got invitation to join.</div>
               </div>
-              <div class="modal-body">
-                <h3>Adding multiple users.</h2>
-                  <div class="form-group">
-                    <div class="input-group">
-                      <div class="form-wrapper">
-                        <textarea required class="form-control" name="emailLists" id="emailListTextArea" cols="15"
-                           rows="5"></textarea>
-                        <div class="label-control label-over">Email Lists</div>
-                      </div>
-                      <div class="validation-feedback" id="emailListFeedback">
-                        <p class="error-empty">Email lists should at least have one email.</p>
-                        <p class="error-invalid">Please double check the email list. It's invalid.</p>
-                        <p class="error-exist"></p>
-                        <p class="assist-valid">Please enter email list with ';' separated.</p>
+              <div class="action-buttons">
+                <button class="invite-btn">Invite a User</button>
+                <button class="bulk-invite-btn">Bulk Invite</button>
+              </div>
+            </div>
+  
+            <div class="background-popup">
+              <div class="modal" id="bulkInviteModal">
+                <div class="modal-header">
+                  <h3>Invite Users</h3>
+                  <a href="#" class="modal-close-btn"><i class="fa fa-times"></i></a>
+                </div>
+                <div class="modal-body">
+                  <h3>Adding multiple users.</h2>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="form-wrapper">
+                          <textarea required class="form-control" name="emailLists" id="emailListTextArea" cols="15"
+                             rows="5"></textarea>
+                          <div class="label-control label-over">Email Lists</div>
+                        </div>
+                        <div class="validation-feedback" id="emailListFeedback">
+                          <p class="error-empty">Email lists should at least have one email.</p>
+                          <p class="error-invalid">Please double check the email list. It's invalid.</p>
+                          <p class="error-exist"></p>
+                          <p class="assist-valid">Please enter email list with ';' separated.</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                </div>
+                <div class="modal-actions">
+                  <button class="submit-btn">Send Invitation</button>
+                  <button class="cancel-btn">Cancel </button>
+                </div>
               </div>
-              <div class="modal-actions">
-                <button class="submit-btn">Send Invitation</button>
-                <button class="cancel-btn">Cancel </button>
+  
+              <div class="modal" id="inviteModal">
+                <div class="modal-header">
+                  <h3>Invite A User</h3>
+                  <a href="#" class="modal-close-btn"><i class="fa fa-times"></i></a>
+                </div>
+                <div class="modal-body">
+                  <h3>Adding a single user.</h2>
+                    <div class="form-group">
+                      <form>
+                        <div class="input-group">
+                          <div class="form-wrapper">
+                            <input type="text" name="userEmail" class="form-control" id="userEmailInput" required
+                              pattern="[a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3})">
+                            <div class="label-control label-under">User Email</div>
+                          </div>
+                          <div class="validation-feedback" id="fail">
+                            <p class="error-empty">User email is required.</p>
+                            <p class="error-invalid"></p>
+                            <p class="assist-valid">The user must not be an already registered user.</p>
+                          </div>
+                        </div>
+                        <div class="input-group">
+                          <input type="checkbox" class="form-control-checkbox" id="userTitleCheckBox">
+                          <label for="userTitleCheckBox">Let me decide the title of the user</label>
+                        </div>
+                        <div class="input-group">
+                          <div class="form-wrapper">
+                            <select class="form-control" name="personTitle" id="personTitleSelect" disabled>
+                              <option value="1">Developer</option>
+                              <option value="2">Reviewer</option>
+                              <option selected value="3">Tester</option>
+                            </select>
+                            <div class="label-control label-over">Select Title</div>
+                          </div>
+                          <div class="validation-feedback" id="reportPriorityFeedback">
+                            <p class="assist-valid">This specifies how important it is.</p>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                  <button class="submit-btn">Send Invitation</button>
+                  <button class="cancel-btn">Cancel </button>
+                </div>
               </div>
+  
             </div>
-
-            <div class="modal" id="inviteModal">
-              <div class="modal-header">
-                <h3>Invite A User</h3>
-                <a href="#" class="modal-close-btn"><i class="fa fa-times"></i></a>
-              </div>
-              <div class="modal-body">
-                <h3>Adding a single user.</h2>
-                  <div class="form-group">
-                    <form>
-                      <div class="input-group">
-                        <div class="form-wrapper">
-                          <input type="text" name="userEmail" class="form-control" id="userEmailInput" required
-                            pattern="[a-zA-Z]+(\.?[a-zA-Z0-9]+)+@[a-zA-Z]+(\.co)?\.([a-z]{2,3})">
-                          <div class="label-control label-under">User Email</div>
-                        </div>
-                        <div class="validation-feedback" id="fail">
-                          <p class="error-empty">User email is required.</p>
-                          <p class="error-invalid"></p>
-                          <p class="assist-valid">The user must not be an already registered user.</p>
-                        </div>
-                      </div>
-                      <div class="input-group">
-                        <input type="checkbox" class="form-control-checkbox" id="userTitleCheckBox">
-                        <label for="userTitleCheckBox">Let me decide the title of the user</label>
-                      </div>
-                      <div class="input-group">
-                        <div class="form-wrapper">
-                          <select class="form-control" name="personTitle" id="personTitleSelect" disabled>
-                            <option value="1">Developer</option>
-                            <option value="2">Reviewer</option>
-                            <option selected value="3">Tester</option>
-                          </select>
-                          <div class="label-control label-over">Select Title</div>
-                        </div>
-                        <div class="validation-feedback" id="reportPriorityFeedback">
-                          <p class="assist-valid">This specifies how important it is.</p>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-              </div>
-              <div class="modal-actions">
-                <button class="submit-btn">Send Invitation</button>
-                <button class="cancel-btn">Cancel </button>
-              </div>
-            </div>
-
+  
+  
+            <table class="data-table-invite">
+            </table>
+  
           </div>
-
-
-          <table class="data-table-invite">
-          </table>
-
-        </div>
-
+  
+        </cfif>
+        
       </div>
     </div>
   </div>

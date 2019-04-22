@@ -1,0 +1,143 @@
+.header-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#pageBody {
+  padding: 30px;
+}
+
+.search-bar {
+  position: relative;
+}
+
+.search-bar .search-control {
+  padding: 10px 10px 10px 35px;
+  border: 1px solid gray;
+}
+.search-bar .search-control:focus {
+  border: 1px solid skyblue;
+}
+
+.search-bar #searchBarIcon {
+  background-color: skyblue;
+  position: absolute;
+  padding: 9px 9px;
+  color: white;
+  left: 0%;
+  top: 0%;
+}
+
+.report-container {
+  margin: 30px 5px;
+  border-top: 2px solid skyblue; 
+  min-height: 300px;
+}
+
+.report {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+/*This element stays in the middle and should be strected complete. */
+.report>.report-info {
+  flex: 1;
+  padding-left: 10px;
+}
+
+/* This is the report id for each of the report. */
+.report>.report-id {
+  color: skyblue;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #dfdfdf;
+  padding: 10px;
+}
+
+/* The id inside of the parent. */
+.report>.report-id>.id {
+  font-size: 20px;
+}
+
+/* Report name styling for each report. */
+.report .report-name {
+  padding-bottom: 5px;
+  font-weight: bolder;
+}
+
+/* This styling is for putting some space between childred the report-type-priority */
+.report-type-priority>.badge:first-child {
+  margin-bottom: 10px;
+}
+
+/* A badge consisting with a label and value which is used for showring report type and priority. */
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  font-size: 11px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+}
+
+/* This is the default styling for reportlabel. */
+.badge>.badge-label {
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+/* This is the default styling for badge value. */
+.badge>.badge-value {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  padding: 3px 5px;
+}
+
+.high {
+  background-color: #cc0000;
+}
+
+.med {
+  background-color: darkgoldenrod;
+}
+
+.low {
+  background-color: green;
+}
+
+.enhancement{
+  background-color: rgba(0, 180, 0, 0.6);
+}
+
+.bug {
+  background-color: #cc0000;
+}
+
+.feature {
+  background-color: green;
+}
+
+.feature>i::after {
+  font-style: normal;
+  content: "\f013";
+  font-family: 'FontAwesome';
+}
+
+.bug>i::after {
+  font-style: normal;
+  content: "\f188";
+  font-family: 'FontAwesome';
+}
+
+.enhancement> i::after {
+  content: '\f062';
+  font-style: normal;
+  font-family: 'FontAwesome';
+}
+

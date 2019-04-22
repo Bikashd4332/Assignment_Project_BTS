@@ -53,7 +53,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#inviteUsersWindowTab').on('click', function () {
+    $('#inviteUsersWindowTab.tab-nav-active').on('click', function () {
         const $userListWindow = $(this).parents('.tab').find('#userListWindow');
         const $inviteUserWindow = $(this).parents('.tab').find('#inviteUserWindow');
         $userListWindow.fadeOut('fast', function () {

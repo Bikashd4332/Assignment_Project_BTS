@@ -62,9 +62,7 @@
                                 <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i> Reports</a></li>
                             </cfoutput>
                             
-                            <cfif isAdmin>
                                 <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
-                            </cfif>
 
                             <li><a href="#" class="navlink log-out-btn"><i class="fa fa-sign-out"></i> Log out</a>
                             </li>
@@ -224,9 +222,7 @@
                     <ul class="navlist">
                         <li><a href="overview.cfm" class="navlink">Overview</a></li>
                         <li><a href="reports.cfm" class="navlink">Reports</a></li>
-                        <cfif isAdmin>
-                            <li><a href="users.cfm" class="navlink">Users</a></li>
-                        </cfif>
+                        <li><a href="users.cfm" class="navlink">Users</a></li>
                         <li><a href="#" class="navlink log-out-btn">Log out</a></li>
                     </ul>
                 </div>

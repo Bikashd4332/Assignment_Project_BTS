@@ -582,6 +582,9 @@
     padding: 5px;
     z-index: 2;
 }
+.spinner-container {
+    min-height: 300px !important;
+}
 
 .activity .profile-image-container>.profile-img {
     width: 20px;
