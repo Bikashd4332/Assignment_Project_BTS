@@ -8,8 +8,8 @@ $(document).ready(function () {
   populateReports($('.report-list'), reportsPromise);
 
 
-   // Log out button functionality.
-   $('#logOutButton').on('click', function () {
+  // Log out button functionality.
+  $('#logOutButton').on('click', function () {
     $.ajax({
       type: 'POST',
       url: '../CFCs/UtilComponent.cfc?method=LogUserOut'
@@ -20,7 +20,7 @@ $(document).ready(function () {
       }
     });
   });
-  
+
 
   // Loading the profile picture of the logged in person.
   $.ajax({
@@ -48,15 +48,30 @@ $(document).ready(function () {
     window.location = 'report.cfm?id=' + reportId;
   });
 
+  $('#reportSearchInput').on('input', function (event) {
+    const enteredText = $(event.target).val().trim();
+    const $reportList = $('.report-list');
+    if (enteredText === '') {
+      showSpinner().then(function () {
+        const reportsPromise = $.ajax({
+          url: '../CFCs/ReportsComponent.cfc?',
+          data: {
+            method: 'GetAllReportsOfProject',
+          }
+        }).promise();
+        populateReports($reportList, reportsPromise);
+        reportsPromise.then(function () {
+          hideSpinner();
+        });
+      });
+    }
+  });
 
   // Handle the search of any reports in the report search bar.
-  $('#reportSearchInput').on('input', function (event) {
-    let timeOut = false;
-    if (timeOut !== false) clearTimeout(timeOut);
-    timeOut = setTimeout(function () {
-
-      const enteredText = $(event.target).val().trim();
-      const $reportList = $('.report-list');
+  $('#reportSearchInput').on('keydown', function (event) {
+    const enteredText = $(event.target).val().trim();
+    const $reportList = $('.report-list');
+    if (event.key === 'Enter') {
       if (enteredText !== "") {
         showSpinner().then(function () {
           const reportsPromise = $.ajax({
@@ -67,26 +82,12 @@ $(document).ready(function () {
             }
           }).promise();
           populateReports($reportList, reportsPromise);
-          reportsPromise.then(function(){
-            hideSpinner();
-          });
-        });
-      } else {
-        showSpinner().then(function () {
-          const reportsPromise = $.ajax({
-            url: '../CFCs/ReportsComponent.cfc?',
-            data: {
-              method: 'GetAllReportsOfProject',
-            }
-          }).promise();
-          populateReports($reportList, reportsPromise);
-          reportsPromise.then(function(){
+          reportsPromise.then(function () {
             hideSpinner();
           });
         });
       }
-      timeOut = false;
-    });
+    }
   });
 });
 

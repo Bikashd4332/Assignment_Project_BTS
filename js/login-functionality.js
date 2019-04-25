@@ -7,7 +7,7 @@ $(document).ready(function () {
    checkValidity(event.target);
   });
 
-  $('#loginButton').on('click', function (event) {
+  $('#loginButton').on('click', function () {
 
     let allFiledUp = true;
 
@@ -29,7 +29,6 @@ $(document).ready(function () {
           userPassword: myFormData.userPassword
         }
       }).done(function (response) {
-        console.log(response);
         if (JSON.parse(response) === true) {
           window.location = "overview.cfm";
           window.URL = "overview.cfm"

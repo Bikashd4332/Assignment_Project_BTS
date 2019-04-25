@@ -22,6 +22,11 @@
 
     <script src="../js/jquery-3.0.0.min.js"></script>
     <script src="../js/navbar-functionality.js"></script>
+    <style>
+        .branding{
+            justify-content: center !important;
+        }
+    </style>
 </head>
 
 <body>

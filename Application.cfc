@@ -34,8 +34,25 @@
 		<cfreturn true />
 	</cffunction>
 
+<!--- To check if any ajax request is performed when the session is timed-out. --->
+	<cffunction  output="false" displayname="OnCFCRequest" name="OnCFCRequest" hint="Called whenever a CFC method is requested">
+		<cfargument type="string" name="cfcname"> 
+		<cfargument type="string" name="method"> 
+		<cfargument type="struct" name="args"> 
 
-	<cffunction name="OnRequest" returntype="void" displayname="OnRequest" hint="Called when ever a requested." access="public" output="true">
+		<cfif session.userEmail EQ '' AND arguments.method NEQ 'LogUserIn' AND arguments.cfcname NEQ 'UtilComponent.cfc'>
+			<cflocation url="../cfm/login.cfm" addtoken="false" /> 
+		</cfif>
+
+		<cfinvoke 
+		component = "#arguments.cfcname#" 
+		method = "#arguments.method#" 
+		returnVariable = "result" 
+		argumentCollection = "#arguments.args#" /> 
+		<cfreturn result/>
+	</cffunction>
+
+	<cffunction name="OnRequest" returntype="void" displayname="OnRequest" hint="Called whenever a requested." access="public" output="true">
 		<cfargument name="targetPage" displayName="targetPage" type="string" hint="The target page which will be opened" required="true" />
 		<cfinclude template="#arguments.targetPage#">
 	</cffunction>

@@ -245,11 +245,7 @@ $(document).ready(function () {
         data: {
           reportId: reportId
         }
-      }).done(function (response) {
-        const responseInJson = JSON.parse(response);
-        // if (responseInJson.hasOwnProperty('commentId')) {
-        //   fetchActivityComment(responseInJson.commentId);
-        // }
+      }).done(function () {
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -395,8 +391,8 @@ $(document).ready(function () {
     }
   });
 
-   //To show autocomplete suggestion list.
-   $('.auto-complete .form-control').on('focus', function (event) {
+  //To show autocomplete suggestion list.
+  $('.auto-complete .form-control').on('focus', function (event) {
     getAssigneeNames().then(function (responseInJson) {
       assigneeNames = responseInJson;
       showSuggestion(event);
@@ -432,11 +428,11 @@ $(document).ready(function () {
       $inputGroup.removeClass('invalid');
       $inputGroup.find('.error-invalid, .error-empty').hide();
     }
-    
+
     $inputGroup.find('.label-control').removeClass('label-under');
 
     $inputGroup.find('.form-control').val($(this).find('.suggestion-name').text());
-  
+
   });
 
   $('.file-cancel-btn').on('click', function () {

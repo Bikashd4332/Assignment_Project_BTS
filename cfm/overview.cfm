@@ -63,7 +63,7 @@
   </div>
 
   <div class="container-fluid">
-    <div class="container" id="page-body">
+    <div class="container" id="pageBody">
 
       <div class="welcome-header">
         <h1 class="header">Welcome, <span id="usrName"></span></h1>

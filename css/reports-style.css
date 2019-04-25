@@ -4,6 +4,11 @@
   align-items: center;
 }
 
+#statisticsHeader {
+  padding-left: 30px;
+  margin-top: 15px;
+}
+
 #pageBody {
   padding: 30px;
 }
@@ -14,24 +19,32 @@
 
 .search-bar .search-control {
   padding: 10px 10px 10px 35px;
-  border: 1px solid gray;
+  border-radius: 2px;
+  border: 2px solid skyblue;
 }
+
 .search-bar .search-control:focus {
-  border: 1px solid skyblue;
+  border: 2px solid skyblue;
 }
 
 .search-bar #searchBarIcon {
   background-color: skyblue;
   position: absolute;
+  border-radius: 2px;
   padding: 9px 9px;
   color: white;
   left: 0%;
   top: 0%;
 }
 
+.search-bar p {
+  font-size: 12px;
+  color: lightslategray;
+}
+
 .report-container {
   margin: 30px 5px;
-  border-top: 2px solid skyblue; 
+  border-top: 2px solid skyblue;
   min-height: 300px;
 }
 
@@ -48,6 +61,12 @@
 .report>.report-info {
   flex: 1;
   padding-left: 10px;
+}
+
+.empty-msg {
+  text-align: center;
+  color: #b7e2fc;
+  padding: 25px 0px;
 }
 
 /* This is the report id for each of the report. */
@@ -111,7 +130,7 @@
   background-color: green;
 }
 
-.enhancement{
+.enhancement {
   background-color: rgba(0, 180, 0, 0.6);
 }
 
@@ -135,9 +154,37 @@
   font-family: 'FontAwesome';
 }
 
-.enhancement> i::after {
+.enhancement>i::after {
   content: '\f062';
   font-style: normal;
   font-family: 'FontAwesome';
 }
+@media only screen and (max-width: 860px ) {
+  body  .container {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  .header-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-bar .search-control {
+    width: 100%;
+  }
+}
+
+/* Hiding badge labels in low resolutions. */
+@media only screen and (max-width: 480px) {
+  .badge>.badge-label {
+    display: none;
+  }
+
+  .badge>.badge-value {
+    width: 100%;
+    border-radius: 3px;
+  }
+}
+
 

@@ -96,6 +96,7 @@
                         <span class="badge-value "></span>
                     </div>
                     <button class="watch-btn" id="toggleWatch"></button>
+                    <button id="editReportButton"><i class="fa fa-pencil-square-o"></i> Edit</button>
                     <div class="status-action">
                     </div>
                 </div>

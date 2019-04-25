@@ -62,7 +62,8 @@
 
                         <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
 
-                        <li><a href="#" id="logOutButton" class="navlink log-out-btn"><i class="fa fa-sign-out"></i> Log out</a>
+                        <li><a href="#" id="logOutButton" class="navlink log-out-btn"><i class="fa fa-sign-out"></i> Log
+                                out</a>
                         </li>
                     </ul>
                     <div class="nav-toggler">
@@ -83,6 +84,7 @@
                 <div class="search-bar">
                     <input type="text" class="search-control" id="reportSearchInput" placeholder="Search..">
                     <span id="searchBarIcon"><i class="fa fa-search"></i></span>
+                    <p for="reportSearchInput">Press enter to search.</p>
                 </div>
             </div>
             <div class="report-container">
@@ -91,8 +93,12 @@
                         <div></div>
                     </div>
                 </div>
-                <div class="report-list"> 
+                <div class="report-list">
                 </div>
+            </div>
+            <div class="header" id="statisticsHeader">
+                <h1 class="heading">Reports Statistics</h1>
+                <p class="heading-info">A graph of reports opened and closed on each month.</p>
             </div>
             <div class="" id="chart_div"></div>
         </div>
