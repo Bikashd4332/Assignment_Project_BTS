@@ -8,6 +8,20 @@ $(document).ready(function () {
   populateReports($('.report-list'), reportsPromise);
 
 
+   // Log out button functionality.
+   $('#logOutButton').on('click', function () {
+    $.ajax({
+      type: 'POST',
+      url: '../CFCs/UtilComponent.cfc?method=LogUserOut'
+    }).done(function (response) {
+      if (JSON.parse(response) === true) {
+        // Move user to login.cfm
+        window.location = 'login.cfm';
+      }
+    });
+  });
+  
+
   // Loading the profile picture of the logged in person.
   $.ajax({
     type: 'POST',
@@ -35,37 +49,45 @@ $(document).ready(function () {
   });
 
 
-// Handle the search of any reports in the report search bar.
-$('#reportSearchInput').on('input', function () {
-const enteredText = $(this).val().trim();
-const $reportList = $('.report-list');
-if (enteredText !== "") {
-  const reportsPromise = $.ajax({
-    url: '../CFCs/ReportsComponent.cfc?',
-    data: {
-      method: 'GetAllReportsOfProject',
-      searchString: `${enteredText}`
-    }
-  }).promise();
-  showSpinner().then(function () {
-    populateReports($reportList, reportsPromise).then(function () {
-      hideSpinner();
+  // Handle the search of any reports in the report search bar.
+  $('#reportSearchInput').on('input', function (event) {
+    let timeOut = false;
+    if (timeOut !== false) clearTimeout(timeOut);
+    timeOut = setTimeout(function () {
+
+      const enteredText = $(event.target).val().trim();
+      const $reportList = $('.report-list');
+      if (enteredText !== "") {
+        showSpinner().then(function () {
+          const reportsPromise = $.ajax({
+            url: '../CFCs/ReportsComponent.cfc?',
+            data: {
+              method: 'GetAllReportsOfProject',
+              searchString: `${enteredText}`
+            }
+          }).promise();
+          populateReports($reportList, reportsPromise);
+          reportsPromise.then(function(){
+            hideSpinner();
+          });
+        });
+      } else {
+        showSpinner().then(function () {
+          const reportsPromise = $.ajax({
+            url: '../CFCs/ReportsComponent.cfc?',
+            data: {
+              method: 'GetAllReportsOfProject',
+            }
+          }).promise();
+          populateReports($reportList, reportsPromise);
+          reportsPromise.then(function(){
+            hideSpinner();
+          });
+        });
+      }
+      timeOut = false;
     });
   });
-} else {
-  const reportsPromise = $.ajax({
-    url: '../CFCs/ReportsComponent.cfc?',
-    data: {
-      method: 'GetAllReportsOfProject',
-    }
-  }).promise();
-  showSpinner().then(function () {
-    populateReports($reportList, reportsPromise).then(function () {
-      hideSpinner();
-    });
-  });
-}
-});
 });
 
 /**
@@ -93,7 +115,7 @@ function populateReports($parentReport, dataPromise) {
               <div class="report-type-priority">
                 <div class="badge">
                   <div class="badge-label">Report type</div>
-                  <div class="badge-value ${reportObjInJson.type.toLowerCase()}"><i></i> ${reportObjInJson.type.toLowerCase()}</div>
+                  <div class="badge-value ${reportObjInJson.type.toLowerCase()}"><i></i> ${reportObjInJson.type.toLowerCase().substring(0,3)}</div>
                 </div>
                 <div class="badge">
                   <div class="badge-label">Report priority</div>
@@ -104,7 +126,6 @@ function populateReports($parentReport, dataPromise) {
       });
     }
   });
-  return dataPromise;
 }
 
 /**

@@ -114,7 +114,7 @@ $(document).ready(function () {
     $reportTitle.find('.report-title').text(responseInJson.title);
     $reportInfoStatus.find('.report-status').text(responseInJson.status).addClass(responseInJson.status.toLowerCase().replace(' ', '-'));
     $reportInfoStatus.find('.report-priority').find('.badge-value').text(responseInJson.priority).addClass(responseInJson.priority);
-    $reportInfoStatus.find('.report-type').find('.badge-value').text(responseInJson.type.toLowerCase()).addClass(responseInJson.type.toLowerCase());
+    $reportInfoStatus.find('.report-type').find('.badge-value').text(responseInJson.type.toLowerCase().substring(0, 3)).addClass(responseInJson.type.toLowerCase());
     $extendedInfo.find('.user-name').text(responseInJson.personName);
     $extendedInfo.find('.date-info').text(responseInJson.dateReported);
     $('.report-description').text(responseInJson.description);
@@ -336,7 +336,7 @@ $(document).ready(function () {
   // On clicking of the button reopen make all the other button busy until the process completes.
   $('.status-action').on('click', '#reopenButton', function (event) {
     if (!$(this).hasClass('busy')) {
-      $(event.target).parent('div.status-action').children().addClass('busy');
+      $(this).parent('div.status-action').children().addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=ReopenReport',
         type: 'POST',
@@ -356,8 +356,8 @@ $(document).ready(function () {
 
   // On click of the close button make all the other button busy untill the process completes.
   $('.status-action').on('click', '#closeButton', function (event) {
-    if ($('#closeButton').hasClass('busy')) {
-      (event.target).parent('div.status-action').children().addClass('busy');
+    if (!$(this).hasClass('busy')) {
+      $(this).parent('div.status-action').children().addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=CloseReport',
         type: 'POST',
@@ -365,12 +365,11 @@ $(document).ready(function () {
           reportId: reportId
         }
       }).done(function (respoonse) {
-        const responseInJson = JSON.parse(response);
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
+          updateAssigneeInfo();
         });
-        updateAssigneeInfo();
       });
     }
   });

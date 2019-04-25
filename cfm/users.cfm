@@ -223,7 +223,7 @@
           <li><a href="overview.cfm" class="navlink"></i>Overview</a></li>
           <li><a href="users.cfm" class="navlink"></i> Users</a></li>
           <li><a href="reports.cfm" class="navlink"> Reports</a></li>
-          <li><a href="#" class="navlink"> About Project</a></li>
+          <li><a href="./about_this_project.cfm" class="navlink"> About Project</a></li>
         </ul>
       </div>
       <hr />

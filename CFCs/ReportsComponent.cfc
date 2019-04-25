@@ -39,4 +39,75 @@
       <cfreturn responseArray />
         
     </cffunction>
+
+    <cffunction access="private" returnformat="JSON" returntype="array" output="true" name="GetCurrentYearStatsOfOpen" hint="This function returns the history of all the opened reports in each month in the current year.">
+      
+      <cfquery name="queryGetCurrentYearStatOfOpen">
+        -- Getting the month index and numer of tickets opened.
+        SELECT DATEPART(MONTH, [DateReported]) AS [MonthIndex], COUNT(*) AS [TicketRaised]  
+        FROM [REPORT_INFO] RI
+        INNER JOIN [REPORT_TYPE] RT
+        ON RT.[ReportTypeID] = RI.[ReportTypeID]
+        WHERE RT.[Title] LIKE '%'
+        GROUP BY DATEPART(MONTH, [DateReported]), DATEPART(YEAR, [DateReported])
+      </cfquery>
+      <cfset arrayStat = ArrayNew(1)>
+      <cfloop from="1" to="12" index="index">
+        <cfset arrayAppend(arrayStat, 0)>
+      </cfloop>
+      
+      <cfloop query="queryGetCurrentYearStatOfOpen"> 
+        <cfset arrayStat[queryGetCurrentYearStatOfOpen.MonthIndex] = queryGetCurrentYearStatOfOpen.TicketRaised>
+      </cfloop>
+
+      <cfreturn arrayStat />      
+    </cffunction>
+
+    <cffunction access="private" output="false" returnformat="JSON" returntype="array" name="GetCurrentYearStatsOfFixed" hint="This function returns an array of inde months and number of reports closed counts for chart." >
+      <cfquery name="queryGetCurrentYearStatOfFixed">
+        SELECT DATEPART(MONTH, [DateCommented]) AS [MonthIndex], COUNT(*) AS [FixedCount]
+        FROM [REPORT_COMMENTS] RC
+        WHERE [IsActivity] = 1
+        AND [Comment] LIKE '%has closed this report.'
+        GROUP BY DATEPART(MONTH, [DateCommented]), DATEPART(YEAR, [DateCommented])
+      </cfquery>
+
+      <cfset arrayStat = ArrayNew(1)>
+      <cfloop from="1" to="12" index="index">
+        <cfset arrayAppend(arrayStat, 0)>
+      </cfloop>
+
+      <cfloop query="queryGetCurrentYearStatofFixed"> 
+        <cfset arrayStat[queryGetCurrentYearStatofFixed.MonthIndex] = queryGetCurrentYearStatofFixed.FixedCount>
+      </cfloop>
+
+      <cfreturn arrayStat />    
+      
+    </cffunction>
+
+    <cffunction access="remote" output="false" returnformat="JSON" returntype="array" name="GetAllStatsZipped">
+
+      <cfset currentYearOpenStat = GetCurrentYearStatsOfOpen()>
+      <cfset currentYearFixedStat = GetCurrentYearStatsOfFixed()>
+      <cfset googleChartData = ArrayNew(2)>
+      
+      <cfloop from="1" to="12" index="index">
+        <cfset ArrayAppend(googleChartData, [])>
+        <cfset ArrayAppend(googleChartData[index], GetMonthNameFromIndex(int(index)))>
+        <cfset ArrayAppend(googleChartData[index], currentYearOpenStat[index])>
+        <cfset ArrayAppend(googleChartData[index], currentYearFixedStat[index])>
+      </cfloop>
+
+      <cfreturn googleChartData/>
+    </cffunction>
+
+    <cffunction access="private" output="false" returntype="string" name="GetMonthNameFromIndex">
+      <cfargument type="numeric" required="true" name="monthIndex">
+      <cfset monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']>
+      <cfif arguments.monthIndex LTE 12>
+        <cfreturn monthArray[arguments.monthIndex]>
+      </cfif>
+    </cffunction>
+    
+    
   </cfcomponent> 

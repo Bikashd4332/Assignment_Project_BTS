@@ -62,7 +62,7 @@
 
                         <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
 
-                        <li><a href="#" class="navlink log-out-btn"><i class="fa fa-sign-out"></i> Log out</a>
+                        <li><a href="#" id="logOutButton" class="navlink log-out-btn"><i class="fa fa-sign-out"></i> Log out</a>
                         </li>
                     </ul>
                     <div class="nav-toggler">

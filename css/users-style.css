@@ -139,6 +139,10 @@ div#DataTables_Table_1_length {
     color: white;
 }
 
+.tab {
+    min-height: 400px !important;
+}
+
 .form-control-checkbox:checked{
     background-color: skyblue;
 }

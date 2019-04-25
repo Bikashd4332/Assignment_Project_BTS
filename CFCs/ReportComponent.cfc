@@ -476,6 +476,7 @@
 		<cfargument required="true" type="numeric" name="reportId" >
 		<cfquery name="queryCloseReport">
 			UPDATE [REPORT_INFO] SET [StatusID] = 5
+			WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 		</cfquery>
 		<cfset commentId = AddComment("has closed this report.", arguments.reportId, 1)>
 		<cfset wsPublish('report-status-update', {"commentId": "#commentId#"}) >

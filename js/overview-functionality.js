@@ -773,7 +773,7 @@ function populateReports($parentReport, dataPromise) {
               <div class="report-type-priority">
                 <div class="badge">
                   <div class="badge-label">Report type</div>
-                  <div class="badge-value ${reportObjInJson.type.toLowerCase()}"><i></i> ${reportObjInJson.type.toLowerCase()}</div>
+                  <div class="badge-value ${reportObjInJson.type.toLowerCase()}"><i></i> ${reportObjInJson.type.toLowerCase().substring(0, 3)}</div>
                 </div>
                 <div class="badge">
                   <div class="badge-label">Report priority</div>
