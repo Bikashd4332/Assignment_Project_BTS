@@ -112,13 +112,45 @@ $(document).ready(function () {
 
     $reportTitle.find('.report-id').text('#' + responseInJson.id);
     $reportTitle.find('.report-title').text(responseInJson.title);
-    $reportInfoStatus.find('.report-status').text(responseInJson.status).addClass(responseInJson.status.toLowerCase().replace(' ', '-'));
-    $reportInfoStatus.find('.report-priority').find('.badge-value').text(responseInJson.priority).addClass(responseInJson.priority);
-    $reportInfoStatus.find('.report-type').find('.badge-value').text(responseInJson.type.toLowerCase().substring(0, 3)).addClass(responseInJson.type.toLowerCase());
+    $reportInfoStatus.find('.report-status')
+        .text(responseInJson.status)
+        .addClass(responseInJson.status.toLowerCase().replace(' ', '-'));
+        
+    $reportInfoStatus.find('.report-priority')
+        .find('.badge-value')
+        .text(responseInJson.priority)
+        .addClass(responseInJson.priority);
+        
+    $reportInfoStatus.find('.report-type').find('.badge-value')
+        .text(responseInJson.type.toLowerCase().substring(0, 3))
+        .addClass(responseInJson.type.toLowerCase())
+        .attr('data-id', responseInJson.typeId);
+
     $extendedInfo.find('.user-name').text(responseInJson.personName);
     $extendedInfo.find('.date-info').text(responseInJson.dateReported);
     $('.report-description').text(responseInJson.description);
     updateAssigneeInfo();
+  });
+
+  // Change report priority and type. 
+  $('#editReportButton').on('click', function (event) {
+    const $reportInfoStatus = $('.report-info-status');
+
+    const priority = $reportInfoStatus.find('.report-priority').find('.badge-value').text();
+    const type = $reportInfoStatus.find('.report-type').find('.badge-value').attr('data-id');
+    
+    changeReportInfo(priority, type).then(function (dataObj) {
+      if (dataObj !== false) {
+        dataObj['reportId'] = reportId;
+        $.ajax({
+          url: '../CFCs/ReportComponent.cfc?method=ChangeReportPriorityType',
+          data: dataObj
+        });
+      }
+      $('.modal').fadeOut('fast', function () {
+        $('.background-popup').fadeOut('fast');
+      });
+    });
   });
 
 
@@ -1031,9 +1063,8 @@ function onMessageHandler(message) {
         });
       });
       break;
-    default:
-      console.log(message);
-      break;
+    case 'report-type-priority-change':
+      updateReportPriorityType(message.data.priority, message.data.type);
   }
 }
 
@@ -1042,4 +1073,92 @@ function onOpenHandler() {
   cfWebSocketObj.subscribe('report-status-update');
   cfWebSocketObj.subscribe('report-file-delete');
   cfWebSocketObj.subscribe('report-comment-post');
+  cfWebSocketObj.subscribe('report-type-priority-change');
+}
+
+/**
+ * @desc This function shows a modal for changing report info and returns promise on choosing.
+ * @returns {Promise} true on valid selection and false on canceling it.
+ */
+function changeReportInfo(priority, type) {
+  return new Promise(function (resolve, reject) {
+    const $changeInfoModal = $('#changeInfoModal');
+    const $reportType = $changeInfoModal.find('#reportTypeSelect').attr('disable', true);
+    const $reportPriority = $changeInfoModal.find('#reportPrioritySelect');
+    const $submitButton = $changeInfoModal.find('.submit-btn').attr('disabled', true).addClass('busy');
+
+    $('.background-popup').fadeIn('fast', function () {
+      $changeInfoModal.fadeIn('fast', function () {
+        getReportTypes().then(function (responseInJson) {
+          populateSelect($reportType, responseInJson, type);
+          $reportPriority.val(priority);
+          $reportType.attr('disable', false);
+          $submitButton.attr('disabled', false).removeClass('busy');
+        });
+      });
+    });
+
+    $changeInfoModal.find('.modal-close-btn').on('click', function (event) {
+      event.preventDefault();
+      resolve(false);
+    });
+
+    $changeInfoModal.find('.submit-btn').on('click', function (event) {
+      const dataObj = {
+        reportTypeId: $reportType.val(),
+        reportPriority: $reportPriority.val()
+      }
+      resolve(dataObj);
+      // removing event listener.
+      $(event.target).off();
+    });
+  });
+}
+
+/**
+ * @desc This function is responsible for fetching the types of report by ajax.
+ */
+function getReportTypes() {
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      type: 'POST',
+      url: '../CFCs/ReportComponent.cfc?method=GetReportType',
+    }).done(function (response) {
+      const responseInJson = JSON.parse(response);
+      resolve(responseInJson);
+    });
+  });
+}
+
+/**
+ * @param {jqObject} $selectElement - The jquery object of HTMLSelectElement to populate. 
+ * @param {Object} selectData - The object having index as the key and names as the value.
+ * @param {Number} defaultIndex - The numeric value to specify the default index.
+ */
+function populateSelect($selectElement, selectData, defaultIndex) {
+  $($selectElement).find('option').remove();
+  for (let key in selectData) {
+    if (defaultIndex === key) {
+      $selectElement.append('<option value="' + key + '" selected>' + selectData[key] + '</option>');
+    } else {
+      $selectElement.append('<option value="' + key + '">' + selectData[key] + '</option>');
+    }
+  }
+}
+
+function updateReportPriorityType(priority, type) {
+  const $reportInfoStatus = $('.report-info-status');
+  $reportInfoStatus
+      .find('.report-priority')
+      .find('.badge-value')
+      .text(priority)
+      .removeClass()
+      .addClass(priority + ' badge-value');
+
+  $reportInfoStatus
+      .find('.report-type')
+      .find('.badge-value')
+      .text(type.toLowerCase().substring(0, 3))
+      .removeClass()
+      .addClass(type.toLowerCase() + ' badge-value');
 }

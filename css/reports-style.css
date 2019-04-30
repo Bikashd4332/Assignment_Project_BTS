@@ -159,6 +159,11 @@
   font-style: normal;
   font-family: 'FontAwesome';
 }
+
+.spinner-container {
+  height: 300px !important;
+}
+
 @media only screen and (max-width: 860px ) {
   body  .container {
     width: 100%;

@@ -12,7 +12,7 @@
 	<cfset this.name = "Bug Trakcing System" >
 	<cfset this.sessionManagement = true >
 	<cfset this.datasource = "MySqlServerSource">
-	<cfset this.wschannels = [{name="report-file-upload"}, {name="report-file-delete"}, {name="report-status-update"}, {name="report-comment-post"}]>
+	<cfset this.wschannels = [{name="report-file-upload"}, {name="report-file-delete"}, {name="report-status-update"}, {name="report-comment-post"}, {name="report-type-priority-change"}]>
 
 	<cffunction name="OnSessionStart" displayname="OnSessionStart" access="public" hint="Sets the required session values">
 		<cfif not isDefined('session.userEmail')>

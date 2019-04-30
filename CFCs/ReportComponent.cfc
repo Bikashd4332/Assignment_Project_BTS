@@ -121,7 +121,7 @@
 		<cfset response = StructNew()>
 		<cfset dashBoardComponentInstance = CreateObject('component', 'DashboardComponent')>
 		<cfquery name="queryGetReportInfo">
-			SELECT RI.[ReportID], RT.[Title] AS Type, RI.[Priority] , RI.[ReportTitle], RI.[Description], RI.[DateReported], RI.[PersonID], RST.[Name] AS Status FROM
+			SELECT RI.[ReportID], RT.[Title] AS Type, RI.[Priority] , RI.[ReportTypeID], RI.[ReportTitle], RI.[Description], RI.[DateReported], RI.[PersonID], RST.[Name] AS Status FROM
 				[REPORT_INFO] AS RI
 				INNER JOIN
 				[REPORT_TYPE] AS RT
@@ -142,6 +142,7 @@
 			<cfset response['personId'] = "#PersonID#">
 			<cfset response['personName'] = "#reporterName['userName']#">
 			<cfset response['status'] = "#Status#">
+			<cfset response['typeId'] = "#ReportTypeID#">
 		</cfloop>
 		<cfset UtilComponentInstance = CreateObject('component', 'UtilComponent')>
 		<cfset response['dateReported'] = "#UtilComponentInstance.RelativeDate(response['dateReported'])#">
@@ -687,5 +688,42 @@
 		</cfquery>
 		<cfreturn queryGetProjectIdOfReport.ProjectID EQ utilComponentInstance.GetProjectIdOf()>
 	</cffunction>
+	
+	<cffunction access="remote" output="false" returnformat="JSON"	returntype="boolean" name="ChangeReportPriorityType">
+			<cfargument type="numeric" required="true" name="reportTypeId">
+			<cfargument type="string" required="true" name="reportPriority">
+			<cfargument type="numeric" required="true" name="reportId">
+			<cfset commentIdArray = []>
 
+			<cfquery name="queryGetReportPriorityType" maxrows="1">
+				SELECT RI.[Priority], RI.[ReportTypeID], RT.[Title] FROM [REPORT_INFO] RI
+				INNER JOIN [REPORT_TYPE] RT 
+				ON RI.[ReportTypeID] = RT.[ReportTypeID]
+				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
+			</cfquery>
+			
+			<cfquery name="queryGetReportTypeName">
+				SELECT [Title] FROM [REPORT_TYPE] 
+				WHERE [ReportTypeID] = <cfqueryparam value="#arguments.reportTypeId#" cfsqltype="cf_sql_integer">
+			</cfquery>
+
+			<cfquery name="queryChangeReportPriorityType">
+				UPDATE [REPORT_INFO] SET 
+				[Priority] = <cfqueryparam value="#lcase(arguments.reportPriority)#" cfsqltype="cf_sql_varchar">, 
+				[reportTypeID] = <cfqueryparam value="#arguments.reportTypeId#" cfsqltype="cf_sql_numeric">
+				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer"> 
+			</cfquery>
+
+			<cfif arguments.reportPriority NEQ queryGetReportPriorityType.Priority>
+				<cfset AddComment('Priority is changed from #ucase(queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, 1)> 
+			</cfif>
+
+			<cfif arguments.reportTypeId NEQ queryGetReportPriorityType.ReportTypeID>
+				<cfset AddComment('Report type is changed from #queryGetReportPriorityType.Title# to #queryGetReportTypeName.Title#', arguments.reportId, 1)>
+			
+			</cfif>
+			
+			<cfset wsPublish('report-type-priority-change', { "priority" : arguments.reportPriority, "type": queryGetReportTypeName.Title })>
+			<cfreturn true />
+	</cffunction>
 </cfcomponent>
