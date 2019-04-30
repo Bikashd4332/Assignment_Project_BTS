@@ -263,6 +263,15 @@ $(document).ready(function () {
 
   });
 
+  $('.auto-complete-list').on('mouseover', '.auto-complete-item', function (event) {
+    console.log('Hello world');
+    const $preferredItem = $('.preferred-item');
+    if ($preferredItem !== $(this)) {
+      $preferredItem.removeClass('preferred-item');
+      $(this).addClass('preferred-item');
+    }
+  });
+
   // Asynchronously load report types.
   getReportTypes().then(function (resolveData) {
     populateSelect($('#reportTypeSelect'), resolveData, 1);

@@ -435,6 +435,7 @@ $(document).ready(function () {
 
   });
 
+
   $('.file-cancel-btn').on('click', function () {
     fileUploadXHR.forEach(function (ajaxObject) {
       ajaxObject.abort();

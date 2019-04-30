@@ -462,7 +462,7 @@
 				UPDATE [REPORT_INFO] 
 				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] - 1#">,  
 				[isWorking] = 1
-				WHERE [ReporID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 			</cfquery>
 			<cfset commentId =  AddComment('changed the state from #reportStatus["status"]# to #GetStatusNameOfStatusID(reportStatus["statusId"] - 1)#', arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId, GetLastAssignee(arguments.reportId))>
