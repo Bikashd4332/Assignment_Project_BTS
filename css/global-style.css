@@ -25,6 +25,11 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #4cb7e2 !important;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
 .form-control {
   border: 1px solid lightgray;
   outline: none;

@@ -338,6 +338,10 @@
   background-color: lightcoral;
 }
 
+.cancel-btn:hover {
+  background-color: #e65858 !important;
+}
+
 /* This the suggestion container which contains a list of names. */
 .auto-complete .auto-complete-container {
   background-color: white;

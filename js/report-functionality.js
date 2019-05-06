@@ -113,18 +113,18 @@ $(document).ready(function () {
     $reportTitle.find('.report-id').text('#' + responseInJson.id);
     $reportTitle.find('.report-title').text(responseInJson.title);
     $reportInfoStatus.find('.report-status')
-        .text(responseInJson.status)
-        .addClass(responseInJson.status.toLowerCase().replace(' ', '-'));
-        
+      .text(responseInJson.status)
+      .addClass(responseInJson.status.toLowerCase().replace(' ', '-'));
+
     $reportInfoStatus.find('.report-priority')
-        .find('.badge-value')
-        .text(responseInJson.priority)
-        .addClass(responseInJson.priority);
-        
+      .find('.badge-value')
+      .text(responseInJson.priority)
+      .addClass(responseInJson.priority);
+
     $reportInfoStatus.find('.report-type').find('.badge-value')
-        .text(responseInJson.type.toLowerCase().substring(0, 3))
-        .addClass(responseInJson.type.toLowerCase())
-        .attr('data-id', responseInJson.typeId);
+      .text(responseInJson.type.toLowerCase().substring(0, 3))
+      .addClass(responseInJson.type.toLowerCase())
+      .attr('data-id', responseInJson.typeId);
 
     $extendedInfo.find('.user-name').text(responseInJson.personName);
     $extendedInfo.find('.date-info').text(responseInJson.dateReported);
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
     const priority = $reportInfoStatus.find('.report-priority').find('.badge-value').text();
     const type = $reportInfoStatus.find('.report-type').find('.badge-value').attr('data-id');
-    
+
     changeReportInfo(priority, type).then(function (dataObj) {
       if (dataObj !== false) {
         dataObj['reportId'] = reportId;
@@ -230,30 +230,52 @@ $(document).ready(function () {
       $('#commentWindow .history').append(generateCommentUI(commentInJson));
     });
   });
-  $.ajax({
-    url: '../CFCs/ReportComponent.cfc?method=GetCommentsForReport',
-    data: {
-      reportId: reportId,
-    }
-  }).done(function (response) {
-    const responseInJson = JSON.parse(response);
-    responseInJson.forEach(function (commentString) {
-      const commentInJson = JSON.parse(commentString);
-      if (commentInJson.isActivity === '0') {
-        $('#activityWindow .history').append(generateCommentUI(commentInJson));
-      } else {
-        $('#activityWindow .history').append(generateActivityUI(commentInJson));
-      }
-    });
-  });
 
-  // On clicking on the activityTab  showing the activty tab window accordingly.
+  // On clicking the activityTab fetching and showing the activty if not already fetched 
+  // else showing just the activity which already fetched.
   $('#activityTab').on('click', function (event) {
     event.preventDefault();
-    $('.selected').removeClass("selected");
-    $(this).addClass('selected');
-    $('#commentWindow').fadeOut('fast', function () {
-      $('#activityWindow').fadeIn('fast');
+
+    const $tabElement = $('.tab');
+    const $spinnerBar = $('.tab').find('.spinner-container');
+
+    if (!$(this).hasClass('selected')) {
+      $tabElement.find('.selected').removeClass("selected");
+      $(this).addClass('selected');
+    }
+
+    $tabElement.find('#commentWindow').fadeOut('fast', function () {
+      $tabElement.find('#activityWindow').fadeIn('fast');
+      $tabElement.find('#activityWindow .history').css('display', 'none');
+      if ($tabElement.find('#activityWindow .history').find('.activity, .comment').length === 0) {
+        $spinnerBar.fadeIn('fast', function () {
+          $.ajax({
+            url: '../CFCs/ReportComponent.cfc?method=GetCommentsForReport',
+            data: {
+              reportId: reportId,
+              activity: 2
+            }
+          }).done(function (response) {
+            const responseInJson = JSON.parse(response);
+            commentData = responseInJson;
+            responseInJson.forEach(function (commentString) {
+              const commentInJson = JSON.parse(commentString);
+              if (commentInJson.isActivity === '0') {
+                $('#activityWindow .history').append(generateCommentUI(commentInJson));
+              } else {
+                $('#activityWindow .history').append(generateActivityUI(commentInJson));
+              }
+            });
+            $spinnerBar.fadeOut('fast', function () {
+              $tabElement.find('#activityWindow .history').css('display', 'block');
+            });
+          });
+        }).css('display', 'flex');
+      } else {
+        $spinnerBar.fadeOut('fast', function () {
+          $tabElement.find('#activityWindow .history').css('display', 'block');
+        });
+      }
     });
   });
 
@@ -1149,16 +1171,16 @@ function populateSelect($selectElement, selectData, defaultIndex) {
 function updateReportPriorityType(priority, type) {
   const $reportInfoStatus = $('.report-info-status');
   $reportInfoStatus
-      .find('.report-priority')
-      .find('.badge-value')
-      .text(priority)
-      .removeClass()
-      .addClass(priority + ' badge-value');
+    .find('.report-priority')
+    .find('.badge-value')
+    .text(priority)
+    .removeClass()
+    .addClass(priority + ' badge-value');
 
   $reportInfoStatus
-      .find('.report-type')
-      .find('.badge-value')
-      .text(type.toLowerCase().substring(0, 3))
-      .removeClass()
-      .addClass(type.toLowerCase() + ' badge-value');
+    .find('.report-type')
+    .find('.badge-value')
+    .text(type.toLowerCase().substring(0, 3))
+    .removeClass()
+    .addClass(type.toLowerCase() + ' badge-value');
 }

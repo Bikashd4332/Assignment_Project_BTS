@@ -244,7 +244,7 @@
                   </div>
                 </div>
               </div>
-              <div class="label-control">Please Enter file not more than 2MB.</div>
+              <div class="label-control">Please upload file not more than 2MB.</div>
           </div>
           </form>
         </div>

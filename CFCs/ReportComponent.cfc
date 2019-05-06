@@ -259,34 +259,28 @@
 
 	<cffunction access="remote" output="false" returntype="array" returnformat="JSON" name="GetCommentsForReport" displayname="GetCommentsForReport" hint="This function fetches all the comments form database of any specific report.">
 		<cfargument required="true" type="numeric" name="reportId" hint="The report id of which to fetch all the comments.">
-		<cfargument required="false"  type="numeric" name="activity" hint="A boolean for returning activity.">
+		<cfargument required="false" default="0"  type="numeric" name="activity" hint="A boolean for returning activity.">
 		<cfset response = ArrayNew(1)>
 		<cfset dashboardComponent = CreateObject('component', 'DashboardComponent')>
 		<cfset utilComponent = CreateObject('component', 'UtilComponent')>
-		<cfif IsDefined('arguments.activity')>
-			<cfquery name="queryGetCommentsForReport">
+
+		<cfquery name="queryGetCommentsForReport">
 			SELECT P.[PersonID], P.[FirstName], RC.[DateCommented], RC.[Comment], RC.[CommentID], RC.[IsActivity]
 			FROM [REPORT_COMMENTS] RC
 			INNER JOIN [PERSON] P
 			ON P.[PersonID] = RC.[PersonID]
 			WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
-			AND RC.[isActivity] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.activity#">
+			<cfif arguments.activity NEQ 2>
+				AND RC.[isActivity] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.activity#">
+			</cfif>
 			ORDER BY RC.[DateCommented] ASC
 		</cfquery>
-		<cfelse>
-			<cfquery name="queryGetCommentsForReport">
-			SELECT P.[PersonID], P.[FirstName], RC.[DateCommented], RC.[Comment], RC.[CommentID], RC.[IsActivity]
-			FROM [REPORT_COMMENTS] RC
-			INNER JOIN [PERSON] P
-			ON P.[PersonID] = RC.[PersonID]
-			WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
-			ORDER BY RC.[DateCommented] ASC
-		</cfquery>
-		</cfif>
+		
 		<cfloop query="queryGetCommentsForReport">
 			<cfset profileImage = DeserializeJSON(dashboardComponent.GetProfileImage(40, 40, PersonID))>
-			<cfset ArrayAppend(response, '{ "userName":"#FirstName#", "id":"#CommentID#", "personId": "#PersonID#", "profileImage":"#profileImage["base64ProfileImage"]#", "comment": "#Comment#", "date":"#DateCommented#", "extension": "#profileImage["extension"]#", "isActivity": "#isActivity#" }')>
+			<cfset ArrayAppend(response, '{"userName":"#FirstName#","id":"#CommentID#","personId":"#PersonID#","profileImage":"#profileImage["base64ProfileImage"]#","comment":"#Comment#","date":"#DateCommented#","extension": "#profileImage["extension"]#","isActivity": "#isActivity#" }')>
 		</cfloop>
+		
 		<cfreturn response />
 	</cffunction>
 

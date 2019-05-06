@@ -11,15 +11,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="icon" href="../img/insect.png">
+  <link rel="icon" href="img/insect.png">
   <link rel="stylesheet" href="./css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/global-style.css">
   <link rel="stylesheet" href="./css/navbar-style.css">
   <link rel="stylesheet" href="./css/footer-style.css">
   <link rel="stylesheet" href="./css/home-style.css">
 
-  <script src="js/jquery-3.0.0.min.js"></script>
-  <script src="js/navbar-functionality.js"></script>
+  <script  src="js/jquery-3.0.0.min.js"></script>
+  <script  src="js/navbar-functionality.js"></script>
+
+  <style>
+    @font-face {
+      font-family: "Arial";
+      src: local('Arial');
+      font-display: optional;
+    }
+  </style>
+  
 	<script>
 		$(document).ready(function() {
 			$('#CTAButton').on('click', () => { window.location = 'cfm/signup.cfm' });

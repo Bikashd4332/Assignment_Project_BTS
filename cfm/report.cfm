@@ -162,6 +162,11 @@
                     <div class="history">
 
                     </div>
+                    <div class="spinner-container">
+                        <div class="lds-ring">
+                            <div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -250,7 +255,7 @@
             </div>
             <div class="modal-actions">
                 <button class="submit-btn">Change</button>
-        </div>
+            </div>
         </div>
     </div>
     </div>
