@@ -16,3 +16,12 @@
 .section {
     padding: 20px 5px;
 }
+
+@media only screen and (max-width: 500px) {
+    .page-body {
+        padding: 30px;
+    }
+    .info {
+        visibility: hidden;
+    }
+}

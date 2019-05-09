@@ -4,8 +4,29 @@
     padding: 50px;
 }
 
-.report-title {
-    font-size: 30px;
+
+.sticky-container {
+    background-color: #fff;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 2px solid #87cefa;
+    align-items: center;
+    display: none;
+    box-shadow: 0px 0px 9px 1px #87cefa;;
+    top: 0px;
+    width: 100%;
+    padding: 10px;
+    z-index: 10;
+}
+
+.sticky-container  .report-title {
+    font-size: 25px !important;
+}
+
+.sticky-container .report-info-status {
+    margin-top: 10px
 }
 
 .report-title>.report-id {
@@ -14,6 +35,7 @@
 
 .report>.report-title {
     color: skyblue;
+    font-size: 30px;
 }
 
 .report-info-status {
@@ -116,7 +138,7 @@
     padding: 5px;
 }
 
-#editReportButton {
+.edit-btn {
     padding: 5px;
     margin-left: 5px;
     font-size: 11px;
@@ -129,8 +151,11 @@
 }
 
 .stop-watching {
-    background-color: rgba(180, 0, 0, 0.7);
+    background-color: lightcoral;
     color: white;
+}
+.stop-watching:hover {
+    background-color: #e65858 !important;
 }
 
 .stop-watching::before {
@@ -302,7 +327,11 @@
 }
 
 #deleteConfirmationModal .submit-btn {
-    background: rgba(255, 0, 0, 0.7);
+    background-color: lightcoral;
+}
+
+#deleteConfirmationModal .submit-btn:hover {
+    background-color: #e65858 !important;
 }
 
 #chooseAssigneeModal {

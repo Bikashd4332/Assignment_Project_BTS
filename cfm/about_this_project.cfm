@@ -1,7 +1,3 @@
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin"
-    returnvariable="isAdmin" />
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
-    returnvariable="reportCount" />
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,9 +18,12 @@
 
     <script src="../js/jquery-3.0.0.min.js"></script>
     <script src="../js/navbar-functionality.js"></script>
+    <script src="../js/about-functionality.js"></script>
     <style>
-        .branding{
-            justify-content: center !important;
+        .branding-wrapper {
+            text-decoration: none;
+            width: 100%;
+            color: black;
         }
     </style>
 </head>
@@ -36,34 +35,41 @@
                 <nav>
 
                     <cfif session.userEmail EQ ''>
-                        <div class="branding">
-                            <img class="brand-icon" src="../img/insect.png">
-                            <p class="brand-text">Ticket Tracking System</p>
-                        </div>
+                        <a href="../index.cfm" class="branding-wrapper">
+                            <div class="branding" style="justify-content: center;">
+                                <img class="brand-icon" src="../img/insect.png">
+                                <p class="brand-text">Ticket Tracking System</p>
+                            </div>
+                        </a>
                         <ul class="navlist">
                             <li><a href="../index.cfm" class="navlink"><i class="fa fa-home"></i> Home</a></li>
                             <li><a href="login.cfm" class="navlink"><i class="fa fa-sign-in"></i> Log In</a></li>
-                            <li><a href="About_This_Project.cfm" class="active navlink"><i
+                            <li><a href="About_This_Project.cfm" class="navlink"><i
                                         class="fa fa-info-circle"></i>
                                     About This Project</a></li>
                         </ul>
                         <cfelse>
-                            <div class="branding" style="justify-content: center">
-                                <img class="brand-icon" src="../img/insect.png">
-                                <p class="brand-text">Ticket Tracking System</p>
-                                <img class="profile-img" src="../img/placeholder-person.png" alt="Profile Imamge"
-                                    class="profile-img">
-                            </div>
+                            <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
+                            returnvariable="reportCount" />
+
+                           <a href="../index.cfm" class="branding-wrapper">
+                            <div class="branding">
+                                    <img class="brand-icon" src="../img/insect.png">
+                                    <p class="brand-text">Ticket Tracking System</p>
+                                    <img class="profile-img" src="../img/placeholder-person.png" alt="Profile Imamge"
+                                        class="profile-img">
+                                </div>
+                             </a>
                             <ul class="navlist">
                                 <li id="profile-img-li"><a href="#" class="navlink"><img class="profile-img"
                                             src="../img/placeholder-person.png" /></a></li>
-                                <li><a href="overview.cfm" class="navlink active"><i class="fa fa-dashboard"></i>
+                                <li><a href="overview.cfm" class="navlink"><i class="fa fa-dashboard"></i>
                                         Overview</a></li>
                                 <cfoutput>
                                     <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i>
                                             Reports</a></li>
                                 </cfoutput>
-                                    <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
+                                <li><a href="users.cfm" class="navlink"><i class="fa fa-user"></i> Users</a></li>
                                 <li><a href="#" id="logOutButton" class="navlink"><i class="fa fa-sign-out"></i> Log
                                         out</a></li>
                             </ul>
@@ -78,13 +84,13 @@
 
     <div class="container-fluid">
         <div class="heading-container">
-            <div class="container">
+            <div class="container page-body">
                 <h3 class="heading">I believe in being free, being power-full and being open source.</h3>
                 <p class="info">An Open-Sourced internship project made for the fullfillment of masters degree.</p>
             </div>
         </div>
 
-        <div class="container">
+        <div class="container page-body">
             <div class="section">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim quasi quo aperiam nihil, quidem fugit
                 modi ex sapiente quod labore nulla aut sunt delectus ipsum! Quia, quos tempore. Voluptate, saepe?Quidem

@@ -77,7 +77,7 @@
                   <ul class="navlist">
                       <li><a href="index.cfm" class="navlink"></i> Home</a></li>
                       <li><a href="cfm/login.cfm" class="navlink"></i> Log In</a></li>
-                      <li><a href="#" class="navlink">About This Project</a></li>
+                      <li><a href="cfm/about_this_project.cfm" class="navlink">About This Project</a></li>
                     </ul>
               </div>
               <hr/>

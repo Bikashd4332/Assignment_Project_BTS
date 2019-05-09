@@ -45,6 +45,17 @@ $(document).ready(function () {
     });
   });
 
+  $(document).scroll(function () {
+    const triggeringOffset = $('#reporterInfo').offset().top;
+    if ($(document).width() > 583) {
+      if ($(document).scrollTop() > triggeringOffset) {
+        $('.sticky-container').show().css('display', 'flex');
+      } else {
+        $('.sticky-container').hide();
+      }
+    }
+  });
+
   $('.log-out-btn').on('click', function () {
     $.ajax({
       type: 'POST',
@@ -64,15 +75,15 @@ $(document).ready(function () {
     }
   }).done(function (response) {
     if (response === "true") {
-      $('#toggleWatch').addClass('stop-watching').text('Stop Watching');
+      $('.watch-btn').addClass('stop-watching').text('Stop Watching');
     } else {
-      $('#toggleWatch').addClass('start-watching').text('Watch');
+      $('.watch-btn').addClass('start-watching').text('Watch');
     }
   });
 
-  $('#toggleWatch').on('click', function (event) {
+  $('.watch-btn').on('click', function () {
     if (!$(this).hasClass('busy')) {
-      $(this).addClass('busy');
+      $('.watch-btn').addClass('busy');
       $.ajax({
         url: '../CFCs/ReportComponent.cfc?method=ToggleWatcher',
         data: {
@@ -80,11 +91,11 @@ $(document).ready(function () {
         }
       }).done(function (response) {
         if (response === "true") {
-          $(event.target).removeClass('start-watching').addClass('stop-watching').text('Stop Watching');
+          $('.watch-btn').removeClass('start-watching').addClass('stop-watching').text('Stop Watching');
         } else {
-          $(event.target).removeClass('stop-watching').addClass('start-watching').text('Watch');
+          $('.watch-btn').removeClass('stop-watching').addClass('start-watching').text('Watch');
         }
-        $(event.target).removeClass('busy');
+        $('.watch-btn').removeClass('busy');
       });
     }
   });
@@ -133,7 +144,7 @@ $(document).ready(function () {
   });
 
   // Change report priority and type. 
-  $('#editReportButton').on('click', function (event) {
+  $('.edit-btn').on('click', function (event) {
     const $reportInfoStatus = $('.report-info-status');
 
     const priority = $reportInfoStatus.find('.report-priority').find('.badge-value').text();
@@ -319,8 +330,7 @@ $(document).ready(function () {
         data: {
           reportId: reportId
         }
-      }).done(function (response) {
-        const responseInJson = JSON.parse(response);
+      }).done(function () {
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -346,8 +356,7 @@ $(document).ready(function () {
                 reportId: reportId,
                 assignee: assigneeId
               }
-            }).done(function (response) {
-              const responseInJson = JSON.parse(response);
+            }).done(function () {
               updateActionButton(function () {
                 $(event.target).parent('div.status-action').children().removeClass('busy');
                 updateReportStatus();
@@ -393,8 +402,7 @@ $(document).ready(function () {
         data: {
           reportId: reportId
         }
-      }).done(function (response) {
-        const responseInJson = JSON.parse(response);
+      }).done(function () {
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -414,7 +422,7 @@ $(document).ready(function () {
         data: {
           reportId: reportId
         }
-      }).done(function (respoonse) {
+      }).done(function () {
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -434,8 +442,7 @@ $(document).ready(function () {
         data: {
           reportId: reportId
         }
-      }).done(function (response) {
-        const respooonseInJson = JSON.parse(response);
+      }).done(function () {
         updateActionButton(function () {
           $(event.target).parent('div.status-action').children().removeClass('busy');
           updateReportStatus();
@@ -779,7 +786,7 @@ function generateAttachmentHTML(report) {
 
   if (report.isRemovable) {
     $attachment.find('div.file-action').append(`
-      <a href="#" data-id="${report.id}" class="file-delete-btn"><i class="fa fa-trash"></i></a>`)
+      <a href="#" data-id="${report.id}" class="file-delete-btn"><i class="fa fa-trash"></i></a>`);
   }
   $attachment.find('div.file-action').append(` 
       <a href="../CFCs/ReportComponent.cfc?method=DownloadFile&path=../assets/report-attachments/${reportId}/${report.file}" class="file-download-btn"><i class="fa fa-download"></i></a>`)

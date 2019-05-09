@@ -165,7 +165,7 @@
 			<cfelse>
 				<cfset isRemovableByUser = false >
 			</cfif>
-			<cfset ArrayAppend(response,'{ "id": "#AttachmentID#", "uploader": "#Uploader#", "date" : "#DateAttached#", "file" : "#GetFileFromPath(Attachment)#", "fileType": "#ListFirst(FileGetMimeType(Attachment), "/")#", "isRemovable": "#isRemovableByUser#"}')>
+			<cfset ArrayAppend(response,'{ "id": "#AttachmentID#", "uploader": "#Uploader#", "date" : "#DateAttached#", "file" : "#GetFileFromPath(Attachment)#", "fileType": "#ListFirst(FileGetMimeType(Attachment), "/")#", "isRemovable": #isRemovableByUser#}')>
 		</cfloop>
 		<cfreturn response />
 	</cffunction>
@@ -179,7 +179,7 @@
 		<cfcontent  type="application/octet-stream" file="#ExpandPath(arguments.path)#">
 	</cffunction>
 
-	<cffunction access="remote" output="false" returntype="string" returnformat="JSON"  name="DeleteAttachment" displayname="DeleteAttachment">
+	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="DeleteAttachment" displayname="DeleteAttachment">
 		<cfargument required="true"  name="attachmentId" displayname="attachmentId">
 		<cfset utilComponentInstance = createObject('component', 'UtilComponent')>
 		<cfquery name="queryGetAttachmentFilePath">
@@ -195,17 +195,22 @@
 				</cfquery>
 				<cfset commentId =  addComment("deleted file #GetFileFromPath(queryGetAttachmentFilePath.AttachMent)#",queryGetAttachmentFilePath.ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
+				<cfreturn true />
+			<cfelse>
+				<cfreturn false />
 			</cfif>
 	</cffunction>
 
 
-	<cffunction access="remote" output="false" returntype="string" returnformat="JSON" name="UploadAttachmentForReport" displayname="UplaodAttachmentForReport" hint="This function is for handling of attachment upload after once a report is made.">
+	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON" name="UploadAttachmentForReport" displayname="UplaodAttachmentForReport" hint="This function is for handling of attachment upload after once a report is made.">
 		<cfargument required="true" type="string" name="reportId" hint="This contains the id of report to upload the attachment of.">
 		<cfargument required="true" type="any" name="uploadedFile" hint="This argument contains the path of the uploaded file."/>
 		<cfargument required="true" type="string" name="clientFileInfo" hint="This argument contains extra info of the client file.">
 		<cfargument required="true"  type="string" name="uploadedDirectory" hint="This arguments will only have values when any files have been uploaded before.">
+		
 		<cfset utilComponentInstance = createObject('component', 'UtilComponent')>
 		<cfset uploadStatus = UploadAttachment(arguments.uploadedFile, arguments.clientFileInfo, arguments.uploadedDirectory)>
+		
 		<cfif structKeyExists(uploadStatus,'renamedFileName')>
 			<cfquery name="queryInsertAttachmentInTable" result="resultInsertAttachmentInTable">
 				INSERT INTO [REPORT_ATTACHMENTS] ([ReportID], [Attachment] , [Uploader] ) VALUES
@@ -217,6 +222,7 @@
 			</cfquery>
 			<cfset commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
 			<cfset wsPublish('report-file-upload',{"attachmentId": "#resultInsertAttachmentInTable['IDENTITYCOL']#"}) >
+			<cfreturn true />
 		<cfelse>
 			<cfquery name="queryInsertAttachmentInTable" result="resultInsertAttachmentInTable">
 				INSERT INTO [REPORT_ATTACHMENTS] ([ReportID], [Attachment] , [Uploader] ) VALUES
@@ -227,6 +233,7 @@
 				)
 			</cfquery>
 			<cfset commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
+			<cfreturn true />
 		</cfif>
 	</cffunction>
 
@@ -330,14 +337,14 @@
 	<cffunction access="remote" output="false" returnformat="JSON" returntype="string" name="GetAssignedPersonID"  hint="This function finds if the report is assigned to someone or not.">
 		<cfargument name="reportId" required="true" type="numeric">
 		<cfquery name="queryGetAssignedPersonID">
-			SELECT P.[FirstName], P.[PersonID]
+			SELECT P.[FirstName], P.[LastName], P.[PersonID]
 			FROM [Person] P
 			INNER JOIN [REPORT_INFO] RI
 			ON RI.[Assignee] = P.[PersonID]
 			WHERE RI.[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
 		<cfloop query="queryGetAssignedPersonID">
-			<cfset response = '{ "assigneeName": "#FirstName#", "personId": "#PersonID#" }'>
+			<cfset response = '{ "assigneeName": "#FirstName & ' ' &LastName#", "personId": "#PersonID#" }'>
 		</cfloop>
 		<cfreturn response>
 	</cffunction>

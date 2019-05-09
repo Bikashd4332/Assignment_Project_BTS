@@ -20,6 +20,7 @@ button {
   color:white;
   font-family: 'Quicksand', sans-serif;
   border:none;
+  outline: none;
   border-radius: 3px;
   display: block;
   cursor: pointer;

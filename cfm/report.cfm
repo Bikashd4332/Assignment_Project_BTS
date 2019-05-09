@@ -2,17 +2,21 @@
     <cflocation url="login.cfm" addtoken="false">
 </cfif>
 
-<cfinvoke component="Assignment_Project_BTS.CFCs.ReportComponent" method="IsReportValidForUser"
-    argumentcollection="#{reportId: url.Id}#" returnvariable="isValid" />
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin"
-    returnvariable="isAdmin" />
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
-    returnvariable="reportCount" />
+<cfif isDefined('url.id')>
+    <cfinvoke component="Assignment_Project_BTS.CFCs.ReportComponent" method="IsReportValidForUser"
+        argumentcollection="#{reportId: url.Id}#" returnvariable="local.isValid" />
+    <cfelse>
+        <h1>Error. Something wrong happened. </h1>
+        <cfabort>
+</cfif>
 
-<cfif NOT isValid>
+<cfif NOT local.isValid>
     <h1>Error 404 not found!</h1>
     <cfabort>
 </cfif>
+
+<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
+    returnvariable="local.reportCount" />
 
 <cfwebsocket name="cfWebSocketObj" onMessage="onMessageHandler" onOpen="onOpenHandler" />
 <!DOCTYPE html>
@@ -62,7 +66,7 @@
                                 Overview</a>
                         </li>
                         <cfoutput>
-                            <li><a href="reports.cfm" class="navlink"><i class="number-badge">#reportCount#</i>
+                            <li><a href="reports.cfm" class="navlink"><i class="number-badge">#local.reportCount#</i>
                                     Reports</a></li>
                         </cfoutput>
 
@@ -79,6 +83,32 @@
         </div>
     </div>
 
+    <div class="container-fluid">
+        <div class="sticky-container">
+            <div class="report">
+                <div class="report-title">
+                    <span class="report-id"></span>
+                    <span class="report-title"></span>
+                </div>
+            </div>
+            <div class="report-info-status">
+                <div class="report-status">
+                </div>
+                <div class="badge report-priority">
+                    <span class="badge-label">report priority</span>
+                    <span class="badge-value "></span>
+                </div>
+                <div class="badge report-type">
+                    <span class="badge-label">report status</span>
+                    <span class="badge-value "></span>
+                </div>
+                <button class="watch-btn"></button>
+                <button class="edit-btn"><i class="fa fa-pencil-square-o"></i> Edit</button>
+                <div class="status-action">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid">
         <div class="container" id="pageBody">
@@ -99,8 +129,8 @@
                     <span class="badge-label">report status</span>
                     <span class="badge-value "></span>
                 </div>
-                <button class="watch-btn" id="toggleWatch"></button>
-                <button id="editReportButton"><i class="fa fa-pencil-square-o"></i> Edit</button>
+                <button class="watch-btn"></button>
+                <button class="edit-btn"><i class="fa fa-pencil-square-o"></i> Edit</button>
                 <div class="status-action">
                 </div>
             </div>

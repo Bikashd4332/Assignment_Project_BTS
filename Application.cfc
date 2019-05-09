@@ -25,9 +25,9 @@
 		<cfargument name="targetPage" required="true">
 		<!--- Cleaning the key value of the url for calling remote function with arrays --->
 		<cfloop collection="#url#" item="LOCAL.key">
-			<cfif find("[]", LOCAL.key)>
-				<cfset LOCAL.cleanKey = replace(LOCAL.key, "[]", "", "one") >
-				<cfset url[LOCAL.cleanKey] = ListToArray(url[LOCAL.key]) >
+			<cfif find("[]", local.key)>
+				<cfset local.cleanKey = replace(local.key, "[]", "", "one") >
+				<cfset url[local.cleanKey] = ListToArray(url[local.key]) >
 				<cfset StructDelete(url, "LOCAL.key")>
 			</cfif>
 		</cfloop>
@@ -40,18 +40,22 @@
 	<cfargument type="string" name="method"> 
 	<cfargument type="struct" name="args"> 
 
-	<cfset validOperationsForVisitors = ['LogUserIn', 'SignAdminUp']>
+	<cfset local.validOperationsForVisitors = ['LogUserIn', 'SignAdminUp', 'IsEmailValid']>
 
-	<cfif session.userEmail EQ '' AND NOT ArrayContains(validOperationsForVisitors, arguments.method) AND arguments.cfcname NEQ 'UtilComponent.cfc'>
+	<cfif session.userEmail EQ '' AND NOT ArrayContains(local.validOperationsForVisitors, arguments.method) AND arguments.cfcname NEQ 'UtilComponent.cfc'>
 		<cflocation url="../cfm/login.cfm" addtoken="false" /> 
 	</cfif>
 
 	<cfinvoke 
 	component = "#arguments.cfcname#" 
 	method = "#arguments.method#" 
-	returnVariable = "result" 
+	returnVariable = "local.result"
 	argumentCollection = "#arguments.args#" /> 
-	<cfreturn result/>
+	
+	<cfif isDefined('local.result')>
+		<cfreturn local.result/>
+	</cfif>
+	
 </cffunction>
 
 	<cffunction name="OnRequest" returntype="void" displayname="OnRequest" hint="Called whenever a requested." access="public" output="true">

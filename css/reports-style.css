@@ -176,7 +176,11 @@
     align-items: stretch;
   }
   .search-bar .search-control {
+    margin-top: 10px;
     width: 100%;
+  }
+  #searchBarIcon {
+    margin-top: 10px;
   }
 }
 
