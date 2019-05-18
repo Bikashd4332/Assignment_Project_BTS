@@ -1,10 +1,15 @@
+let toastService;
+
 $(document).ready(function () {
-  $('form').on('submit', function(event) {
+
+  toastService = new ToastMaker(3000, $('.toast-container').get(0));
+  
+  $('form').on('submit', function () {
     return false;
   });
 
   $('.form-control').on('blur', function (event) {
-   checkValidity(event.target);
+    checkValidity(event.target);
   });
 
   $('#loginButton').on('click', function () {
@@ -38,15 +43,21 @@ $(document).ready(function () {
       });
     } else {
       $('.form-control:required').each(function (index, formElement) {
-        if (formElement.value === ''  || !formElement.validity.valid ) 
-          { checkValidity(formElement) }
+        if (formElement.value === '' || !formElement.validity.valid) {
+          checkValidity(formElement)
+        }
       });
     }
   });
+
+  $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+    toastService.show("The server dealt with an error!");
+  });
+
 });
 
 
-function checkValidity (formElement) {
+function checkValidity(formElement) {
 
   const parentInputGroupDiv = $(formElement).parent('div.form-wrapper').parent('div.input-group');
   const invalidMsg = parentInputGroupDiv.find('.error-invalid');

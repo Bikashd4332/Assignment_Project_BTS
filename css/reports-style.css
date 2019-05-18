@@ -164,8 +164,8 @@
   height: 300px !important;
 }
 
-@media only screen and (max-width: 860px ) {
-  body  .container {
+@media only screen and (max-width: 1240px ) {
+  #pageBody {
     width: 100%;
   }
 }

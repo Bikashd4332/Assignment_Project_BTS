@@ -15,6 +15,10 @@ body {
   font-family: 'Quicksand', sans-serif;
 }  
 
+select {
+  background: #fff;
+}
+
 button {
   background-color: skyblue;
   color:white;

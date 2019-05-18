@@ -1,0 +1,33 @@
+.toast-container {
+    position: fixed;
+    width: 28vw;
+    top: 10px;
+    left: 0;
+    z-index: 1000;
+    font-family: 'Quicksand';
+    font-size: 18px;
+  }
+  
+  .toast-body {    
+    padding: 15px;
+    width: 80%;
+    box-shadow: 1px 5px 19px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    background-color: rgba(18, 211, 251, 0.8);
+    color: rgba(240, 14, 14, 0.7);
+    margin: auto;
+  }
+  
+  .toast {
+    margin-top: 15px;
+  }
+  
+  .toast-body > .toast-icon {
+    display: inline-block;
+    margin-right: 10px;
+    color: rgba(255, 0, 0, 0.7);
+  }
+
+  .toast-message {
+    font-size: 15px;
+  }

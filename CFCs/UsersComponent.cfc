@@ -56,7 +56,7 @@
 		<cfargument required="true" type="array" name="userEmailList" hint="This argument contains the list of user emails for adding into the project.">
 		<cfargument required="false" default="" type="string" name="titleId" hint="This contains the title id of the user decided by admin.">
 		<cfset local.reportComponentInstance = CreateObject('component', 'ReportComponent')>
-		<cfset projectId = this.utilComponentInstance.GetProjectIdOf()>
+		<cfset local.projectId = this.utilComponentInstance.GetProjectIdOf()>
 		<cfloop array="#arguments.userEmailList#" item="local.userEmail">
 			<cfset local.uuidForUser = createUUID()>
 			<cfquery name="local.queryInviteUser">

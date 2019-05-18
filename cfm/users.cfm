@@ -12,6 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#87ceeb">
   <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="../css/global-style.css">
   <link rel="stylesheet" href="../css/form-styling.css">
@@ -22,14 +23,16 @@
   <link rel="stylesheet" href="../css/jquery.dataTables.css">
   <link rel="stylesheet" href="../css/responsive.dataTables.css">
   <link rel="stylesheet" href="../css/tab-style.css">
-  <link rel="stylesheet" href="../css/users-style.css">
   <link rel="stylesheet" href="../css/modal-style.css">
+  <link rel="stylesheet" href="../css/toast-style.css">
+  <link rel="stylesheet" href="../css/users-style.css">
 
   <script src="../js/jquery-3.0.0.min.js"></script>
   <script src="../js/navbar-functionality.js"></script>
   <script src="../js/jquery.dataTables.js"></script>
   <script src="../js/dataTables.responsive.js"></script>
   <script src="../js/form-functionality.js"></script>
+  <script src="../js/toast_service.js"></script>
   <script src="../js/users-functionality.js"></script>
 
 
@@ -238,6 +241,7 @@
     </div>
   </div>
   </div>
+  <div class="toast-container"></div>
 </body>
 
 </html>

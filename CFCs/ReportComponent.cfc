@@ -7,33 +7,48 @@
 	--->
 <cfcomponent displayname="ReportComponent" accessors="true" output="false" persistent="false">
 
+	<cfset this.utilComponentInstance = CreateObject('component', 'UtilComponent')>
 
 	<cffunction access="remote" output= "false" returnformat="JSON" returntype="struct" name="UploadAttachment" displayname="UploadAttachment" hint="This function uploads report attachments and stores into a directory." >
 		<cfargument required="true" type="any" name="uploadedFile" hint="This argument contains the path of the uploaded file."/>
 		<cfargument required="true" type="string" name="clientFileInfo" hint="This argument contains extra info of the client file.">
 		<cfargument required="true"  type="string" name="uploadedDirectory" hint="This arguments will only have values when any files have been uploaded before.">
+		
 		<cfif arguments.uploadedDirectory EQ ''>
-			<cfset uploadDirectoryName = "#Replace(TimeFormat(now(),'hh:mm:ss'),':','','ALL')#">
-			<cfdirectory action="create" directory="#ExpandPath('../assets/report-attachments/'& uploadDirectoryName)#">
+			<cfset local.uploadDirectoryName = "#Replace(TimeFormat(now(),'hh:mm:ss'),':','','ALL')#">
+			<cfdirectory action="create" directory="#ExpandPath('../assets/report-attachments/'& local.uploadDirectoryName)#">
 		<cfelse>
-			<cfset uploadDirectoryName = "#arguments.uploadedDirectory#">
+			<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/')#" name="local.queryCheckDirectoryExist"> 
+			<cfset local.isExist = false>
+			<cfset local.uploadDirectoryName = "#arguments.uploadedDirectory#">
+			<cfloop query="local.queryCheckDirectoryExist">
+				<cfif Name EQ arguments.uploadedDirectory>
+					<cfset local.isExist = true>
+				</cfif>
+			</cfloop>
+			<cfif NOT local.isExist>
+				<cfdirectory action="create" directory="#ExpandPath('../assets/report-attachments/'& local.uploadDirectoryName)#">
+			</cfif>
 		</cfif>
-		<cfset uploadedRenamedFilePath = "#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#arguments.clientFileInfo#">
-		<cffile action="move" source="#uploadedFile#" destination="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#">
+		
+		<cfset local.uploadedRenamedFilePath = "#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName)#/#arguments.clientFileInfo#">
+		<cffile action="move" source="#arguments.uploadedFile#" destination="#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName)#">
+		
 		<cfif IsFileAlreadyExist(arguments.clientFileInfo, arguments.uploadedDirectory)>
-			<cfset renamedFile = "#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#ListFirst(arguments.clientFileInfo, '.')&Replace(TimeFormat(now(),'hh:mm:ss'),':','','ALL')&'.'&ListLast(arguments.clientFileInfo, '.')#">
+			<cfset local.renamedFile = "#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName)#/#ListFirst(arguments.clientFileInfo, '.')&Replace(TimeFormat(now(),'hh:mm:ss'),':','','ALL')&'.'&ListLast(arguments.clientFileInfo, '.')#">
 			<cffile action="rename"
-				source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
-				destination="#renamedFile#"
+				source="#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
+				destination="#local.renamedFile#"
 				>
-			<cfreturn { "uploadDirectory" : #variables.uploadDirectoryName#, "renamedFileName": "#renamedFile#" } />
+			<cfreturn { "uploadDirectory" : #local.uploadDirectoryName#, "renamedFileName": "#local.renamedFile#" } />
 		<cfelse>
 			<cffile action="rename"
-				source="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
-				destination="#ExpandPath('../assets/report-attachments/' & variables.uploadDirectoryName)#/#arguments.clientFileInfo#"
+				source="#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName )#\#GetFileFromPath(arguments.uploadedFile)#"
+				destination="#ExpandPath('../assets/report-attachments/' & local.uploadDirectoryName)#/#arguments.clientFileInfo#"
 				>
-			<cfreturn { "uploadDirectory" : #variables.uploadDirectoryName# } />
+			<cfreturn { "uploadDirectory" : #local.uploadDirectoryName# } />
 		</cfif>
+		
 	</cffunction>
 
 
@@ -43,42 +58,46 @@
 		<cfargument  required="true" name="reportPriority" type="string" hint="This is the priority of the report.">
 		<cfargument  required="true" name="reportDescription" type="string" hint="This is a long description of the report.">
 		<cfargument  required="false" default="" name="attachmentsTempDirectory" type="string" hint="This is the directory name of the report directory." >
-		<cfargument required="false"  name="reportAssignee" type="numeric" hint="This holds the id of the person responsible to solve this.">
-		<cfset utilComponent = createObject("component" ,'UtilComponent' )>
-		<cfset getPersonId = "#variables.utilComponent.GetLoggedInPersonID()#">
-		<cfquery name="queryInsertReport" result="resultInsertReport">
+		<cfargument required="true"  name="reportAssignee" type="numeric" hint="This holds the id of the person responsible to solve this.">
+
+		<cfset local.getPersonId = "#this.utilComponentInstance.GetLoggedInPersonID()#">
+s
+		<cfquery name="local.queryInsertReport" result="local.resultInsertReport">
 			INSERT INTO [REPORT_INFO] ([ReportTypeID], [ReportTitle], [Description], [PersonID], [Priority], [Assignee])
 			VALUES
 			(
 			 <cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#arguments.reportType#">,
 			 <cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#arguments.reportTitle#">,
 			 <cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#arguments.reportDescription#">,
-			 <cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#variables.getPersonId#"> ,
+			 <cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#local.getPersonId#"> ,
 			 <cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#arguments.reportPriority#">,
 			 <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportAssignee#">
 			 )
 		</cfquery>
 		<cfif arguments.attachmentsTempDirectory NEQ "">
 			<cfdirectory action="rename" directory="#ExpandPath('../assets/report-attachments/')&arguments.attachmentsTempDirectory#" newdirectory="#ExpandPath('../assets/report-attachments/')&resultInsertReport['IDENTITYCOL']#" >
-			<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/')&resultInsertReport['IDENTITYCOL']#" name="uploadedFiles">
-			<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
-			<cfloop query="uploadedFiles">
-				<cfquery name="queryInsertAttachments">
+			<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/')&local.resultInsertReport['IDENTITYCOL']#" name="local.uploadedFiles">
+
+			<cfloop query="local.uploadedFiles">
+				<cfquery name="local.queryInsertAttachments">
 				INSERT INTO [REPORT_ATTACHMENTS] ([ReportId], [Attachment], [Uploader])
 				VALUES (
-					<cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#resultInsertReport['IDENTITYCOL']#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#local.resultInsertReport['IDENTITYCOL']#">,
 					<cfqueryparam cfsqltype="cf_sql_varchar" null="false" value="#ExpandPath('../assets/report-attachments/#resultInsertReport['IDENTITYCOL']#/')&NAME#">,
-					<cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#utilComponentInstance.GetLoggedInPersonID()#">
+					<cfqueryparam cfsqltype="cf_sql_integer" null="false" value="#this.utilComponentInstance.GetLoggedInPersonID()#">
 				)
 			</cfquery>
 			</cfloop>
-			<cfset AddComment('Created this report.', resultInsertReport['IDENTITYCOL'], 1)>
-			<cfset AddComment('Added #uploadedFiles.RecordCount# Files intially.', resultInsertReport['IDENTITYCOL'], 1)>
-			<cfreturn resultInsertReport['IDENTITYCOL']/>
+			<cfset AddComment('Created this report.', local.resultInsertReport['IDENTITYCOL'], 1)>
+			<cfset AddComment('Added #local.uploadedFiles.RecordCount# Files intially.', local.resultInsertReport['IDENTITYCOL'], 1)>
+			<cfreturn local.resultInsertReport['IDENTITYCOL']/>
 		<cfelse>
-			<cfset AddComment('Created this report.', resultInsertReport['IDENTITYCOL'], 1)>
-			<cfreturn resultInsertReport['IDENTITYCOL']/>
+			<cfset AddComment('Created this report.', local.resultInsertReport['IDENTITYCOL'], 1)>
+			<cfreturn local.resultInsertReport['IDENTITYCOL']/>
 		</cfif>
+
+		<cfset ToggleWatcher(local.resultInsertReport['IDENTITYCOL'], this.utilComponentInstance.GetLoggedInPersonID())>
+		
 	</cffunction>
 
 
@@ -90,84 +109,81 @@
 
 
 	<cffunction access="remote" output="false" returnType="array" returnFormat="JSON" name="GetAssigneeNames" displayName="GetAssigneeNames" hint="This function gets all the names of person who are working under the project.">
-		<cfset assigneeNames = ArrayNew(1)>
-		<cfquery name="queryGetProjectId">
+		<cfset local.assigneeNames = ArrayNew(1)>
+		<cfquery name="local.queryGetProjectId">
 				SELECT  [PersonID], [EmailID], CONCAT([FirstName], ' ', [LastName]) AS NAME
 				FROM [PERSON]
 				WHERE
-				[ProjectID] = ( SELECT [ProjectID] FROM [PERSON] WHERE [EmailID] = <cfqueryparam cfsqltype="cf_sql_varchar" value="#session.userEmail#">)
+				[ProjectID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#this.utilComponentInstance.GetProjectIdOf()#">
 		</cfquery>
-		<cfloop query="queryGetProjectId">
-			<cfset ArrayAppend(variables.assigneeNames,{ 'id': '#PersonID#', 'name': '#NAME#', 'email': '#EmailID#' })>
+		<cfloop query="local.queryGetProjectId">
+			<cfset ArrayAppend(local.assigneeNames,{ 'id': '#PersonID#', 'name': '#NAME#', 'email': '#EmailID#' })>
 		</cfloop>
-		<cfreturn variables.assigneeNames>
+		<cfreturn local.assigneeNames>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returnformat="JSON" returntype="struct" displayname="GetReportType" name="GetReportType" hint="This function return the list of available report types accepted." >
-		<cfset reportTypes = StructNew()>
-		<cfquery name="queryGetReportTypes">
+		<cfset local.reportTypes = StructNew()>
+		<cfquery name="local.queryGetReportTypes">
 			SELECT [ReportTypeID], [Title] FROM [REPORT_TYPE];
 		</cfquery>
-		<cfloop query="queryGetReportTypes">
-			<cfset reportTypes['#ReportTypeID#'] = "#Title#">
-		</cfloop>
-		<cfreturn variables.reportTypes />
+		<cfset local.reportTypes['#local.queryGetReportTypes.ReportTypeID#'] = "#local.queryGetReportTypes.ReportTypeID#">
+		<cfreturn local.reportTypes>	
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returnformat="JSON" returnType="struct" name="GetReportOfId" displayname="GetReportOfId" hint="This function returns all information of a given report id.">
 		<cfargument type="numeric" required="true" name="reportId" hint="This contains the id of any report.">
-		<cfset response = StructNew()>
-		<cfset dashBoardComponentInstance = CreateObject('component', 'DashboardComponent')>
-		<cfquery name="queryGetReportInfo">
+		<cfset local.response = StructNew()>
+		<cfset local.dashBoardComponentInstance = CreateObject('component', 'DashboardComponent')>
+		<cfquery name="local.queryGetReportInfo">
 			SELECT RI.[ReportID], RT.[Title] AS Type, RI.[Priority] , RI.[ReportTypeID], RI.[ReportTitle], RI.[Description], RI.[DateReported], RI.[PersonID], RST.[Name] AS Status FROM
 				[REPORT_INFO] AS RI
 				INNER JOIN
 				[REPORT_TYPE] AS RT
-				ON RI.ReportTypeID =  RT.ReportTypeID
+				ON RI.[ReportTypeID] =  RT.[ReportTypeID]
 				INNER JOIN
 				[REPORT_STATUS_TYPE] AS RST
-				ON RI.StatusID = RST.StatusID
+				ON RI.[StatusID] = RST.[StatusID]
 				WHERE RI.[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
-		<cfloop query="queryGetReportInfo">
-			<cfset reporterName = dashBoardComponentInstance.GetUserName(PersonID)>
-			<cfset response['id'] = "#ReportID#" >
-			<cfset response['title'] = "#ReportTitle#">
-			<cfset response['type'] = "#Type#">
-			<cfset response['description'] ="#Description#">
-			<cfset response['priority'] = "#Priority#">
-			<cfset response['dateReported'] = "#DateReported#">
-			<cfset response['personId'] = "#PersonID#">
-			<cfset response['personName'] = "#reporterName['userName']#">
-			<cfset response['status'] = "#Status#">
-			<cfset response['typeId'] = "#ReportTypeID#">
+		<cfloop query="local.queryGetReportInfo">
+			<cfset local.reporterName = local.dashBoardComponentInstance.GetUserName(PersonID)>
+			<cfset local.response['id'] = "#ReportID#" >
+			<cfset local.response['title'] = "#ReportTitle#">
+			<cfset local.response['type'] = "#Type#">
+			<cfset local.response['description'] ="#Description#">
+			<cfset local.response['priority'] = "#Priority#">
+			<cfset local.response['dateReported'] = "#DateReported#">
+			<cfset local.response['personId'] = "#PersonID#">
+			<cfset local.response['personName'] = "#reporterName['userName']#">
+			<cfset local.response['status'] = "#Status#">
+			<cfset local.response['typeId'] = "#ReportTypeID#">
 		</cfloop>
-		<cfset UtilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfset response['dateReported'] = "#UtilComponentInstance.RelativeDate(response['dateReported'])#">
-		<cfreturn response />
+		<cfset local.response['dateReported'] = "#this.UtilComponentInstance.RelativeDate(local.response['dateReported'])#">
+		<cfreturn local.response />
 	</cffunction>
 
 
 	<cffunction access="remote" returnformat="JSON" returntype="array" name="GetAllAttachmentsOfReport" displayname="GetAllAttachmentsOfReport" hint="This function retrieves all the attachments files uploaded for a report.">
 		<cfargument required="true" name="reportId" type="string" hint="This contains the id of report to retrieve the attachments.">
-		<cfset response = ArrayNew(1)>
-		<cfset UtilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfquery name="queryGetAttachmentDirectoryPath">
+		<cfset local.response = ArrayNew(1)>
+		<cfquery name="local.queryGetAttachmentDirectoryPath">
 			SELECT [DateAttached], [Attachment], [Uploader], [AttachmentID]
 				FROM [REPORT_ATTACHMENTS]
 				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.reportId#">
 		</cfquery>
-		<cfloop query="queryGetAttachmentDirectoryPath">
-			<cfif Uploader EQ utilComponentInstance.GetLoggedInPersonID()>
-				<cfset isRemovableByUser = true>
+
+		<cfloop query="local.queryGetAttachmentDirectoryPath">
+			<cfif Uploader EQ this.utilComponentInstance.GetLoggedInPersonID()>
+				<cfset local.isRemovableByUser = true>
 			<cfelse>
-				<cfset isRemovableByUser = false >
+				<cfset local.isRemovableByUser = false >
 			</cfif>
-			<cfset ArrayAppend(response,'{ "id": "#AttachmentID#", "uploader": "#Uploader#", "date" : "#DateAttached#", "file" : "#GetFileFromPath(Attachment)#", "fileType": "#ListFirst(FileGetMimeType(Attachment), "/")#", "isRemovable": #isRemovableByUser#}')>
+			<cfset ArrayAppend(local.response,'{ "id": "#AttachmentID#", "uploader": "#Uploader#", "date" : "#DateAttached#", "file" : "#GetFileFromPath(Attachment)#", "fileType": "#ListFirst(FileGetMimeType(Attachment), "/")#", "isRemovable": #local.isRemovableByUser#}')>
 		</cfloop>
-		<cfreturn response />
+		<cfreturn local.response />
 	</cffunction>
 
 
@@ -181,19 +197,19 @@
 
 	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="DeleteAttachment" displayname="DeleteAttachment">
 		<cfargument required="true"  name="attachmentId" displayname="attachmentId">
-		<cfset utilComponentInstance = createObject('component', 'UtilComponent')>
-		<cfquery name="queryGetAttachmentFilePath">
+
+		<cfquery name="local.queryGetAttachmentFilePath">
 			SELECT [Attachment], [Uploader], [ReportID]
 			FROM [REPORT_ATTACHMENTS]
 			WHERE [AttachmentID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 		</cfquery>
-			<cfif "#queryGetAttachmentFilePath.Uploader#" EQ '#utilComponentInstance.GetLoggedInPersonID()#'>
-				<cffile action="delete" file="#queryGetAttachmentFilePath.Attachment#">
+			<cfif "#local.queryGetAttachmentFilePath.Uploader#" EQ '#this.utilComponentInstance.GetLoggedInPersonID()#'>
+				<cffile action="delete" file="#local.queryGetAttachmentFilePath.Attachment#">
 				<cfquery>
 					DELETE FROM [REPORT_ATTACHMENTS]
 					WHERE [AttachmentId] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 				</cfquery>
-				<cfset commentId =  addComment("deleted file #GetFileFromPath(queryGetAttachmentFilePath.AttachMent)#",queryGetAttachmentFilePath.ReportID, 1 )>
+				<cfset commentId =  addComment("deleted file #GetFileFromPath(local.queryGetAttachmentFilePath.AttachMent)#",queryGetAttachmentFilePath.ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
 				<cfreturn true />
 			<cfelse>
@@ -208,31 +224,30 @@
 		<cfargument required="true" type="string" name="clientFileInfo" hint="This argument contains extra info of the client file.">
 		<cfargument required="true"  type="string" name="uploadedDirectory" hint="This arguments will only have values when any files have been uploaded before.">
 		
-		<cfset utilComponentInstance = createObject('component', 'UtilComponent')>
-		<cfset uploadStatus = UploadAttachment(arguments.uploadedFile, arguments.clientFileInfo, arguments.uploadedDirectory)>
+		<cfset local.uploadStatus = UploadAttachment(arguments.uploadedFile, arguments.clientFileInfo, arguments.uploadedDirectory)>
 		
-		<cfif structKeyExists(uploadStatus,'renamedFileName')>
-			<cfquery name="queryInsertAttachmentInTable" result="resultInsertAttachmentInTable">
+		<cfif structKeyExists(local.uploadStatus,'renamedFileName')>
+			<cfquery name="local.queryInsertAttachmentInTable" result="local.resultInsertAttachmentInTable">
 				INSERT INTO [REPORT_ATTACHMENTS] ([ReportID], [Attachment] , [Uploader] ) VALUES
 				(
 					<cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">,
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#uploadStatus['renamedFileName']#">,
-					<cfqueryparam cfsqltype="cf_sql_integer" value='#utilComponentInstance.getLoggedInPersonID()#'>
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uploadStatus['renamedFileName']#">,
+					<cfqueryparam cfsqltype="cf_sql_integer" value='#this.utilComponentInstance.getLoggedInPersonID()#'>
 				)
 			</cfquery>
-			<cfset commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
-			<cfset wsPublish('report-file-upload',{"attachmentId": "#resultInsertAttachmentInTable['IDENTITYCOL']#"}) >
+			<cfset local.commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
+			<cfset wsPublish('report-file-upload',{"attachmentId": "#local.resultInsertAttachmentInTable['IDENTITYCOL']#"}) >
 			<cfreturn true />
 		<cfelse>
-			<cfquery name="queryInsertAttachmentInTable" result="resultInsertAttachmentInTable">
+			<cfquery name="local.queryInsertAttachmentInTable" result="local.resultInsertAttachmentInTable">
 				INSERT INTO [REPORT_ATTACHMENTS] ([ReportID], [Attachment] , [Uploader] ) VALUES
 				(
 					<cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">,
 					<cfqueryparam cfsqltype="cf_sql_varchar" value='#ExpandPath("../assets/report-attachments/#arguments.uploadedDirectory#/#arguments.clientFileInfo#")#'>,
-					<cfqueryparam cfsqltype="cf_sql_integer" value='#utilComponentInstance.getLoggedInPersonID()#'>
+					<cfqueryparam cfsqltype="cf_sql_integer" value='#this.utilComponentInstance.getLoggedInPersonID()#'>
 				)
 			</cfquery>
-			<cfset commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
+			<cfset local.commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
 			<cfreturn true />
 		</cfif>
 	</cffunction>
@@ -242,36 +257,38 @@
 		<cfargument required="true" name="commentText" type="string" hint="It contains the comment itself.">
 		<cfargument requried="true" name="reportId" type="numeric" hint="It contains the report id to which the comment will be added.">
 		<cfargument required="false" default="0" name="isActivity" type="numeric" hint="Wheather the comment will be an activity or a simple content.">
-		<cfset utilComponent = CreateObject('component', 'UtilComponent')>
-		<cfset dashBoardComponent = CreateObject('component', 'DashboardComponent')>
-		<cfquery result="resultAddComment">
+		
+		<cfset local.dashBoardComponent = CreateObject('component', 'DashboardComponent')>
+		
+		<cfquery result="local.resultAddComment">
 			INSERT INTO [REPORT_COMMENTS] ( [ReportID], [Comment], [PersonID], [isActivity])
 			VALUES (
 			<cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">,
 			<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.commentText#">,
-			<cfqueryparam cfsqltype="cf_sql_integer" value="#utilComponent.GetLoggedInPersonID()#">,
+			<cfqueryparam cfsqltype="cf_sql_integer" value="#this.utilComponentInstance.GetLoggedInPersonID()#">,
 			<cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.isActivity#">
 			)
 		</cfquery>
+		
 		<cfif arguments.isActivity EQ 1>
 			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>--->
-			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
+			<cfset wsPublish('report-comment-post', {"commentId" : "#local.resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>
 			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)>--->
-			<cfset wsPublish('report-comment-post', {"commentId" : "#resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
+			<cfset wsPublish('report-comment-post', {"commentId" : "#local.resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		</cfif>
-		<cfreturn resultAddComment['IDENTITYCOL']  />
+		<cfreturn local.resultAddComment['IDENTITYCOL']  />
+
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returntype="array" returnformat="JSON" name="GetCommentsForReport" displayname="GetCommentsForReport" hint="This function fetches all the comments form database of any specific report.">
 		<cfargument required="true" type="numeric" name="reportId" hint="The report id of which to fetch all the comments.">
 		<cfargument required="false" default="0"  type="numeric" name="activity" hint="A boolean for returning activity.">
-		<cfset response = ArrayNew(1)>
-		<cfset dashboardComponent = CreateObject('component', 'DashboardComponent')>
-		<cfset utilComponent = CreateObject('component', 'UtilComponent')>
+		<cfset local.response = ArrayNew(1)>
+		<cfset local.dashboardComponent = CreateObject('component', 'DashboardComponent')>
 
-		<cfquery name="queryGetCommentsForReport">
+		<cfquery name="local.queryGetCommentsForReport">
 			SELECT P.[PersonID], P.[FirstName], RC.[DateCommented], RC.[Comment], RC.[CommentID], RC.[IsActivity]
 			FROM [REPORT_COMMENTS] RC
 			INNER JOIN [PERSON] P
@@ -283,20 +300,21 @@
 			ORDER BY RC.[DateCommented] ASC
 		</cfquery>
 		
-		<cfloop query="queryGetCommentsForReport">
-			<cfset profileImage = DeserializeJSON(dashboardComponent.GetProfileImage(40, 40, PersonID))>
-			<cfset ArrayAppend(response, '{"userName":"#FirstName#","id":"#CommentID#","personId":"#PersonID#","profileImage":"#profileImage["base64ProfileImage"]#","comment":"#Comment#","date":"#DateCommented#","extension": "#profileImage["extension"]#","isActivity": "#isActivity#" }')>
+		<cfloop query="local.queryGetCommentsForReport">
+			<cfset local.profileImage = DeserializeJSON(local.dashboardComponent.GetProfileImage(40, 40, PersonID))>
+			<cfset ArrayAppend(local.response, '{"userName":"#FirstName#","id":"#CommentID#","personId":"#PersonID#","profileImage":"#profileImage["base64ProfileImage"]#","comment":"#Comment#","date":"#DateCommented#","extension": "#profileImage["extension"]#","isActivity": "#isActivity#" }')>
 		</cfloop>
 		
-		<cfreturn response />
+		<cfreturn local.response />
 	</cffunction>
 
 
 	<cffunction access="remote" output="true" returnformat="JSON" returntype="struct" name="GetCommentInfoOf" >
 		<cfargument required="true" type="numeric" name="commentId">
-		<cfset resposne = StructNew()>
-		<cfset dashboardComponent = CreateObject('component', 'DashboardComponent')>
-		<cfquery name="queryGetCommentInfo">
+		<cfset local.resposne = StructNew()>
+		<cfset local.dashboardComponent = CreateObject('component', 'DashboardComponent')>
+
+		<cfquery name="local.queryGetCommentInfo">
 		SELECT RC.[DateCommented], P.[ProfileImage],RC.[isActivity], RC.[CommentID], RC.[PersonID], RC.[ReportID], RC.[Comment], CONCAT([FirstName],' ',[LastName]) AS Name
 		FROM [REPORT_COMMENTS] RC
 		INNER JOIN
@@ -305,30 +323,30 @@
 		WHERE [CommentID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.commentId#" >
 	</cfquery>
 		<cfloop query="queryGetCommentInfo">
-			<cfset processedProfileImage = DeserializeJSON(dashboardComponent.GetProfileImage(40, 40, PersonID))>
-			<cfset response['userName'] =  "#Name#">
-			<cfset response['id'] = "#CommentID#">
-			<cfset response['personID'] = "#PersonID#">
-			<cfset response['profileImage'] = "#processedProfileImage['base64ProfileImage']#">
-			<cfset response['isActivity'] = "#isActivity#">
-			<cfset response['date'] = "#DateCommented#">
-			<cfset response['extension'] = "#processedProfileImage['extension']#">
-			<cfset response['comment'] = "#Comment#">
+			<cfset local.processedProfileImage = DeserializeJSON(local.dashboardComponent.GetProfileImage(40, 40, PersonID))>
+			<cfset local.response['userName'] =  "#Name#">
+			<cfset local.response['id'] = "#CommentID#">
+			<cfset local.response['personID'] = "#PersonID#">
+			<cfset local.response['profileImage'] = "#local.processedProfileImage['base64ProfileImage']#">
+			<cfset local.response['isActivity'] = "#isActivity#">
+			<cfset local.response['date'] = "#DateCommented#">
+			<cfset local.response['extension'] = "#local.processedProfileImage['extension']#">
+			<cfset local.response['comment'] = "#Comment#">
 		</cfloop>
-		<cfreturn response>
+		<cfreturn local.response>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returnformat="JSON" returntype="string" name="GetStatusOfReport" displayname="GetStatusOfReport" hint="This function fetches the status of the specified report id.">
 		<cfargument required="true" type="numeric" name="reportId" >
-		<cfquery name="queryGetStatusOfReport">
+		<cfquery name="local.queryGetStatusOfReport">
 			SELECT RST.[Name], RST.[StatusID]
 			FROM [REPORT_STATUS_TYPE] RST
 			INNER JOIN [REPORT_INFO] RI
 			ON RI.[StatusID] = RST.[StatusID]
 			WHERE RI.[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
-		<cfloop query="queryGetStatusOfReport">
+		<cfloop query="local.queryGetStatusOfReport">
 			<cfreturn '{ "status": "#Name#", "statusId": #StatusID# }'>
 		</cfloop>
 	</cffunction>
@@ -336,28 +354,28 @@
 
 	<cffunction access="remote" output="false" returnformat="JSON" returntype="string" name="GetAssignedPersonID"  hint="This function finds if the report is assigned to someone or not.">
 		<cfargument name="reportId" required="true" type="numeric">
-		<cfquery name="queryGetAssignedPersonID">
+		<cfquery name="local.queryGetAssignedPersonID">
 			SELECT P.[FirstName], P.[LastName], P.[PersonID]
 			FROM [Person] P
 			INNER JOIN [REPORT_INFO] RI
 			ON RI.[Assignee] = P.[PersonID]
 			WHERE RI.[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
-		<cfloop query="queryGetAssignedPersonID">
-			<cfset response = '{ "assigneeName": "#FirstName & ' ' &LastName#", "personId": "#PersonID#" }'>
+		<cfloop query="local.queryGetAssignedPersonID">
+			<cfset local.response = '{ "assigneeName": "#FirstName & ' ' &LastName#", "personId": "#PersonID#" }'>
 		</cfloop>
-		<cfreturn response>
+		<cfreturn local.response>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON" name="IsWorkingAssignee" displayname="IsWorkingAssignee" hint="This function finds if any assignee is currently working on the report.">
 		<cfargument required="true" name="reportId">
-		<cfquery name="queryGetIsWorkingAssignee">
+		<cfquery name="local.queryGetIsWorkingAssignee">
 			SELECT [isWorking] 
 			FROM [REPORT_INFO] 
 			WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
-		<cfloop query="queryGetIsWorkingAssignee">
+		<cfloop query="local.queryGetIsWorkingAssignee">
 			<cfif isWorking EQ 1>
 				<cfreturn true >
 			<cfelse>
@@ -369,8 +387,11 @@
 
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON" name="StartWorkingOnReport" displayname="StartWorkingOnReport">
 		<cfargument required="true" type="numeric" name="reportId" hint="This contains the working report id">
-		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfif reportStatus['status'] EQ 'OPEN' OR reportStatus['status'] EQ 'REOPEN'>
+		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
+
+		<cfset local.dashBoardComponent = CreateObject('component', 'DashboardComponent')>
+		
+		<cfif  local.reportStatus['status'] EQ 'OPEN' OR local.reportStatus['status'] EQ 'REOPEN'>
 			<cfquery name="queryChangeOpenToInProgress">
 				UPDATE [REPORT_INFO] 
 				SET [isWorking] = 1, 
@@ -379,9 +400,10 @@
 			</cfquery>
 			<cfset commentId =  AddComment('changed the status from OPEN to IN PROGRESS', arguments.reportId, 1)>
 			<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
+			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName(this.utilComponentInstance.GetLoggedInPersonID()).userName# with person ID #this.utilComponentInstance.GetLoggedInPersonID()# has started working on the report #arguments.reportId#.', arguments.reportId)>
 			<cfreturn '{ "commentId": #commentId# }'>
 		<cfelse>
-			<cfquery name="querySetIsWorking">
+			<cfquery name="local.querySetIsWorking">
 				UPDATE [REPORT_INFO] 
 				SET [isWorking] = 1 
 				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer"  value="#arguments.reportId#">;
@@ -393,10 +415,10 @@
 
 	<cffunction access="remote" returntype="string" returnformat="JSON" name="StopWorkingOnReport" displayname="StopWorkingOnReport" hint="This function stops progress on the specified report.">
 		<cfargument required="true" name="reportId" type="numeric" hint="This function contains the working report id.">
-		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfif reportStatus['status'] EQ 'IN PROGRESS'>
+		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
+		<cfif  local.reportStatus['status'] EQ 'IN PROGRESS'>
 			<cfif hasGoneToDone(reportId)>
-				<cfquery name="queryChangeToReopen">
+				<cfquery name="local.queryChangeToReopen">
 					UPDATE [REPORT_INFO] 
 					SET [isWorking] = 0, 
 					[StatusID] = 6 
@@ -407,8 +429,9 @@
 				<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
 				<cfreturn '{"commentId": #commentId#}'>
 			<cfelse>
-				<cfquery name="queryChageToOpen">
-					UPDATE [REPORT_INFO] SET [isWorking] = 0, [StatusID] = 1 WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
+				<cfquery name="local.queryChageToOpen">
+					UPDATE [REPORT_INFO] SET [isWorking] = 0, [StatusID] = 1 
+					WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 				</cfquery>
 				<cfset commentId =  AddComment('changed the status from IN PROGRESS to OPEN', arguments.reportId, 1)>
 				<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
@@ -416,7 +439,7 @@
 				<cfreturn '{"commentId": #commentId# }'>
 			</cfif>
 		<cfelse>
-			<cfquery name="queryStopIsWorking">
+			<cfquery name="local.queryStopIsWorking">
 				UPDATE [REPORT_INFO] SET [isWorking] = 0 
 				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">;
 			</cfquery>
@@ -427,10 +450,11 @@
 
 	<cffunction access="public" output="false" name="GetStatusNameOfStatusID">
 		<cfargument type="numeric" name="statusId" required="true">
-		<cfquery name="queryGetStatusNameFromStatusId">
-			SELECT [Name] FROM [REPORT_STATUS_TYPE] WHERE [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.statusId#">
+		<cfquery name="local.queryGetStatusNameFromStatusId">
+			SELECT [Name] FROM [REPORT_STATUS_TYPE] 
+			WHERE [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.statusId#">
 		</cfquery>
-		<cfloop query="queryGetStatusNameFromStatusId">
+		<cfloop query="local.queryGetStatusNameFromStatusId">
 			<cfreturn Name>
 		</cfloop>
 	</cffunction>
@@ -439,50 +463,54 @@
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON"  name="SendReportToNextStatus" displayname="SendReportToNextStatus" hint="This function progresses the status of specified report." >
 		<cfargument required="true" name="reportId" hint="This contains the report id of which to restore the state." >
 		<cfargument required="true" name="assignee" hint="This conains the id of the person who will be responsible for the next process." >
-		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfif reportStatus['status'] EQ 'IN PROGRESS' OR reportStatus['status'] EQ 'IN REVIEW'>
-			<cfquery name="querySendReportToNextStatus">
+		
+		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
+		<cfif  local.reportStatus['status'] EQ 'IN PROGRESS' OR local.reportStatus['status'] EQ 'IN REVIEW'>
+			
+			<cfquery name="local.querySendReportToNextStatus">
 				UPDATE [REPORT_INFO]
-				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] + 1#">,
+				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#local.reportStatus['statusId'] + 1#">,
 				[isWorking] = 0,
 				[Assignee] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.assignee#">
 				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 			</cfquery>
-			<cfset commentId = AddComment("changed the status from #reportStatus['status']# to #GetStatusNameOfStatusID(reportStatus['statusId'] + 1)#", arguments.reportId, 1)>
+
+			<cfset local.commentId = AddComment("changed the status from #local.reportStatus['status']# to #GetStatusNameOfStatusID(local.reportStatus['statusId'] + 1)#", arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
-			<cfset wsPublish('report-status-update', { "commentId": "#commentId#" })>
-			<cfreturn '{ "commentId": #commentId# }'>
+			<cfset wsPublish('report-status-update', { "commentId": "#local.commentId#" })>
+			<cfreturn '{ "commentId": #local.commentId# }'>
 		</cfif>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON"  name="FallBackToPreviousStatus" displayname="FallBackToPreviousState" hint="This function makes reports go back in state." >
 		<cfargument required="true" name="reportId" hint="This contains the report id of which to restore the state." >
-		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfif reportStatus['status'] EQ 'IN REVIEW' OR reportStatus['status'] EQ 'DONE'>
-			<cfquery name="querySendReportToPreviousStatus">
+		
+		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
+		<cfif  local.reportStatus['status'] EQ 'IN REVIEW' OR local.reportStatus['status'] EQ 'DONE'>
+			<cfquery name="local.querySendReportToPreviousStatus">
 				UPDATE [REPORT_INFO] 
-				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#reportStatus['statusId'] - 1#">,  
+				SET [StatusID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#local.reportStatus['statusId'] - 1#">,  
 				[isWorking] = 1
 				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 			</cfquery>
-			<cfset commentId =  AddComment('changed the state from #reportStatus["status"]# to #GetStatusNameOfStatusID(reportStatus["statusId"] - 1)#', arguments.reportId, 1)>
+			<cfset local.commentId =  AddComment('changed the state from #local.reportStatus["status"]# to #GetStatusNameOfStatusID(local.reportStatus["statusId"] - 1)#', arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId, GetLastAssignee(arguments.reportId))>
-			<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
-			<cfreturn '{ "commentId": #commentId# }'>
+			<cfset wsPublish('report-status-update', {"commentId": "#local.commentId#"})>
+			<cfreturn '{ "commentId": #local.commentId# }'>
 		</cfif>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" name="CloseReport" displayname="CloseReport" hint="This function closes the report by changing its state to closed.">
 		<cfargument required="true" type="numeric" name="reportId" >
-		<cfquery name="queryCloseReport">
+		<cfquery name="local.queryCloseReport">
 			UPDATE [REPORT_INFO] SET [StatusID] = 5
 			WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 		</cfquery>
 		<cfset commentId = AddComment("has closed this report.", arguments.reportId, 1)>
-		<cfset wsPublish('report-status-update', {"commentId": "#commentId#"}) >
-		<cfreturn '{ "commentId": #commentId# }'>
+		<cfset wsPublish('report-status-update', {"commentId": "#local.commentId#"}) >
+		<cfreturn '{ "commentId": #local.commentId# }'>
 	</cffunction>
 
 
@@ -491,16 +519,16 @@
 		<cfquery name="queryCloseReport">
 			UPDATE [REPORT_INFO] SET [StatusID] = 6;
 		</cfquery>
-		<cfset commentId = AddComment("has reopened this report.", arguments.reportId, 1)>
-		<cfset wsPublish('report-status-update', {"commentId": "#commentId#"}) >
-		<cfreturn '{ "commentId": #commentId# }'>
+		<cfset local.commentId = AddComment("has reopened this report.", arguments.reportId, 1)>
+		<cfset wsPublish('report-status-update', {"commentId": "#local.commentId#"}) >
+		<cfreturn '{ "commentId": #local.commentId# }'>
 	</cffunction>
 
 
 	<cffunction access="remote"  output="false" name="ChangeAssignee"  displayname="ChangeAssignee"  hint="This function changes the assignee of the report.">
 		<cfargument required="true" name="reportId" type="numeric" hint="Contains the report whose assignee will be changed." >
 		<cfargument required="true" name="personId" type="numeric" hint="This contains the personId whom it will be assigned." >
-		<cfquery name="queryChangeAssignee">
+		<cfquery name="local.queryChangeAssignee">
 			UPDATE [REPORT_INFO] SET [Assignee] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.personId#"> 
 			WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_numeric" />
 		</cfquery>
@@ -509,22 +537,20 @@
 
 	<cffunction access="remote" output="false" name="GetLastAssignee" displayname="GetLastAssignee" hint="This function finds the assigne to whom the report was assigned before." >
 		<cfargument name="reportId" type="numeric" required="true"  >
-		<cfquery name="queryGetLastAssignee">
+		<cfquery name="local.queryGetLastAssignee">
 			SELECT TOP(1) [PersonID]
 			FROM [REPORT_COMMENTS]
 			WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 			AND [isActivity] = 1
 			ORDER BY [DateCommented] DESC
 		</cfquery>
-		<cfloop query="queryGetLastAssignee">
-			<cfreturn PersonID />
-		</cfloop>
+		<cfreturn local.queryGetLastAssignee.PersonID />
 	</cffunction>
 
 
 	<cffunction access="remote" output="true" returntype="any" returnformat="JSON" name="HasGoneToDone" displayname="HasGoneToDone" hint="This Function is responsible for finding if the report has ever gone to the state done.">
 		<cfargument type="numeric" required="true" name="reportId" >
-		<cfquery name="queryCheckHasGoneToDone">
+		<cfquery name="local.queryCheckHasGoneToDone">
 			SELECT TOP(1) [PersonId]
 			FROM [REPORT_COMMENTS]
 			WHERE [Comment] LIKE '%to DONE%'
@@ -532,20 +558,22 @@
 			AND [isActivity] = 1
  			ORDER BY [DateCommented] DESC
 		</cfquery>
-		<cfloop query="queryCheckHasGoneToDone">
+		<cfif local.queryCheckHasGoneToDone.recordCount EQ 1>
 			<cfreturn true>
-		</cfloop>
-		<cfreturn false>
+		<cfelse>
+			<cfreturn false>
+		</cfif>
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returntype="string" returnformat="plain" name="GetHTMLInterfaceForReportButtons">
 		<cfargument required="true" name="reportId" type="numeric" hint="This has the report id.">
-		<cfset reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfset assigneeInfo = DeserializeJSON(GetAssignedPersonID(arguments.reportId))>
-		<cfif assigneeInfo['personId'] EQ utilComponentInstance.GetLoggedInPersonID()>
-			<cfswitch expression="#reportStatus['status']#">
+
+		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
+		<cfset local.assigneeInfo = DeserializeJSON(GetAssignedPersonID(arguments.reportId))>
+		
+		<cfif local.assigneeInfo['personId'] EQ this.utilComponentInstance.GetLoggedInPersonID()>
+			<cfswitch expression="#local.reportStatus['status']#">
 				<cfcase value='OPEN,REOPEN'>
 					<cfreturn '<button id="startWorkingButton">Start Working</button>'>
 				</cfcase>
@@ -571,11 +599,12 @@
 
 	<cffunction access="remote" returntype="string" returnformat="JSON" name="GetAssigneeWorkingString" displayname="GetAssigneeWorkingString" hint="This function finds if the assignee is currenlty wokring on the report or not.">
 		<cfargument type="numeric" required="true" name="reportId">
-		<cfset assigneeInfo = DeserializeJSON(GetAssignedPersonID(arguments.reportId))>
+
+		<cfset local.assigneeInfo = DeserializeJSON(GetAssignedPersonID(arguments.reportId))>
 		<cfif IsWorkingAssignee(arguments.reportId)>
-			<cfreturn '{ "userName": "#assigneeInfo["assigneeName"]#", "msg": "is assigned and working currently." }'>
+			<cfreturn '{ "userName": "#local.assigneeInfo["assigneeName"]#", "msg": "is assigned and working currently." }'>
 		<cfelse>
-			<cfreturn '{ "userName": "#assigneeInfo["assigneeName"]#", "msg":"is assigned but not working currently." }' >
+			<cfreturn '{ "userName": "#local.assigneeInfo["assigneeName"]#", "msg":"is assigned but not working currently." }' >
 		</cfif>
 	</cffunction>
 
@@ -583,8 +612,9 @@
 	<cffunction access="remote" returnformat="JSON" returntype="boolean" name="IsFileAlreadyExist" >
 		<cfargument required="true" type="string" name="fileName" >
 		<cfargument required="true" name="reportId" type="any">
-		<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/#arguments.reportId#')#" name="queryDirectoryList" >
-		<cfloop query="queryDirectoryList">
+		<cfdirectory action="list" directory="#ExpandPath('../assets/report-attachments/#arguments.reportId#')#" name="local.queryDirectoryList" >
+
+		<cfloop query="local.queryDirectoryList">
 			<cfif arguments.fileName EQ Name>
 				<cfreturn true>
 			</cfif>
@@ -596,9 +626,10 @@
 	<cffunction access="remote" output="false" name="NotifyAllWatchers" displayname="NotifyAllWatchers">
 		<cfargument required="true" name="message" type="string">
 		<cfargument required="true" name="reportId" type="numeric">
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
-		<cfquery name="queryGetAllWatcher">
+		
+		<cfset local.loggedInPersonId = "#this.utilComponentInstance.GetLoggedInPersonId()#">
+		
+		<cfquery name="local.queryGetAllWatcher">
 			SELECT [EmailID]
 			FROM [WATCHER] RW
 			INNER JOIN
@@ -607,26 +638,32 @@
 			WHERE
 			[ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 			AND
-			[PersonID] <> <cfqueryparam cfsqltype="cf_sql_integer" value="#loggedInPersonId#">
+			P.[PersonID] <> <cfqueryparam cfsqltype="cf_sql_integer" value="#local.loggedInPersonId#">
 		</cfquery>
-		<cfloop query="queryGetAllWatcher">
-			<cfset sendEmailTo(EmailID, "#arguments.message#")>
+		
+		<cfloop query="local.queryGetAllWatcher">
+			<cfset sendEmailTo(EmailID, arguments.message)>
 		</cfloop>
+
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="CheckIfWatching" displayname="CheckIfWatching">
 		<cfargument required="true" name="reportId" type="numeric">
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
-		<cfquery name="queryCheckIfAlredyWatching">
+		<cfargument required="false" name="personId" type="numeric">
+
+		<cfquery name="local.queryCheckIfAlredyWatching">
 			SELECT [PersonID]
 			FROM [WATCHER]
 			WHERE
-			[PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#loggedInPersonId#">
+			<cfif IsDefined('arguments.personId')>
+				[PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.personId#">
+			<cfelse>
+				[PersonID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#this.utilComponentInstance.GetLoggedInpersonID()#">
+			</cfif>
 			AND [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 		</cfquery>
-		<cfif queryCheckIfAlredyWatching.RecordCount EQ 0>
+		<cfif local.queryCheckIfAlredyWatching.RecordCount EQ 0>
 			<cfreturn false>
 		<cfelse>
 			<cfreturn true>
@@ -634,97 +671,102 @@
 	</cffunction>
 
 
-	<cffunction access="remote" output="false" returnformat="JSON"  name="ToggleWatcher" displayname="AddToWatcher">
+	<cffunction access="remote" output="false" returnformat="JSON"  name="ToggleWatcher" displayname="ToggleWatcher">
 		<cfargument required="true" name="reportId" type="numeric">
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent')>
-		<cfset loggedInPersonId = "#utilComponentInstance.GetLoggedInPersonId()#">
-		<cfif NOT CheckIfWatching(arguments.reportId) EQ 'true'>
-			<cfquery name="queryAddToWatcher">
+		<cfargument required="false" name="personId" type="numeric">
+
+		<cfif IsDefined('arguments.personId')>
+			<cfset local.watcher = arguments.personId>
+		<cfelse>
+			<cfset local.watcher = this.utilComponentInstance.GetLoggedInPersonID()>
+		</cfif>
+		
+		<cfif NOT CheckIfWatching(arguments.reportId, local.watcher)>
+			<cfquery name="local.queryAddToWatcher">
 				INSERT INTO [WATCHER] ([PersonID], [ReportID]) VALUES
 				(
-					<cfqueryparam cfsqltype="cf_sql_numeric" value="#loggedInPersonId#">,
+					<cfqueryparam cfsqltype="cf_sql_numeric" value="#local.watcher#">,
 					<cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.reportId#">
 				)
 			</cfquery>
 			<cfreturn true>
 		<cfelse>
-			<cfquery name="queryDeleteWatcher">
+			<cfquery name="local.queryDeleteWatcher">
 				DELETE FROM [WATCHER]
-				WHERE [PersonID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#loggedInPersonId#">
+				WHERE [PersonID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#local.watcher#">
 				AND [ReportID] = <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.reportId#">
 			</cfquery>
 			<cfreturn false>
-		</cfif>
+		</cfif>	
 	</cffunction>
 
 
 	<cffunction access="remote" output="false" name="sendEmailTo" returnformat="JSON" returntype="boolean" >
 		<cfargument required="true" type="string" name="emailId" >
 		<cfargument required="true" name="message" type="string">
+		
 		<cfmail from="trackingticket@gmail.com" to="#arguments.emailId#" subject="Greetings" >
 				#arguments.message#
 		</cfmail>
+
 		<cfreturn true>
 	</cffunction>
 
 	<cffunction access="remote" output="false" name="AssignToMe" returnformat="JSON" returntype="boolean" hint="This function changes the assignee of any report to the current logged in person.">
 		<cfargument required="true" type="numeric" name="reportId">
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') />
-		<cfset dashBoardComponentInstance = CreateObject('component', 'DashBoardComponent') />
-		<cfset ChangeAssignee(arguments.reportId, utilComponentInstance.GetLoggedInPersonID()) />
-		<cfset commentId = AddComment("Assigne has been changed to #dashBoardComponentInstance.GetUserName()['userName']#", arguments.reportId, 1)>
-		<cfset wsPublish('report-status-update', { "commentId": "#commentId#" }) >
+		<cfset local.dashBoardComponentInstance = CreateObject('component', 'DashBoardComponent') />
+		<cfset ChangeAssignee(arguments.reportId, this.utilComponentInstance.GetLoggedInPersonID()) />
+		<cfset local.commentId = AddComment("Assigne has been changed to #local.dashBoardComponentInstance.GetUserName()['userName']#", arguments.reportId, 1)>
+		<cfset wsPublish('report-status-update', { "commentId": "#local.commentId#" }) >
 		<cfreturn true />
 	</cffunction>
 	
 	<cffunction access="public" output="false" returnformat="plain" returntype="boolean" name="IsReportValidForUser" displayname="IsReportValidForUser">
 		<cfargument required="true" type="numeric" name="reportId" hint="This is the reportId to check if its related to the project in the with the logged in user iw workint on.">
-		<cfset utilComponentInstance = CreateObject('component', 'UtilComponent') />
-		<cfquery name="queryGetProjectIdOfReport" maxrows="1">
+		<cfquery name="local.queryGetProjectIdOfReport" maxrows="1">
 			SELECT P.[ProjectID] 
 			FROM [REPORT_INFO] RI
 			INNER JOIN [PERSON] P
 			ON RI.[PersonID] = P.[PersonID]
 			WHERE RI.[ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 		</cfquery>
-		<cfreturn queryGetProjectIdOfReport.ProjectID EQ utilComponentInstance.GetProjectIdOf()>
+		<cfreturn local.queryGetProjectIdOfReport.ProjectID EQ this.utilComponentInstance.GetProjectIdOf()>
 	</cffunction>
 	
 	<cffunction access="remote" output="false" returnformat="JSON"	returntype="boolean" name="ChangeReportPriorityType">
 			<cfargument type="numeric" required="true" name="reportTypeId">
 			<cfargument type="string" required="true" name="reportPriority">
 			<cfargument type="numeric" required="true" name="reportId">
-			<cfset commentIdArray = []>
 
-			<cfquery name="queryGetReportPriorityType" maxrows="1">
+			<cfquery name="local.queryGetReportPriorityType" maxrows="1">
 				SELECT RI.[Priority], RI.[ReportTypeID], RT.[Title] FROM [REPORT_INFO] RI
 				INNER JOIN [REPORT_TYPE] RT 
 				ON RI.[ReportTypeID] = RT.[ReportTypeID]
 				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer">
 			</cfquery>
 			
-			<cfquery name="queryGetReportTypeName">
+			<cfquery name="local.queryGetReportTypeName">
 				SELECT [Title] FROM [REPORT_TYPE] 
 				WHERE [ReportTypeID] = <cfqueryparam value="#arguments.reportTypeId#" cfsqltype="cf_sql_integer">
 			</cfquery>
 
-			<cfquery name="queryChangeReportPriorityType">
+			<cfquery name="local.queryChangeReportPriorityType">
 				UPDATE [REPORT_INFO] SET 
 				[Priority] = <cfqueryparam value="#lcase(arguments.reportPriority)#" cfsqltype="cf_sql_varchar">, 
 				[reportTypeID] = <cfqueryparam value="#arguments.reportTypeId#" cfsqltype="cf_sql_numeric">
 				WHERE [ReportID] = <cfqueryparam value="#arguments.reportId#" cfsqltype="cf_sql_integer"> 
 			</cfquery>
 
-			<cfif arguments.reportPriority NEQ queryGetReportPriorityType.Priority>
-				<cfset AddComment('Priority is changed from #ucase(queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, 1)> 
+			<cfif arguments.reportPriority NEQ local.queryGetReportPriorityType.Priority>
+				<cfset AddComment('Priority is changed from #ucase(local.queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, 1)> 
 			</cfif>
 
-			<cfif arguments.reportTypeId NEQ queryGetReportPriorityType.ReportTypeID>
-				<cfset AddComment('Report type is changed from #queryGetReportPriorityType.Title# to #queryGetReportTypeName.Title#', arguments.reportId, 1)>
+			<cfif arguments.reportTypeId NEQ local.queryGetReportPriorityType.ReportTypeID>
+				<cfset AddComment('Report type is changed from #local.queryGetReportPriorityType.Title# to #local.queryGetReportTypeName.Title#', arguments.reportId, 1)>
 			
 			</cfif>
 			
-			<cfset wsPublish('report-type-priority-change', { "priority" : arguments.reportPriority, "type": queryGetReportTypeName.Title })>
+			<cfset wsPublish('report-type-priority-change', { "priority" : arguments.reportPriority, "type": local.queryGetReportTypeName.Title })>
 			<cfreturn true />
 	</cffunction>
 </cfcomponent>

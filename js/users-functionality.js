@@ -1,7 +1,9 @@
 let userDataTable;
 let invitationDataTable;
+let toastService;
 
 $(document).ready(function () {
+    toastService = new ToastMaker(3000, $('.toast-container').get(0));
 
     fetchAllUsers().then(function (responseInJson) {
         userDataTable = $('.data-table').DataTable({
@@ -242,6 +244,16 @@ $(document).ready(function () {
         });
     })
 
+
+    $(document).ajaxError(function (event, jqXhr, ajaxSetting, thrownError) {
+        if (jqXhr.status === 404) {
+            toastService.show('Something unknown happened.')
+        } else if (jqXhr.status === 500) {
+            toastService.show('Some error occured while performing operation.');
+        }
+        console.log(ajaxSetting);
+        console.log(thrownError);
+    });
 });
 
 function processBase64Data(data, type, row, meta) {

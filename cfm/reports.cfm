@@ -15,6 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#87ceeb">
     <title>Reports | Ticket Tracking System</title>
 
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
@@ -26,12 +27,14 @@
     <link rel="stylesheet" href="../css/footer-style.css">
     <link rel="stylesheet" href="../css/form-styling.css">
     <link rel="stylesheet" href="../css/spinner-style.css">
+    <link rel="stylesheet" href="../css/toast-style.css">
     <link rel="stylesheet" href="../css/reports-style.css">
 
     <script src="../js/jquery-3.0.0.min.js"></script>
     <script src="../js/navbar-functionality.js"></script>
     <script src="../js/form-functionality.js"></script>
     <script src="../js/reports-functionality.js"></script>
+    <script src="../js/toast_service.js"></script>
     <script src="../js/reports-stats.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -128,7 +131,7 @@
             </div>
 
         </div>
-
+        <div class="toast-container"></div>
 </body>
 
 </html>

@@ -1,4 +1,8 @@
+// Toast Service
+let toastService;
+
 $(document).ready(function () {
+  toastService = new ToastMaker(3000, $('.toast-container').get(0));
   const reportsPromise = $.ajax({
     url: '../CFCs/ReportsComponent.cfc?',
     data: {
@@ -89,6 +93,17 @@ $(document).ready(function () {
       }
     }
   });
+
+  $(document).ajaxError(function (event, jqXhr, ajaxSetting, thrownError) {
+    if (jqXhr.status === 404) {
+      toastService.show('Something unknown happened.')
+    } else if (jqXhr.status === 500) {
+      toastService.show('Some error occured while performing operation.');
+    }
+    console.log(ajaxSetting);
+    console.log(thrownError);
+  });
+
 });
 
 /**

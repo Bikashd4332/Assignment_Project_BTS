@@ -24,11 +24,11 @@
 	<cffunction name="OnRequestStart" returntype="boolean" displayname="OnRequestStart" access="public" >
 		<cfargument name="targetPage" required="true">
 		<!--- Cleaning the key value of the url for calling remote function with arrays --->
-		<cfloop collection="#url#" item="LOCAL.key">
-			<cfif find("[]", local.key)>
-				<cfset local.cleanKey = replace(local.key, "[]", "", "one") >
-				<cfset url[local.cleanKey] = ListToArray(url[local.key]) >
-				<cfset StructDelete(url, "LOCAL.key")>
+		<cfloop collection="#url#" item="lcoal.key">
+			<cfif find("[]", lcoal..key)>
+				<cfset lcoal..cleanKey = replace(lcoal..key, "[]", "", "one") >
+				<cfset url[lcoal..cleanKey] = ListToArray(url[lcoal..key]) >
+				<cfset StructDelete(url, "lcoal..key")>
 			</cfif>
 		</cfloop>
 		<cfreturn true />
@@ -63,5 +63,15 @@
 		<cfinclude template="#arguments.targetPage#">
 	</cffunction>
 
+
+	<!--- TODO Need to implement custom exception/error-page layout for project. --->
+	<!--- <cffunction name="OnError" returntype="void">
+		<cfargument name="exception" required=true/> 
+		<cfargument name="eventName" type="String" required=true/> 
+		
+
+
+
+	</cffunction>  --->
 
 </cfcomponent>

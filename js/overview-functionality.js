@@ -1,3 +1,6 @@
+// Toast Service
+let toastService;
+
 // Dashboard counters
 let assignedReports = 0;
 let openedReports = 0;
@@ -28,6 +31,8 @@ let temp = 0;
 
 $(document).ready(function () {
 
+  toastService = new ToastMaker(3000, $('.toast-container').get(0));
+
   CanvasJS.addColorSet("reportColorSet",
     [ //colorSet Array
       "#87CEFA",
@@ -55,9 +60,9 @@ $(document).ready(function () {
     url: '../CFCs/DashboardComponent.cfc?method=GetUserName',
     async: true
   }).done(function (response) {
-  const responseInJson = JSON.parse(response);
-// The admin has a unique functionality of adding different members for different 
-// stages of works for a ticket to be closed successfully and integrated into the maintained software.
+    const responseInJson = JSON.parse(response);
+    // The admin has a unique functionality of adding different members for different 
+    // stages of works for a ticket to be closed successfully and integrated into the maintained software.
     $('#usrName').text(responseInJson.userName.split(' ')[0]);
   });
 
@@ -384,7 +389,7 @@ $(document).ready(function () {
   });
 
   // Run whenever user clicks on any of the reports.The report will be opened in another page with all the details.
-  $('#assignedToMe').on('click', 'div.report', function (event) {
+  $('.report-section').on('click', 'div.report', function (event) {
     let reportId;
     if ($(event.target).hasClass('report')) {
       reportId = $(event.target).find('div.report-id > span').text();
@@ -393,6 +398,17 @@ $(document).ready(function () {
     }
     window.location = 'report.cfm?id=' + reportId;
   });
+
+  $(document).ajaxError(function (event, jqXhr, ajaxSetting, thrownError) {
+    if (jqXhr.status === 404) {
+      toastService.show('Something unknown happened.')
+    } else if (jqXhr.status === 500) {
+      toastService.show('Some error occured while performing operation.');
+    }
+    console.log(ajaxSetting);
+    console.log(thrownError);
+  });
+
 }); // End of document ready.
 
 /**

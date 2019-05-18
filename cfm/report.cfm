@@ -2,21 +2,28 @@
     <cflocation url="login.cfm" addtoken="false">
 </cfif>
 
-<cfif isDefined('url.id')>
-    <cfinvoke component="Assignment_Project_BTS.CFCs.ReportComponent" method="IsReportValidForUser"
-        argumentcollection="#{reportId: url.Id}#" returnvariable="local.isValid" />
-    <cfelse>
-        <h1>Error. Something wrong happened. </h1>
+<cftry>
+    <cfif isDefined('url.id')>
+        <cfinvoke component="Assignment_Project_BTS.CFCs.ReportComponent" method="IsReportValidForUser"
+            argumentcollection="#{reportId: url.Id}#" returnvariable="local.isValid" />
+        <cfelse>
+            <h1>Error. Something wrong happened. </h1>
+            <cfabort>
+    </cfif>
+
+    <cfif NOT local.isValid>
+        <h1>Error 404 not found!</h1>
         <cfabort>
-</cfif>
+    </cfif>
 
-<cfif NOT local.isValid>
-    <h1>Error 404 not found!</h1>
-    <cfabort>
-</cfif>
-
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
-    returnvariable="local.reportCount" />
+    <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports"
+        returnvariable="local.reportCount" />
+    <cfcatch type="any">
+        <cfinclude template="maintenance.cfm">
+        <cfabort>
+    </cfcatch>
+        
+</cftry>
 
 <cfwebsocket name="cfWebSocketObj" onMessage="onMessageHandler" onOpen="onOpenHandler" />
 <!DOCTYPE html>
@@ -25,6 +32,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#87ceeb">
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/font-awesome.min.css">
 
@@ -34,13 +42,15 @@
     <link rel="stylesheet" href="../css/footer-style.css">
     <link rel="stylesheet" href="../css/form-styling.css">
     <link rel="stylesheet" href="../css/modal-style.css">
-    <link rel="stylesheet" href="../css/report-style.css">
     <link rel="stylesheet" href="../css/progress-bar-style.css">
     <link rel="stylesheet" href="../css/spinner-style.css">
+    <link rel="stylesheet" href="../css/toast-style.css">
+    <link rel="stylesheet" href="../css/report-style.css">
 
     <script src="../js/jquery-3.0.0.min.js"></script>
     <script src="../js/navbar-functionality.js"></script>
     <script src="../js/form-functionality.js"></script>
+    <script src="../js/toast_service.js"></script>
     <script src="../js/report-functionality.js"></script>
 
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -314,6 +324,8 @@
                 </div>
             </div>
         </div>
+
+    <div class="toast-container"></div>
 
 </body>
 

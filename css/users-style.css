@@ -2,28 +2,32 @@
     padding: 30px;
 }
 
-.header-wrapper{
+.header-wrapper {
     padding-bottom: 20px;
 }
 
-.header-wrapper > .header-info {
+.header-wrapper>.header-info {
     font-size: 18px;
 }
 
-.data-table, .data-table-invite {
+.data-table,
+.data-table-invite {
     width: 100%;
 }
 
-.data-table > thead, .data-table-invite > thead {
+.data-table>thead,
+.data-table-invite>thead {
     background-color: skyblue;
-    color: whitesmoke;  
+    color: whitesmoke;
 }
 
-.data-table th:first-child, .data-table-invite th:first-child {
+.data-table th:first-child,
+.data-table-invite th:first-child {
     border-radius: 5px 0px 0px 0px;
 }
 
-.datat-table th:last-child, .data-table-invite th:last-child{
+.datat-table th:last-child,
+.data-table-invite th:last-child {
     border-radius: 0px 5px 0px 0px;
 }
 
@@ -48,9 +52,10 @@ div#DataTables_Table_1_length {
 }
 
 .tab-navs {
-    display:flex;
+    display: flex;
     justify-content: space-between;
 }
+
 .tab-navs li {
     width: 50%;
     padding: 10px;
@@ -58,7 +63,7 @@ div#DataTables_Table_1_length {
     align-items: center;
 }
 
-.tab-navs li > i {
+.tab-navs li>i {
     font-size: 30px;
 }
 
@@ -107,11 +112,11 @@ div#DataTables_Table_1_length {
     transform: translateY(20%) !important;
 }
 
-.modal-body > h3 {
+.modal-body>h3 {
     margin-bottom: 15px;
 }
 
-.form-control-checkbox + label {
+.form-control-checkbox+label {
     font-size: 14px;
 }
 
@@ -128,8 +133,8 @@ div#DataTables_Table_1_length {
     color: red;
 }
 
-.form-control-checkbox:checked::after{
-    content: '\f00c' ;
+.form-control-checkbox:checked::after {
+    content: '\f00c';
     font-family: 'FontAwesome';
     position: absolute;
     left: 15%;
@@ -143,7 +148,7 @@ div#DataTables_Table_1_length {
     min-height: 400px !important;
 }
 
-.form-control-checkbox:checked{
+.form-control-checkbox:checked {
     background-color: skyblue;
 }
 
@@ -156,18 +161,22 @@ div#DataTables_Table_1_length {
 
 }
 
-.error-exist{
+.error-exist {
     color: red;
 }
 
-@media only screen and (max-width: 1100px) and (min-width: 680px) {
+#inviteModal {
+    overflow-y: hidden;
+}
+
+@media only screen and (max-width: 1240px) and (min-width: 680px) {
     #pageBody {
-        width: 80% !important;
-        padding: 15px !important;
+        width: 100% !important;
+        padding: 30px !important;
     }
 }
 
-@media only screen and (max-width: 800px){
+@media only screen and (max-width: 800px) {
     #inviteUserWindow .header-wrapper {
         flex-direction: column;
     }
@@ -177,9 +186,8 @@ div#DataTables_Table_1_length {
     }
 }
 
-@media only sceen and (max-width: 680px){
+@media only sceen and (max-width: 680px) {
     #pageBody {
-        width: 100%;
         padding: 15px;
     }
 }
@@ -187,5 +195,12 @@ div#DataTables_Table_1_length {
 @media only screen and (max-width: 400px) {
     .tab .tab-navs li {
         flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 860px) {
+
+    body .container {
+        width: 100%;
     }
 }

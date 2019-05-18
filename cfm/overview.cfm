@@ -2,8 +2,13 @@
   <cflocation  url="login.cfm" addtoken="false">
 </cfif>
 
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="IsLoggedInPersonAnAdmin" returnvariable="isAdmin" />
-<cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
+<cftry>
+  <cfinvoke component="Assignment_Project_BTS.CFCs.UtilComponent" method="GetTotalNumberOfReports" returnvariable="reportCount" />
+<cfcatch type="database">
+  <cfinclude template="maintenance.cfm">
+  <cfabort>
+</cfcatch>
+</cftry>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,13 +27,16 @@
   <link rel="stylesheet" href="../css/footer-style.css">
   <link rel="stylesheet" href="../css/modal-style.css">
   <link rel="stylesheet" href="../css/progress-bar-style.css">
+  <link rel="stylesheet" href="../css/toast-style.css">
   <link rel="stylesheet" href="../css/overview-style.css">
 
   <script src="../js/jquery-3.0.0.min.js"></script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <script src="../js/navbar-functionality.js"></script>
   <script src="../js/form-functionality.js"></script>
+  <script src="../js/toast_service.js"></script>
   <script src="../js/overview-functionality.js"></script>
+  
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Overview | Ticket Tracking System</title>
 </head>
@@ -253,6 +261,7 @@
           <button class="cancel-btn">Cancel </button>
         </div>
       </div>
+      <div class="toast-container"></div>
 </body>
 
 </html>

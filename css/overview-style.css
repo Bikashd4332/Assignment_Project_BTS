@@ -152,6 +152,7 @@
   cursor: pointer;
   align-items: center;
   justify-content: space-evenly;
+  
 }
 
 /*This element stays in the middle and should be strected complete. */
@@ -499,9 +500,3 @@
     flex-direction: column;
   }
 }
-
-/* @media only screen and (max-width: 375px){
-  .footer .navlink{
-    font-size: 14px;
-  }
-} */

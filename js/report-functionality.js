@@ -1,3 +1,6 @@
+// Toast service
+let toastService;
+
 //The name of directory to remember.
 let uploadedDirectory = undefined;
 
@@ -17,7 +20,9 @@ let temp = 0;
 const reportId = parseInt(window.location.search.substring(1).split('=')[1]);
 
 $(document).ready(function () {
+
   uploadedDirectory = reportId;
+  toastService = new ToastMaker(3000, $('.toast-container').get(0));
 
   // Get the intial report action button.
   updateActionButton();
@@ -47,12 +52,12 @@ $(document).ready(function () {
 
   $(document).scroll(function () {
     const triggeringOffset = $('#reporterInfo').offset().top;
-    if ($(document).width() > 583) {
-      if ($(document).scrollTop() > triggeringOffset) {
-        $('.sticky-container').show().css('display', 'flex');
-      } else {
-        $('.sticky-container').hide();
-      }
+    // if ($(document).width() > 583) {
+    if ($(document).scrollTop() > triggeringOffset) {
+      $('.sticky-container').show().css('display', 'flex');
+    } else {
+      $('.sticky-container').hide();
+      // }
     }
   });
 
@@ -145,7 +150,7 @@ $(document).ready(function () {
 
   // Change report priority and type. 
   $('.edit-btn').on('click', function (event) {
-    const $reportInfoStatus = $('.report-info-status');
+    const $reportInfoStatus = $('.container > .report-info-status');
 
     const priority = $reportInfoStatus.find('.report-priority').find('.badge-value').text();
     const type = $reportInfoStatus.find('.report-type').find('.badge-value').attr('data-id');
@@ -206,6 +211,7 @@ $(document).ready(function () {
     const fileList = [...$(this).prop('files')];
     if (fileList.length > 0) {
       uploadFile(fileList);
+      $(this).prop('value', null);
     }
   });
 
@@ -504,6 +510,17 @@ $(document).ready(function () {
     $('.progress-container').find('.bar').css('width', '0px');
     finishedUploading(true);
   });
+
+  $(document).ajaxError(function (event, jqXhr, ajaxSetting, thrownError) {
+    if (jqXhr.status === 404) {
+      toastService.show('Something unknown happened.')
+    } else if (jqXhr.status === 500) {
+      toastService.show('Some error occured while performing operation.');
+    }
+    console.log(ajaxSetting);
+    console.log(thrownError);
+  });
+
 });
 
 /**
@@ -533,8 +550,7 @@ function deleteConfirmationModal() {
  */
 function showUploading() {
   return $('.file-section').fadeOut('fast', function () {
-    $('.file-upload').fadeIn('fast');
-    $('.file-upload').css('display', 'flex');
+    $('.file-upload').fadeIn('fast').css('display', 'flex');
   }).promise();
 }
 
@@ -547,7 +563,7 @@ function uploadFile(fileList) {
   totalFileSize = getTotalFileSize(fileList);
   if (numberOfFiles > 1) {
     showUploading().then(function () {
-      uploadMultipleFiles(fileList).then(function (resolvedData) {
+      uploadMultipleFiles(fileList).then(function () {
         finishedUploading(false).then(function () {
           showSpinner().then(function () {
             $('.progress-container').find('.bar').css({
@@ -799,7 +815,7 @@ function generateAttachmentHTML(report) {
  */
 
 function showSpinner() {
-  return $('.file-section').fadeOut('fast', function () {
+  return $('.file-section, .file-upload').fadeOut('fast', function () {
     $('.spinner-container').fadeIn('fast').css('display', 'flex');
   }).promise();
 }
@@ -1072,7 +1088,9 @@ function onMessageHandler(message) {
       fetchComment(message.data.commentId).then(function (response) {
         const responseInJson = JSON.parse(response);
         if (responseInJson.isActivity) {
-          $(generateActivityUI(responseInJson)).hide().appendTo('#activityWindow .history').fadeIn('fast');
+          if ($('#activityWindow').css('display') === 'block') {
+            $(generateActivityUI(responseInJson)).hide().appendTo('#activityWindow .history').fadeIn('fast');
+          }
         } else {
           $(generateCommentUI(responseInJson)).hide().appendTo('#commentWindow .history').fadeIn('fast');
         }
