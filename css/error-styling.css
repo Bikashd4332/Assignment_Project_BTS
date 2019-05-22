@@ -1,0 +1,36 @@
+.error-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.bug-img {
+  position: absolute;
+  left: 50%;
+  margin-left: -20px;
+}
+
+#pageBody{
+  padding: 100px 0px 100px 0px;
+}
+
+.error-code {
+  font-size: 150px;
+  color: skyblue;
+}
+
+.error-text {
+  text-align: center;
+  font-size: 20px;
+}
+
+.error-url {
+  font-weight: bolder;
+}
+
+.error-desc {
+  margin-top: 10px;
+  font-size: 17px;
+  text-align: center;
+}

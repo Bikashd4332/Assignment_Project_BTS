@@ -128,7 +128,7 @@ s
 		<cfquery name="local.queryGetReportTypes">
 			SELECT [ReportTypeID], [Title] FROM [REPORT_TYPE];
 		</cfquery>
-		<cfset local.reportTypes['#local.queryGetReportTypes.ReportTypeID#'] = "#local.queryGetReportTypes.ReportTypeID#">
+		<cfset local.reportTypes['#local.queryGetReportTypes.ReportTypeID#'] = "#local.queryGetReportTypes.Title#">
 		<cfreturn local.reportTypes>	
 	</cffunction>
 
@@ -197,12 +197,15 @@ s
 
 	<cffunction access="remote" output="false" returntype="boolean" returnformat="JSON"  name="DeleteAttachment" displayname="DeleteAttachment">
 		<cfargument required="true"  name="attachmentId" displayname="attachmentId">
+		
+		<cfset local.dashBoardComponent = CreateObject('component', 'DashboardComponent')>
 
 		<cfquery name="local.queryGetAttachmentFilePath">
 			SELECT [Attachment], [Uploader], [ReportID]
 			FROM [REPORT_ATTACHMENTS]
 			WHERE [AttachmentID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.attachmentId#">
 		</cfquery>
+		
 			<cfif "#local.queryGetAttachmentFilePath.Uploader#" EQ '#this.utilComponentInstance.GetLoggedInPersonID()#'>
 				<cffile action="delete" file="#local.queryGetAttachmentFilePath.Attachment#">
 				<cfquery>
@@ -211,6 +214,7 @@ s
 				</cfquery>
 				<cfset commentId =  addComment("deleted file #GetFileFromPath(local.queryGetAttachmentFilePath.AttachMent)#",queryGetAttachmentFilePath.ReportID, 1 )>
 				<cfset wsPublish('report-file-delete', { "commentId": "#commentId#", "isDeleted": true }) >
+				<cfset NotifyAllWatchers("#local.dashBoardComponent.GetUserName().userName# has deleted a file in ticket #local.queryGetAttachmentFilePath.ReportID#", local.queryGetAttachmentFilePath.ReportID, "File Delete.")>
 				<cfreturn true />
 			<cfelse>
 				<cfreturn false />
@@ -225,6 +229,7 @@ s
 		<cfargument required="true"  type="string" name="uploadedDirectory" hint="This arguments will only have values when any files have been uploaded before.">
 		
 		<cfset local.uploadStatus = UploadAttachment(arguments.uploadedFile, arguments.clientFileInfo, arguments.uploadedDirectory)>
+		<cfset local.dashboardComponent = createObject('component', 'DashboardComponent')>
 		
 		<cfif structKeyExists(local.uploadStatus,'renamedFileName')>
 			<cfquery name="local.queryInsertAttachmentInTable" result="local.resultInsertAttachmentInTable">
@@ -248,6 +253,7 @@ s
 				)
 			</cfquery>
 			<cfset local.commentId =  AddComment("added a file #arguments.clientFileInfo#.",arguments.reportId, 1)>
+			<cfset NotifyAllWatchers('#local.dashboardComponent.GetUserName().userName# has uploaded a file in ticket #arguments.reportId#', arguments.reportId, "File Upload.")>
 			<cfreturn true />
 		</cfif>
 	</cffunction>
@@ -271,11 +277,11 @@ s
 		</cfquery>
 		
 		<cfif arguments.isActivity EQ 1>
-			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# #arguments.commentText#", arguments.reportId)>--->
 			<cfset wsPublish('report-comment-post', {"commentId" : "#local.resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
 		<cfelse>
-			<!---<cfset NotifyAllWatchers("#dashBoardComponent.getUserName(utilComponent.GetLoggedInPersonID())# has commented #arguments.commentText#", arguments.reportId)>--->
+
 			<cfset wsPublish('report-comment-post', {"commentId" : "#local.resultAddComment['IDENTITYCOL']#", "isActivity": "#arguments.isActivity#"})>
+			<cfset NotifyAllWatchers("#local.dashBoardComponent.GetUserName().userName# has commented on ticket #arguments.reportId#", arguments.reportId, "New Comment")>
 		</cfif>
 		<cfreturn local.resultAddComment['IDENTITYCOL']  />
 
@@ -400,33 +406,36 @@ s
 			</cfquery>
 			<cfset commentId =  AddComment('changed the status from OPEN to IN PROGRESS', arguments.reportId, 1)>
 			<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
-			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName(this.utilComponentInstance.GetLoggedInPersonID()).userName# with person ID #this.utilComponentInstance.GetLoggedInPersonID()# has started working on the report #arguments.reportId#.', arguments.reportId)>
+			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName(this.utilComponentInstance.GetLoggedInPersonID()).userName# with person ID #this.utilComponentInstance.GetLoggedInPersonID()# changed to in-progress #arguments.reportId#.', arguments.reportId)>
 			<cfreturn '{ "commentId": #commentId# }'>
 		<cfelse>
 			<cfquery name="local.querySetIsWorking">
 				UPDATE [REPORT_INFO] 
 				SET [isWorking] = 1 
-				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer"  value="#arguments.reportId#">;
+				WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer"  value="#arguments.reportId#">
 			</cfquery>
 			<cfset wsPublish('report-status-update', "Report working string changed.")>
+			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName(this.utilComponentInstance.GetLoggedInPersonID()).userName# with person ID #this.utilComponentInstance.GetLoggedInPersonID()# has started working on the report #arguments.reportId#.', arguments.reportId)>
 		</cfif>
 	</cffunction>
 
 
 	<cffunction access="remote" returntype="string" returnformat="JSON" name="StopWorkingOnReport" displayname="StopWorkingOnReport" hint="This function stops progress on the specified report.">
 		<cfargument required="true" name="reportId" type="numeric" hint="This function contains the working report id.">
+		<cfset local.dashBoardComponent = CreateObjbect('component', 'DashboardComponent')>
 		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
 		<cfif  local.reportStatus['status'] EQ 'IN PROGRESS'>
 			<cfif hasGoneToDone(reportId)>
 				<cfquery name="local.queryChangeToReopen">
-					UPDATE [REPORT_INFO] 
+					UPDATE [REPORT_INFO]
 					SET [isWorking] = 0, 
-					[StatusID] = 6 
+					[StatusID] = 6
 					WHERE [ReportID] = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.reportId#">
 				</cfquery>
 				<cfset commentId =  AddComment('chaged the status from IN PROGRESS to REOPEN', arguments.reportId, 1)>
 				<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
 				<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
+				<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName()# has reverted back the ticket #arguments.reportId# from IN PROGRESS to REOPEN', arguments.reportId, "Status Change")>
 				<cfreturn '{"commentId": #commentId#}'>
 			<cfelse>
 				<cfquery name="local.queryChageToOpen">
@@ -436,6 +445,7 @@ s
 				<cfset commentId =  AddComment('changed the status from IN PROGRESS to OPEN', arguments.reportId, 1)>
 				<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
 				<cfset wsPublish('report-status-update', {"commentId": "#commentId#"})>
+				<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName()# has reverted back the ticket #arguments.reportId# from IN PROGRESS to REOPEN', arguments.reportId, "Status Change")>
 				<cfreturn '{"commentId": #commentId# }'>
 			</cfif>
 		<cfelse>
@@ -465,7 +475,8 @@ s
 		<cfargument required="true" name="assignee" hint="This conains the id of the person who will be responsible for the next process." >
 		
 		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
-		<cfif  local.reportStatus['status'] EQ 'IN PROGRESS' OR local.reportStatus['status'] EQ 'IN REVIEW'>
+		<cfset local.dashBoardComponent = CreateObject('component', 'DashboardComponent')>
+		<cfif  local.reportStatus['status'] EQ 'IN PROGRESS' OR local.reportStatus['status'] EQ 'IdN REVIEW'>
 			
 			<cfquery name="local.querySendReportToNextStatus">
 				UPDATE [REPORT_INFO]
@@ -476,8 +487,10 @@ s
 			</cfquery>
 
 			<cfset local.commentId = AddComment("changed the status from #local.reportStatus['status']# to #GetStatusNameOfStatusID(local.reportStatus['statusId'] + 1)#", arguments.reportId, 1)>
+			
 			<cfset ChangeAssignee(arguments.reportId,GetLastAssignee(arguments.reportId))>
 			<cfset wsPublish('report-status-update', { "commentId": "#local.commentId#" })>
+			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName()# has changed the status from #local.reportStatus['status']# to #GetStatusNameOfStatusID(local.reportStatus['statusId'] + 1)#', arguments.reportId, 'Status Change')>
 			<cfreturn '{ "commentId": #local.commentId# }'>
 		</cfif>
 	</cffunction>
@@ -485,7 +498,7 @@ s
 
 	<cffunction access="remote" output="false" returntype="string" returnformat="JSON"  name="FallBackToPreviousStatus" displayname="FallBackToPreviousState" hint="This function makes reports go back in state." >
 		<cfargument required="true" name="reportId" hint="This contains the report id of which to restore the state." >
-		
+		<cfset local.dashBoardComponent = CreateObject('component', 'DashboardComponent')>
 		<cfset local.reportStatus = DeserializeJSON(GetStatusOfReport(arguments.reportId))>
 		<cfif  local.reportStatus['status'] EQ 'IN REVIEW' OR local.reportStatus['status'] EQ 'DONE'>
 			<cfquery name="local.querySendReportToPreviousStatus">
@@ -497,6 +510,7 @@ s
 			<cfset local.commentId =  AddComment('changed the state from #local.reportStatus["status"]# to #GetStatusNameOfStatusID(local.reportStatus["statusId"] - 1)#', arguments.reportId, 1)>
 			<cfset ChangeAssignee(arguments.reportId, GetLastAssignee(arguments.reportId))>
 			<cfset wsPublish('report-status-update', {"commentId": "#local.commentId#"})>
+			<cfset NotifyAllWatchers('#local.dashBoardComponent.GetUserName()# has reverted the ticket #arguments.reportId# from #local.reportStatus["status"]# to #GetStatusNameOfStatusID(local.reportStatus["statusId"] - 1)#', arguments.reportId, 'Status Change')>
 			<cfreturn '{ "commentId": #local.commentId# }'>
 		</cfif>
 	</cffunction>
@@ -626,6 +640,7 @@ s
 	<cffunction access="remote" output="false" name="NotifyAllWatchers" displayname="NotifyAllWatchers">
 		<cfargument required="true" name="message" type="string">
 		<cfargument required="true" name="reportId" type="numeric">
+		<cfargument required="true" name="subject" type="string">
 		
 		<cfset local.loggedInPersonId = "#this.utilComponentInstance.GetLoggedInPersonId()#">
 		
@@ -642,7 +657,7 @@ s
 		</cfquery>
 		
 		<cfloop query="local.queryGetAllWatcher">
-			<cfset sendEmailTo(EmailID, arguments.message)>
+			<cfset sendEmailTo(EmailID, arguments.message, arguments.subject)>
 		</cfloop>
 
 	</cffunction>
@@ -702,10 +717,11 @@ s
 
 
 	<cffunction access="remote" output="false" name="sendEmailTo" returnformat="JSON" returntype="boolean" >
-		<cfargument required="true" type="string" name="emailId" >
+		<cfargument required="true" type="string" name="emailId">
 		<cfargument required="true" name="message" type="string">
-		
-		<cfmail from="trackingticket@gmail.com" to="#arguments.emailId#" subject="Greetings" >
+		<cfargument requestred="true" name="subject" type="string">
+
+		<cfmail from="trackingticket@gmail.com" to=#arguments.emailId# subject=#arguments.subject# >
 				#arguments.message#
 		</cfmail>
 
@@ -716,7 +732,8 @@ s
 		<cfargument required="true" type="numeric" name="reportId">
 		<cfset local.dashBoardComponentInstance = CreateObject('component', 'DashBoardComponent') />
 		<cfset ChangeAssignee(arguments.reportId, this.utilComponentInstance.GetLoggedInPersonID()) />
-		<cfset local.commentId = AddComment("Assigne has been changed to #local.dashBoardComponentInstance.GetUserName()['userName']#", arguments.reportId, 1)>
+		<cfset local.commentId = AddComment("Assigne has been changed to #local.dashBoardComponentInstance.GetUserName().userName
+		#", arguments.reportId, 1)>
 		<cfset wsPublish('report-status-update', { "commentId": "#local.commentId#" }) >
 		<cfreturn true />
 	</cffunction>
@@ -758,15 +775,16 @@ s
 			</cfquery>
 
 			<cfif arguments.reportPriority NEQ local.queryGetReportPriorityType.Priority>
-				<cfset AddComment('Priority is changed from #ucase(local.queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, 1)> 
+				<cfset AddComment('ticket priority is changed from #ucase(local.queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, 1)> 
 			</cfif>
 
 			<cfif arguments.reportTypeId NEQ local.queryGetReportPriorityType.ReportTypeID>
-				<cfset AddComment('Report type is changed from #local.queryGetReportPriorityType.Title# to #local.queryGetReportTypeName.Title#', arguments.reportId, 1)>
+				<cfset AddComment('Ticket type is changed from #local.queryGetReportPriorityType.Title# to #local.queryGetReportTypeName.Title#', arguments.reportId, 1)>
 			
 			</cfif>
 			
 			<cfset wsPublish('report-type-priority-change', { "priority" : arguments.reportPriority, "type": local.queryGetReportTypeName.Title })>
+			<cfset NotifyAllWatchers('The priority of ticket #arguments.reportId# is changed from #ucase(local.queryGetReportPriorityType.Priority)# to #ucase(arguments.reportPriority)#', arguments.reportId, "Priority Changed.")>
 			<cfreturn true />
 	</cffunction>
 </cfcomponent>

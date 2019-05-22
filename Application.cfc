@@ -65,13 +65,20 @@
 
 
 	<!--- TODO Need to implement custom exception/error-page layout for project. --->
-	<!--- <cffunction name="OnError" returntype="void">
-		<cfargument name="exception" required=true/> 
-		<cfargument name="eventName" type="String" required=true/> 
+	<cffunction name="OnMissingTemplate" returntype="void">
+		<cfargument name="targetPage" type="string" required=true/> 
 		
-
-
-
-	</cffunction>  --->
+		<cfset local.error = 404 />
+		<cfinclude template="/Assignment_Project_BTS/cfm/error.cfm">				
+		
+	</cffunction> 
+	
+	<cffunction name="OnError" returntype="void">
+		<cfargument name="exception" type="string" required="true">
+		<cfargument name="event" type="string" required="true">
+		
+		<cfset local.error = 500 />
+		<cfinclude template="/Assignment_Project_BTS/cfm/error.cfm">				
+	</cffunction>
 
 </cfcomponent>
