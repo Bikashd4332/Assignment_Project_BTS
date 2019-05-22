@@ -82,3 +82,15 @@ border-color: red ;
 .invalid .assist-valid{
   display: none;
 }
+
+/* For blocking user operation until the invoked operation completes. */
+.busy {
+  background-color: #f3f3f3;
+  color: black;
+  cursor: not-allowed !important;
+}
+
+.busy:hover{
+  background-color: #f3f3f3 !important;
+  color: black !important;
+}
