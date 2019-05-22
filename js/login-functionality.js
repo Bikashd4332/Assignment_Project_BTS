@@ -3,7 +3,7 @@ let toastService;
 $(document).ready(function () {
 
   toastService = new ToastMaker(3000, $('.toast-container').get(0));
-  
+
   $('form').on('submit', function () {
     return false;
   });
@@ -12,7 +12,11 @@ $(document).ready(function () {
     checkValidity(event.target);
   });
 
-  $('#loginButton').on('click', function () {
+  $('.form-control').on('input', function () {
+    $('#login-error-msg').fadeOut('fast');
+  });
+
+  $('#loginButton').on('click', function (event) {
 
     let allFiledUp = true;
 
@@ -24,7 +28,8 @@ $(document).ready(function () {
       }
     });
 
-    if (!$('div.input-group').hasClass('invalid') && allFiledUp) {
+    if (!$('div.input-group').hasClass('invalid') && allFiledUp && !$(this).hasClass('busy')) {
+      $(this).addClass('busy');
       $.ajax({
         type: 'POST',
         url: '../CFCs/UtilComponent.cfc?method=LogUserIn',
@@ -40,6 +45,7 @@ $(document).ready(function () {
         } else {
           $('#login-error-msg').fadeIn('fast');
         }
+        $(event.target).removeClass('busy');
       });
     } else {
       $('.form-control:required').each(function (index, formElement) {
